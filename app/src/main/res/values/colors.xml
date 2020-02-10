@@ -2,7 +2,7 @@
 <resources>
     <color name="colorPrimary">#009688</color>
     <color name="colorSecondary">#64FFDA</color>
-    <color name="colorLauncher">#009688</color>
+    <color name="colorLauncher">#26A69A</color>
     <color name="colorIconAndText">@android:color/black</color>
     <color name="colorGradientControler">@android:color/white</color>
 </resources>
