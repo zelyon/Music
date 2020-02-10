@@ -1,0 +1,10 @@
+<menu
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/inputview_valid"
+        android:title="@string/inputview_menu_valid"
+        android:icon="@drawable/ic_check"
+        app:showAsAction="always"/>
+</menu>

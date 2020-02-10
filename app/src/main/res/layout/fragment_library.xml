@@ -1,0 +1,39 @@
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fitsSystemWindows="true">
+
+    <bzh.zelyon.music.ui.component.ItemsView
+            android:id="@+id/fragment_library_itemsview_artists"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+
+    <com.google.android.material.card.MaterialCardView
+            android:id="@+id/fragment_library_cardview_toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="16dp"
+            app:cardElevation="4dp"
+            app:cardCornerRadius="8dp">
+
+        <com.google.android.material.appbar.MaterialToolbar
+                android:id="@+id/fragment_library_toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+            <androidx.appcompat.widget.SearchView
+                    android:id="@+id/fragment_library_searchview"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:queryHint="@string/fragment_library_search_musics"
+                    app:iconifiedByDefault="false"
+                    app:searchIcon="@null"
+                    app:queryBackground="@null"/>
+
+        </com.google.android.material.appbar.MaterialToolbar>
+
+    </com.google.android.material.card.MaterialCardView>
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

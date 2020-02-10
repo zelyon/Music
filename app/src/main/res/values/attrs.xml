@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="SquareView">
+        <attr name="horizontal" format="boolean"/>
+    </declare-styleable>
+    <declare-styleable name="InputView">
+        <attr name="label" format="string"/>
+        <attr name="mandatory" format="boolean"/>
+        <attr name="type" format="enum">
+            <enum name="text" value="0" />
+            <enum name="multi_line" value="1" />
+            <enum name="number" value="2" />
+            <enum name="decimal" value="3" />
+            <enum name="email" value="4" />
+            <enum name="phone" value="5" />
+            <enum name="password" value="6" />
+            <enum name="pin" value="7" />
+            <enum name="date" value="8" />
+            <enum name="date_time" value="9" />
+            <enum name="time" value="10" />
+            <enum name="list" value="11" />
+            <enum name="list_custom" value="12" />
+            <enum name="list_multi" value="13" />
+            <enum name="list_custom_multi" value="14" />
+        </attr>
+        <attr name="min_length" format="integer"/>
+        <attr name="max_length" format="integer"/>
+        <attr name="min_number" format="integer"/>
+        <attr name="max_number" format="integer"/>
+        <attr name="min_decimal" format="float"/>
+        <attr name="max_decimal" format="float"/>
+    </declare-styleable>
+</resources>

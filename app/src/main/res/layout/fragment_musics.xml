@@ -1,0 +1,26 @@
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:fitsSystemWindows="true"
+    android:orientation="vertical"
+    app:layout_behavior="@string/bottom_sheet_behavior">
+
+    <com.google.android.material.appbar.MaterialToolbar
+        android:id="@+id/fragment_musics_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <bzh.zelyon.music.ui.component.ItemsView
+            android:id="@+id/fragment_musics_itemsview_musics"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+    </androidx.core.widget.NestedScrollView>
+
+</LinearLayout>

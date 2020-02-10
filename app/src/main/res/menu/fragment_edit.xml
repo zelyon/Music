@@ -1,0 +1,17 @@
+<menu
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/fragment_edit_info"
+        android:title="@string/fragment_edit_menu_info"
+        android:icon="@drawable/ic_info"
+        android:visible="false"
+        app:showAsAction="ifRoom"/>
+
+    <item
+        android:id="@+id/fragment_edit_save"
+        android:title="@string/fragment_edit_menu_save"
+        android:icon="@drawable/ic_save"
+        app:showAsAction="always"/>
+</menu>

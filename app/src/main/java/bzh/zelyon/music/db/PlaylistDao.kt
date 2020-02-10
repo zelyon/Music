@@ -1,0 +1,20 @@
+package bzh.zelyon.music.db
+
+import androidx.room.*
+import bzh.zelyon.music.db.model.Playlist
+
+@Dao
+interface PlaylistDao {
+
+    @Insert
+    fun insert(playlist: Playlist)
+
+    @Delete
+    fun delete(playlist: Playlist)
+
+    @Update
+    fun update(playlist: Playlist)
+
+    @Query("SELECT * FROM playlist ORDER BY name")
+    fun getAll(): List<Playlist>
+}

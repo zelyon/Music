@@ -1,0 +1,25 @@
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:background="?attr/selectableItemBackground">
+
+    <androidx.appcompat.widget.AppCompatCheckBox
+        android:id="@+id/item_music_playlist_checkbox"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp"/>
+
+    <TextView
+        android:id="@+id/item_music_playlist_textview_name"
+        android:layout_width="0dp"
+        android:layout_weight="1"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp"
+        android:ellipsize="end"
+        android:lines="1"
+        android:textSize="16sp"
+        android:textStyle="bold"/>
+
+</LinearLayout>

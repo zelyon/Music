@@ -1,0 +1,65 @@
+<resources>
+
+    <!-- Main Activity -->
+    <string name="app_name">Music</string>
+    <string name="activity_main_menu_library">Bibliothèque</string>
+    <string name="activity_main_menu_playlists">Playlists</string>
+
+    <!-- Library Fragment -->
+    <string name="fragment_library_search_musics">Rechercher une musique</string>
+    <string name="fragment_library_no_musics">Aucune musique trouvé</string>
+    <string name="fragment_library_menu_shuffle">Lecture aléatoire</string>
+
+    <!-- Playlists Fragment -->
+    <string name="fragment_playlists_no_playlist">Aucune playlist trouvé</string>
+
+    <!-- Edit Fragment -->
+    <string name="fragment_edit_snackbar_failed">Modification impossible</string>
+    <string name="fragment_edit_artist_name">Nom</string>
+    <string name="fragment_edit_playlist_name">Nom</string>
+    <string name="fragment_edit_music_title">Titre</string>
+    <string name="fragment_edit_music_artist">Artiste</string>
+    <string name="fragment_edit_music_album">Album</string>
+    <string name="fragment_edit_music_track">Track</string>
+    <string name="fragment_edit_music_year">Année</string>
+    <string name="fragment_edit_music_genre">Genre</string>
+    <string name="fragment_edit_artwork_folder">Recherche sur le téléphone</string>
+    <string name="fragment_edit_artwork_download">Récupérer sur internet</string>
+    <string name="fragment_edit_artwork_delete">Supprimer</string>
+    <string name="fragment_edit_menu_info">Infos</string>
+    <string name="fragment_edit_menu_save">Enregister</string>
+
+    <!-- Music Playlists Fragment -->
+    <string name="fragment_musicplaylists_add">Ajouter une playlist</string>
+    <string name="fragment_musicplaylists_popup_title">Ajouter une playlist</string>
+    <string name="fragment_musicplaylists_popup_name">Nom</string>
+    <string name="fragment_musicplaylists_popup_positive">Ajouter</string>
+    <string name="fragment_musicplaylists_popup_error">Obligatoire</string>
+
+    <!-- Item -->
+    <plurals name="item_music_nb">
+        <item quantity="one">%d chanson</item>
+        <item quantity="other">%d chansons</item>
+    </plurals>
+    <string name="item_popup_delete_title">Supprimer</string>
+    <string name="item_popup_delete_message">Voulez-vous vraiment supprimer le fichier musique %s ?</string>
+    <string name="item_popup_delete_positive">Oui</string>
+    <string name="item_menu_play">Lecture</string>
+    <string name="item_menu_add">Lire à la suite</string>
+    <string name="item_menu_edit_infos">Éditer informations</string>
+    <string name="item_menu_delete">Supprimer</string>
+    <string name="item_menu_playlists">Ajouter/Supprimer d\'une playlist</string>
+
+    <!-- InputView -->
+    <string name="inputview_field_mandatory">Champ obligatoire</string>
+    <string name="inputview_field_min_lenght">Doit contenir au minimum %d charactères</string>
+    <string name="inputview_field_max_lenght">Doit contenir au maximum %d charactères</string>
+    <string name="inputview_field_min_number">Doit être superieur ou égale à %d</string>
+    <string name="inputview_field_max_number">Doit être inferieur ou égale à %d</string>
+    <string name="inputview_field_email">Email invalide</string>
+    <string name="inputview_field_phone">Numéro de téléphone invalide</string>
+    <string name="inputview_search_or_add">Rechercher/Ajouter</string>
+    <string name="inputview_search">Rechercher</string>
+    <string name="inputview_menu_valid">Valider</string>
+
+</resources>
