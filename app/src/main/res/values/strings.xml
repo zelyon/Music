@@ -34,7 +34,6 @@
     <string name="fragment_musicplaylists_popup_title">Ajouter une playlist</string>
     <string name="fragment_musicplaylists_popup_name">Nom</string>
     <string name="fragment_musicplaylists_popup_positive">Ajouter</string>
-    <string name="fragment_musicplaylists_popup_error">Obligatoire</string>
 
     <!-- Item -->
     <plurals name="item_music_nb">

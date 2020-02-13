@@ -70,7 +70,10 @@ class MusicsFragment private constructor(): AbsToolBarBottomSheetFragment() {
                             showFragment(EditMusicFragment.getInstance(music, artwork), transitionView = itemView.item_music_imageview_artwork)
                         }
                         R.id.item_delete -> MusicManager.deleteMusicFile(absActivity, music)
-                        R.id.item_playlists -> showFragment(MusicPlaylistsFragment.getInstance(music))
+                        R.id.item_playlists -> {
+                            this@MusicsFragment.dismiss()
+                            showFragment(MusicPlaylistsFragment.getInstance(music))
+                        }
                     }
                     true
                 }

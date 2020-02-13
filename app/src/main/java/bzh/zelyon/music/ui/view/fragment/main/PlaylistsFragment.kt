@@ -31,8 +31,6 @@ class PlaylistsFragment: AbsFragment(), MusicManager.Listener {
         (fragment_playlists_itemsview_playlists as ItemsView<Playlist>).apply {
             nbColumns = 2
             spaceDivider = absActivity.dpToPx(8).toInt()
-            idLayoutHeader = R.layout.item_playlist_header_footer
-            idLayoutFooter = R.layout.item_playlist_header_footer
             idLayoutItem = R.layout.item_playlist
             idLayoutEmpty = R.layout.item_playlist_empty
             isFastScroll = true

@@ -1,18 +1,16 @@
 package bzh.zelyon.music.ui.view.fragment.bottom
 
-import android.app.AlertDialog
 import android.content.DialogInterface.BUTTON_POSITIVE
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
+import androidx.appcompat.app.AlertDialog
 import bzh.zelyon.music.R
 import bzh.zelyon.music.db.DB
 import bzh.zelyon.music.db.model.Music
 import bzh.zelyon.music.db.model.Playlist
+import bzh.zelyon.music.ui.component.InputView
 import bzh.zelyon.music.ui.component.ItemsView
 import bzh.zelyon.music.ui.view.abs.fragment.AbsToolBarBottomSheetFragment
-import bzh.zelyon.music.utils.vibrate
-import kotlinx.android.synthetic.main.dialog_playlist.view.*
 import kotlinx.android.synthetic.main.fragment_musicplaylists.*
 import kotlinx.android.synthetic.main.item_musicplaylist.view.*
 
@@ -44,24 +42,22 @@ class MusicPlaylistsFragment private constructor(): AbsToolBarBottomSheetFragmen
         super.onIdClick(id)
         when (id) {
             R.id.fragment_musicplaylists_button_add -> {
-                val dialogLayout = LayoutInflater.from(context).inflate(R.layout.dialog_playlist, null, false)
+                val input = InputView(absActivity).apply {
+                    type = InputView.Type.TEXT
+                    label = getString(R.string.fragment_musicplaylists_popup_name)
+                    mandatory = true
+                }
                 AlertDialog.Builder(absActivity).apply {
                     setTitle(R.string.fragment_musicplaylists_popup_title)
-                    setView(dialogLayout)
+                    setView(input)
                     setPositiveButton(R.string.fragment_musicplaylists_popup_positive, null)
                 }.create().apply {
                     setOnShowListener {
                         getButton(BUTTON_POSITIVE).setOnClickListener {
-                            val name = dialogLayout.dialog_playlist_edittext_name.text.toString()
-                            if (name.isNotBlank()) {
-                                DB.getPlaylistDao().insert(Playlist(null, name))
+                            if (input.checkValidity()) {
+                                DB.getPlaylistDao().insert(Playlist(null, input.text.orEmpty()))
                                 dismiss()
                                 loadPlayLists()
-                            } else {
-                                dialogLayout.dialog_playlist_editlayout_name.apply {
-                                    error = getString(R.string.fragment_musicplaylists_popup_error)
-                                    vibrate()
-                                }
                             }
                         }
                     }
