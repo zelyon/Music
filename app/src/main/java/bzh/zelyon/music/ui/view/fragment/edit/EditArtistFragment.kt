@@ -10,7 +10,6 @@ import androidx.lifecycle.Observer
 import bzh.zelyon.music.R
 import bzh.zelyon.music.db.model.Artist
 import com.google.android.material.bottomsheet.BottomSheetDialog
-import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.fragment_edit_artist.*
 import kotlinx.android.synthetic.main.view_artwork.view.*
 import org.jaudiotagger.audio.AudioFileIO
@@ -64,7 +63,7 @@ class EditArtistFragment private constructor(): AbsEditFragment<Artist>() {
                     tag?.setField(artwork)
                 }
             } catch (e: Exception) {
-                Snackbar.make(absActivity.findViewById(android.R.id.content), getString(R.string.fragment_edit_snackbar_failed), Snackbar.LENGTH_LONG).show()
+                absActivity.snackBar(getString(R.string.fragment_edit_snackbar_failed))
             } finally {
                 audioFile?.commit()
             }

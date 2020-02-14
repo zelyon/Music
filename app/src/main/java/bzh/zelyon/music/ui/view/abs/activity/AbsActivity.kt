@@ -9,6 +9,7 @@ import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
 import bzh.zelyon.music.ui.view.abs.fragment.AbsBottomSheetFragment
 import bzh.zelyon.music.ui.view.abs.fragment.AbsFragment
+import com.google.android.material.snackbar.Snackbar
 
 abstract class AbsActivity: AppCompatActivity() {
 
@@ -17,7 +18,7 @@ abstract class AbsActivity: AppCompatActivity() {
     }
 
     private var intentResult:(Int, Intent) -> Unit = { _, _ -> }
-    private var permissionResult:() -> Unit = { }
+    private var permissionsResult:(Boolean) -> Unit = { }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -49,10 +50,10 @@ abstract class AbsActivity: AppCompatActivity() {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         if (requestCode == REQUEST_CODE) {
             if (grantResults.all { it == PackageManager.PERMISSION_GRANTED }) {
-                permissionResult.invoke()
-                permissionResult = {}
+                permissionsResult.invoke(true)
+                permissionsResult = {}
             } else {
-                ActivityCompat.requestPermissions(this, permissions, REQUEST_CODE)
+                permissionsResult.invoke(false)
             }
         }
     }
@@ -76,13 +77,21 @@ abstract class AbsActivity: AppCompatActivity() {
         startActivityForResult(intent, REQUEST_CODE)
     }
 
-    fun ifPermissions(vararg permissions: String, ifAllGranted: () -> Unit) {
+    fun ifPermissions(vararg permissions: String, permissionsResult:(Boolean) -> Unit) {
         if (permissions.all { ActivityCompat.checkSelfPermission(this, it) == PackageManager.PERMISSION_GRANTED }) {
-            ifAllGranted.invoke()
+            permissionsResult.invoke(true)
         } else {
-            permissionResult = ifAllGranted
+            this.permissionsResult = permissionsResult
             ActivityCompat.requestPermissions(this, permissions, REQUEST_CODE)
         }
+    }
+
+    fun snackBar(message: String, duration: Int = Snackbar.LENGTH_LONG, actionMessage: String? = null, actionResult:() -> Unit = {}) {
+        Snackbar.make(findViewById(android.R.id.content), message, duration).apply {
+            setAction(actionMessage) {
+                actionResult.invoke()
+            }
+        }.show()
     }
 
     fun showFragment(fragment: Fragment, addToBackStack: Boolean = true, transitionView: View? = null) {

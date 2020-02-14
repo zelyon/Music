@@ -9,6 +9,8 @@
     <string name="fragment_library_search_musics">Rechercher une musique</string>
     <string name="fragment_library_no_musics">Aucune musique trouvé</string>
     <string name="fragment_library_menu_shuffle">Lecture aléatoire</string>
+    <string name="fragment_library_snackbar_permission_needed">Permission néccessaire</string>
+    <string name="fragment_library_snackbar_permission_grant">Accorder</string>
 
     <!-- Playlists Fragment -->
     <string name="fragment_playlists_no_playlist">Aucune playlist trouvé</string>
@@ -31,9 +33,7 @@
 
     <!-- Music Playlists Fragment -->
     <string name="fragment_musicplaylists_add">Ajouter une playlist</string>
-    <string name="fragment_musicplaylists_popup_title">Ajouter une playlist</string>
-    <string name="fragment_musicplaylists_popup_name">Nom</string>
-    <string name="fragment_musicplaylists_popup_positive">Ajouter</string>
+    <string name="fragment_musicplaylists_name">Nom</string>
 
     <!-- Item -->
     <plurals name="item_music_nb">
@@ -60,5 +60,8 @@
     <string name="inputview_search_or_add">Rechercher/Ajouter</string>
     <string name="inputview_search">Rechercher</string>
     <string name="inputview_menu_valid">Valider</string>
+
+    <!-- Popup -->
+    <string name="popup_ok">OK</string>
 
 </resources>

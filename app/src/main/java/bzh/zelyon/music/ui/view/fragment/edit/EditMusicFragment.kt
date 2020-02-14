@@ -102,7 +102,7 @@ class EditMusicFragment private constructor(): AbsEditFragment<Music>() {
                 tag?.setField(artwork)
             }
         } catch (e: Exception) {
-            Snackbar.make(absActivity.findViewById(android.R.id.content), getString(R.string.fragment_edit_snackbar_failed), Snackbar.LENGTH_LONG).show()
+            absActivity.snackBar(getString(R.string.fragment_edit_snackbar_failed))
         } finally {
             audioFile?.commit()
             MediaScannerConnection.scanFile(absActivity, arrayOf(absModel.path), null) { _, _ -> back() }

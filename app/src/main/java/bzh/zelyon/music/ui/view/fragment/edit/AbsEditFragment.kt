@@ -67,7 +67,10 @@ abstract class AbsEditFragment<T: AbsModel>: AbsToolBarFragment() {
     override fun onIdClick(id: Int) {
         super.onIdClick(id)
         when (id) {
-            R.id.fragment_edit_info -> AlertDialog.Builder(absActivity).setMessage(infosFromLastFM).show()
+            R.id.fragment_edit_info -> AlertDialog.Builder(absActivity)
+                .setMessage(infosFromLastFM)
+                .setPositiveButton(getString(R.string.popup_ok)) { _, _ -> }
+                .show()
             R.id.fragment_edit_save -> if (inputviews.all { it.checkValidity() }) onSave()
             R.id.fragment_edit_imageview_artwork -> onClickArtwork()
         }
@@ -81,15 +84,17 @@ abstract class AbsEditFragment<T: AbsModel>: AbsToolBarFragment() {
 
     fun getImageOnDevice() {
         absActivity.ifPermissions(Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE) {
-            absActivity.startIntentWithResult(Intent(Intent.ACTION_GET_CONTENT).apply {
-                type = "image/*"
-                putExtra(Intent.EXTRA_ALLOW_MULTIPLE, false)
-            }) { _, result ->
-                result.data?.let {
-                    absActivity.getLocalFileFromGalleryUri(it, absModel.getDeclaration() + ".png")?.let { file ->
-                        fragment_edit_imageview_artwork.setImage(File(file.path), absActivity.getDrawable(absModel.getPlaceholderId()))
-                        newArtwork = ArtworkFactory.createArtworkFromFile(file)
-                        deleteCurrentArtwork = true
+            if (it) {
+                absActivity.startIntentWithResult(Intent(Intent.ACTION_GET_CONTENT).apply {
+                    type = "image/*"
+                    putExtra(Intent.EXTRA_ALLOW_MULTIPLE, false)
+                }) { _, result ->
+                    result.data?.let {
+                        absActivity.getLocalFileFromGalleryUri(it, absModel.getDeclaration() + ".png")?.let { file ->
+                            fragment_edit_imageview_artwork.setImage(File(file.path), absActivity.getDrawable(absModel.getPlaceholderId()))
+                            newArtwork = ArtworkFactory.createArtworkFromFile(file)
+                            deleteCurrentArtwork = true
+                        }
                     }
                 }
             }

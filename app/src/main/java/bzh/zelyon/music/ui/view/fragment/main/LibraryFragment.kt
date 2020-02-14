@@ -20,6 +20,7 @@ import bzh.zelyon.music.utils.MusicManager
 import bzh.zelyon.music.utils.closeKeyboard
 import bzh.zelyon.music.utils.dpToPx
 import bzh.zelyon.music.utils.setImage
+import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.fragment_library.*
 import kotlinx.android.synthetic.main.item_artist.view.*
 
@@ -91,8 +92,20 @@ class LibraryFragment: AbsToolBarFragment(), MusicManager.Listener, SearchView.O
     }
 
     private fun loadMusics() {
-        absActivity.ifPermissions(Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE) {
-            (fragment_library_itemsview_artists as ItemsView<Artist>).items = MusicManager.getMusicsBySearch(absActivity, currentSearch).toMutableList()
+        absActivity.ifPermissions(
+            Manifest.permission.READ_EXTERNAL_STORAGE,
+            Manifest.permission.WRITE_EXTERNAL_STORAGE) {
+            if (it) {
+                val musics = MusicManager.getMusicsBySearch(absActivity, currentSearch).toMutableList()
+                (fragment_library_itemsview_artists as ItemsView<Artist>).items = musics
+            } else {
+                absActivity.snackBar(
+                    getString(R.string.fragment_library_snackbar_permission_needed),
+                    Snackbar.LENGTH_INDEFINITE,
+                    getString(R.string.fragment_library_snackbar_permission_grant)) {
+                    loadMusics()
+                }
+            }
         }
     }
 

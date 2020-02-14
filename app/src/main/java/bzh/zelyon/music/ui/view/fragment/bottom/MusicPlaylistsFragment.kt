@@ -44,13 +44,12 @@ class MusicPlaylistsFragment private constructor(): AbsToolBarBottomSheetFragmen
             R.id.fragment_musicplaylists_button_add -> {
                 val input = InputView(absActivity).apply {
                     type = InputView.Type.TEXT
-                    label = getString(R.string.fragment_musicplaylists_popup_name)
+                    label = getString(R.string.fragment_musicplaylists_name)
                     mandatory = true
                 }
                 AlertDialog.Builder(absActivity).apply {
-                    setTitle(R.string.fragment_musicplaylists_popup_title)
                     setView(input)
-                    setPositiveButton(R.string.fragment_musicplaylists_popup_positive, null)
+                    setPositiveButton(R.string.popup_ok, null)
                 }.create().apply {
                     setOnShowListener {
                         getButton(BUTTON_POSITIVE).setOnClickListener {

@@ -67,7 +67,9 @@ class InputView @JvmOverloads constructor(context: Context, attrs: AttributeSet?
                 Type.PHONE -> {
                     setEndIcon(EndIcon(context.getDrawable(R.drawable.ic_call)) {
                         (context as? AbsActivity)?.ifPermissions(Manifest.permission.CALL_PHONE) {
-                            context.startActivity(Intent(Intent.ACTION_CALL, Uri.parse("tel:$text")))
+                            if (it) {
+                                context.startActivity(Intent(Intent.ACTION_CALL, Uri.parse("tel:$text")))
+                            }
                         }
                     })
                     view_input_edittext.inputType = EditorInfo.TYPE_CLASS_PHONE
