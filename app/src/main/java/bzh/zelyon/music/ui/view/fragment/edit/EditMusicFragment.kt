@@ -13,7 +13,6 @@ import bzh.zelyon.music.db.model.Music
 import bzh.zelyon.music.ui.component.InputView
 import bzh.zelyon.music.utils.MusicManager
 import com.google.android.material.bottomsheet.BottomSheetDialog
-import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.fragment_edit_music.*
 import kotlinx.android.synthetic.main.view_artwork.view.*
 import org.jaudiotagger.audio.AudioFile
@@ -102,7 +101,7 @@ class EditMusicFragment private constructor(): AbsEditFragment<Music>() {
                 tag?.setField(artwork)
             }
         } catch (e: Exception) {
-            absActivity.snackBar(getString(R.string.fragment_edit_snackbar_failed))
+            absActivity.showSnackbar(getString(R.string.fragment_edit_snackbar_failed))
         } finally {
             audioFile?.commit()
             MediaScannerConnection.scanFile(absActivity, arrayOf(absModel.path), null) { _, _ -> back() }

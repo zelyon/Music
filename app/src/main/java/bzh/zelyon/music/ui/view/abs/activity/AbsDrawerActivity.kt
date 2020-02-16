@@ -22,10 +22,10 @@ abstract class AbsDrawerActivity: AbsActivity(), NavigationView.OnNavigationItem
     }
 
     override fun onBackPressed() {
-        super.onBackPressed()
-
         if (getDrawerLayout().isDrawerOpen(GravityCompat.START)) {
             closeDrawer()
+        } else {
+            super.onBackPressed()
         }
     }
 

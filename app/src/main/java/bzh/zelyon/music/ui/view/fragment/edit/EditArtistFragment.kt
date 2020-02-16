@@ -63,7 +63,7 @@ class EditArtistFragment private constructor(): AbsEditFragment<Artist>() {
                     tag?.setField(artwork)
                 }
             } catch (e: Exception) {
-                absActivity.snackBar(getString(R.string.fragment_edit_snackbar_failed))
+                absActivity.showSnackbar(getString(R.string.fragment_edit_snackbar_failed))
             } finally {
                 audioFile?.commit()
             }

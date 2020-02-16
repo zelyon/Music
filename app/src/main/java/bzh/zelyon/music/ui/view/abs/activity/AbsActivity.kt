@@ -86,27 +86,32 @@ abstract class AbsActivity: AppCompatActivity() {
         }
     }
 
-    fun snackBar(message: String, duration: Int = Snackbar.LENGTH_LONG, actionMessage: String? = null, actionResult:() -> Unit = {}) {
-        Snackbar.make(findViewById(android.R.id.content), message, duration).apply {
+    fun showSnackbar(
+        message: String,
+        duration: Int = Snackbar.LENGTH_LONG,
+        actionMessage: String? = null,
+        actionResult:() -> Unit = {}) = Snackbar.make(findViewById(android.R.id.content), message, duration).apply {
             setAction(actionMessage) {
                 actionResult.invoke()
             }
         }.show()
-    }
+
 
     fun showFragment(fragment: Fragment, addToBackStack: Boolean = true, transitionView: View? = null) {
-        if (fragment is AbsFragment) {
-            supportFragmentManager.beginTransaction().replace(getFragmentContainerId(), fragment).apply {
-                if (addToBackStack && getCurrentFragment() != null) {
-                    addToBackStack(this::class.java.name)
-                }
-                transitionView?.let {
-                    setReorderingAllowed(true).addSharedElement(transitionView, transitionView.transitionName)
-                }
-            }.commit()
-        }
-        else if (fragment is AbsBottomSheetFragment) {
-            fragment.show(supportFragmentManager, fragment::class.java.name)
+        when (fragment) {
+            is AbsFragment -> {
+                supportFragmentManager.beginTransaction().replace(getFragmentContainerId(), fragment).apply {
+                    if (addToBackStack && getCurrentFragment() != null) {
+                        addToBackStack(fragment.javaClass.name)
+                    }
+                    transitionView?.let {
+                        setReorderingAllowed(true).addSharedElement(transitionView, transitionView.transitionName)
+                    }
+                }.commit()
+            }
+            is AbsBottomSheetFragment -> {
+                fragment.show(supportFragmentManager, fragment.javaClass.name)
+            }
         }
     }
 

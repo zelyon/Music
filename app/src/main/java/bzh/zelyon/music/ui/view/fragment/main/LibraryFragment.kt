@@ -58,10 +58,7 @@ class LibraryFragment: AbsToolBarFragment(), MusicManager.Listener, SearchView.O
                 }
             })
         }
-    }
 
-    override fun onResume() {
-        super.onResume()
         loadMusics()
     }
 
@@ -99,7 +96,7 @@ class LibraryFragment: AbsToolBarFragment(), MusicManager.Listener, SearchView.O
                 val musics = MusicManager.getMusicsBySearch(absActivity, currentSearch).toMutableList()
                 (fragment_library_itemsview_artists as ItemsView<Artist>).items = musics
             } else {
-                absActivity.snackBar(
+                absActivity.showSnackbar(
                     getString(R.string.fragment_library_snackbar_permission_needed),
                     Snackbar.LENGTH_INDEFINITE,
                     getString(R.string.fragment_library_snackbar_permission_grant)) {
