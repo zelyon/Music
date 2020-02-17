@@ -66,7 +66,11 @@ class LibraryFragment: AbsToolBarFragment(), MusicManager.Listener, SearchView.O
 
     override fun onIdClick(id: Int) {
         when (id) {
-            R.id.fragment_library_shuffle -> MusicManager.playMusics(MusicManager.getMusics(absActivity).shuffled())
+            R.id.fragment_library_shuffle -> {
+                val musics = MusicManager.getMusics(absActivity).toMutableList()
+                musics.shuffle()
+                MusicManager.playMusics(musics)
+            }
         }
     }
 

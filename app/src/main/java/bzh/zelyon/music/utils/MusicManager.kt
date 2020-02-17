@@ -188,6 +188,11 @@ object MusicManager {
         playMusic()
     }
 
+    fun shuffle() {
+        musics.shuffle()
+        playMusic()
+    }
+
     fun updateMusicIndex() {
         musicPosition = if (musics.contains(currentMusic)) musics.indexOf(currentMusic) else musicPosition
     }

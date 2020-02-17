@@ -47,7 +47,7 @@
     <string name="item_menu_add">Lire à la suite</string>
     <string name="item_menu_edit_infos">Éditer informations</string>
     <string name="item_menu_delete">Supprimer</string>
-    <string name="item_menu_playlists">Ajouter/Supprimer d\'une playlist</string>
+    <string name="item_menu_playlists">Playlist : ajouter / supprimer</string>
 
     <!-- InputView -->
     <string name="inputview_field_mandatory">Champ obligatoire</string>

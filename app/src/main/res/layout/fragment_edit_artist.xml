@@ -10,7 +10,6 @@
         android:layout_height="wrap_content"
         app:label="@string/fragment_edit_artist_name"
         app:mandatory="true"
-        app:type="text"
-        app:max_length="20"/>
+        app:type="text"/>
 
 </LinearLayout>

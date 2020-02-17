@@ -23,7 +23,6 @@ import kotlin.concurrent.fixedRateTimer
 
 class PlayingFragment: AbsToolBarFragment(), SeekBar.OnSeekBarChangeListener, MusicManager.Listener {
 
-    private var musics = mutableListOf<Music>()
     private var currentMusicId: Int? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -34,8 +33,6 @@ class PlayingFragment: AbsToolBarFragment(), SeekBar.OnSeekBarChangeListener, Mu
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        musics = MusicManager.musics
-
         fragment_playing_seekbar_current.setOnSeekBarChangeListener(this)
         (fragment_playing_itemsview_musics as ItemsView<Music>).apply {
             idLayoutItem = R.layout.item_music
@@ -45,7 +42,7 @@ class PlayingFragment: AbsToolBarFragment(), SeekBar.OnSeekBarChangeListener, Mu
             swipeEnable = true
             thumbMarginBottom = absActivity.dpToPx(140)
             helper = MusicHelper()
-            items = musics
+            items = MusicManager.musics
         }
 
         fixedRateTimer(period = 400) {
@@ -53,7 +50,7 @@ class PlayingFragment: AbsToolBarFragment(), SeekBar.OnSeekBarChangeListener, Mu
                 MusicManager.currentMusic?.let { currentMusic ->
                     if(currentMusicId != currentMusic.id) {
                         currentMusicId = currentMusic.id
-                        fragment_playing_itemsview_musics.smoothScrollToPosition(musics.indexOf(currentMusic) + 1)
+                        fragment_playing_itemsview_musics.smoothScrollToPosition(MusicManager.musics.indexOf(currentMusic) + 10)
                         fragment_playing_itemsview_musics.notifyDataSetChanged()
                         toolbar?.title = MusicManager.currentMusic?.getInfos(
                             title = true,
@@ -90,6 +87,10 @@ class PlayingFragment: AbsToolBarFragment(), SeekBar.OnSeekBarChangeListener, Mu
         when (id) {
             R.id.fragment_playing_imagebutton_previous -> MusicManager.previous()
             R.id.fragment_playing_imagebutton_next -> MusicManager.next()
+            R.id.fragment_playing_imagebutton_shuffle -> {
+                MusicManager.shuffle()
+                fragment_playing_itemsview_musics.notifyDataSetChanged()
+            }
         }
     }
 
@@ -123,8 +124,7 @@ class PlayingFragment: AbsToolBarFragment(), SeekBar.OnSeekBarChangeListener, Mu
             } else {
                 MusicManager.updateMusicIndex()
             }
-            musics = MusicManager.musics
-            (fragment_playing_itemsview_musics as ItemsView<Music>).items = musics
+            (fragment_playing_itemsview_musics as ItemsView<Music>).items = MusicManager.musics
         }
     }
 
@@ -171,13 +171,11 @@ class PlayingFragment: AbsToolBarFragment(), SeekBar.OnSeekBarChangeListener, Mu
         }
         override fun getDragView(itemView: View, items: List<Music>, position: Int): View? = itemView.item_music_imagebutton
         override fun onItemsMove(items: List<Music>) {
-            musics = items.toMutableList()
-            MusicManager.musics = musics
+            MusicManager.musics = items.toMutableList()
             MusicManager.updateMusicIndex()
         }
         override fun onItemSwipe(itemView: View, items: List<Music>, position: Int) {
-            musics = items.toMutableList()
-            MusicManager.musics = musics
+            MusicManager.musics = items.toMutableList()
             if (MusicManager.musicPosition == position) {
                 MusicManager.previous()
             } else {
