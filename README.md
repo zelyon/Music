@@ -1,4 +1,9 @@
 # Music
+
+Music Player
+
+
+
  
 Google Material Design
 
@@ -14,6 +19,7 @@ Life Data - View Model
 
 Content Resolver
 
-[![Foo](https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png)](https://play.google.com/store/apps/details?id=bzh.zelyon.music)
-
+[<img src="https://play.google.com/intl/en_us/badges/images/generic/en-play-badge.png"
+     alt="Get it on Google Play"
+     height="80">](https://play.google.com/store/apps/details?id=bzh.zelyon.music)
 
