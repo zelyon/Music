@@ -26,7 +26,7 @@ class MusicsFragment private constructor(): AbsToolBarBottomSheetFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        (fragment_musics_itemsview_musics as ItemsView<Music>).apply {
+        fragment_musics_itemsview_musics.apply {
             idLayoutItem = R.layout.item_music
             helper = MusicHelper()
             items = musics.toMutableList()
@@ -39,45 +39,49 @@ class MusicsFragment private constructor(): AbsToolBarBottomSheetFragment() {
 
     override fun getToolBarTitle() = arguments?.getString(ARG_TITLE).toString()
 
-    inner class MusicHelper: ItemsView.Helper<Music>() {
-        override fun onBindItem(itemView: View, items: List<Music>, position: Int) {
+    inner class MusicHelper: ItemsView.Helper() {
+        override fun onBindItem(itemView: View, items: MutableList<*>, position: Int) {
             val music = items[position]
-            itemView.item_music_imageview_artwork.setImage(music, absActivity.getDrawable(R.drawable.ic_music))
-            itemView.item_music_imageview_artwork.transitionName = music.getTransitionName()
-            itemView.item_music_textview_title.text = music.title
-            itemView.item_music_textview_infos.text = music.getInfos(
-                title = false,
-                artist = false,
-                album = true,
-                duration = true
-            )
-            itemView.item_music_imagebutton.setImageResource(R.drawable.ic_more)
-            itemView.item_music_imagebutton.setOnClickListener { onItemLongClick(itemView, items, position) }
+            if (music is Music) {
+                itemView.item_music_imageview_artwork.setImage(music, absActivity.getDrawable(R.drawable.ic_music))
+                itemView.item_music_imageview_artwork.transitionName = music.getTransitionName()
+                itemView.item_music_textview_title.text = music.title
+                itemView.item_music_textview_infos.text = music.getInfos(
+                    title = false,
+                    artist = false,
+                    album = true,
+                    duration = true
+                )
+                itemView.item_music_imagebutton.setImageResource(R.drawable.ic_more)
+                itemView.item_music_imagebutton.setOnClickListener { onItemLongClick(itemView, items, position) }
+            }
         }
-        override fun onItemClick(itemView: View, items: List<Music>, position: Int) = MusicManager.playMusics(listOf(items[position]))
-        override fun onItemLongClick(itemView: View, items: List<Music>, position: Int) {
+        override fun onItemClick(itemView: View, items: MutableList<*>, position: Int) = MusicManager.playMusics(listOf(items[position] as Music))
+        override fun onItemLongClick(itemView: View, items: MutableList<*>, position: Int) {
             val music = items[position]
-            val artwork = (itemView.item_music_imageview_artwork.drawable as? BitmapDrawable)?.bitmap
-            PopupMenu(absActivity, itemView.item_music_imagebutton).apply {
-                menuInflater.inflate(R.menu.item, menu)
-                menu.findItem(R.id.item_add).isVisible = MusicManager.isPlayingOrPause
-                setOnMenuItemClickListener {
-                    when (it.itemId) {
-                        R.id.item_play -> MusicManager.playMusics(listOf(music))
-                        R.id.item_add -> MusicManager.addMusics(listOf(music))
-                        R.id.item_edit_infos -> {
-                            this@MusicsFragment.dismiss()
-                            showFragment(EditMusicFragment.getInstance(music, artwork), transitionView = itemView.item_music_imageview_artwork)
+            if (music is Music) {
+                val artwork = (itemView.item_music_imageview_artwork.drawable as? BitmapDrawable)?.bitmap
+                PopupMenu(absActivity, itemView.item_music_imagebutton).apply {
+                    menuInflater.inflate(R.menu.item, menu)
+                    menu.findItem(R.id.item_add).isVisible = MusicManager.isPlayingOrPause
+                    setOnMenuItemClickListener {
+                        when (it.itemId) {
+                            R.id.item_play -> MusicManager.playMusics(listOf(music))
+                            R.id.item_add -> MusicManager.addMusics(listOf(music))
+                            R.id.item_edit_infos -> {
+                                this@MusicsFragment.dismiss()
+                                showFragment(EditMusicFragment.getInstance(music, artwork), transitionView = itemView.item_music_imageview_artwork)
+                            }
+                            R.id.item_delete -> MusicManager.deleteMusicFile(absActivity, music)
+                            R.id.item_playlists -> {
+                                this@MusicsFragment.dismiss()
+                                showFragment(MusicPlaylistsFragment.getInstance(music))
+                            }
                         }
-                        R.id.item_delete -> MusicManager.deleteMusicFile(absActivity, music)
-                        R.id.item_playlists -> {
-                            this@MusicsFragment.dismiss()
-                            showFragment(MusicPlaylistsFragment.getInstance(music))
-                        }
+                        true
                     }
-                    true
-                }
-            }.show()
+                }.show()
+            }
         }
     }
 

@@ -34,7 +34,7 @@ class PlayingFragment: AbsToolBarFragment(), SeekBar.OnSeekBarChangeListener, Mu
         super.onViewCreated(view, savedInstanceState)
 
         fragment_playing_seekbar_current.setOnSeekBarChangeListener(this)
-        (fragment_playing_itemsview_musics as ItemsView<Music>).apply {
+        fragment_playing_itemsview_musics.apply {
             idLayoutItem = R.layout.item_music
             idLayoutFooter = R.layout.item_music_footer
             isFastScroll = true
@@ -50,20 +50,9 @@ class PlayingFragment: AbsToolBarFragment(), SeekBar.OnSeekBarChangeListener, Mu
                 MusicManager.currentMusic?.let { currentMusic ->
                     if(currentMusicId != currentMusic.id) {
                         currentMusicId = currentMusic.id
-                        fragment_playing_itemsview_musics.smoothScrollToPosition(MusicManager.musics.indexOf(currentMusic) + 10)
+                        fragment_playing_itemsview_musics.smoothScrollToPosition(MusicManager.musics.indexOf(currentMusic) + 1)
                         fragment_playing_itemsview_musics.notifyDataSetChanged()
-                        toolbar?.title = MusicManager.currentMusic?.getInfos(
-                            title = true,
-                            artist = false,
-                            album = false,
-                            duration = false
-                        )
-                        toolbar?.subtitle = MusicManager.currentMusic?.getInfos(
-                            title = false,
-                            artist = true,
-                            album = true,
-                            duration = false
-                        )
+                        updateToolBar()
                     }
                     fragment_playing_textview_duration.text = MusicManager.duration.millisecondstoDuration()
                     fragment_playing_textview_current.text = MusicManager.currentPosition.millisecondstoDuration()
@@ -71,9 +60,7 @@ class PlayingFragment: AbsToolBarFragment(), SeekBar.OnSeekBarChangeListener, Mu
                     fragment_playing_seekbar_current.progress = MusicManager.currentPosition
                     fragment_playing_imagebutton_previous.isInvisible = !MusicManager.previousExist
                     fragment_playing_imagebutton_next.isInvisible = !MusicManager.nextExist
-                }
-
-                if (!MusicManager.isPlayingOrPause) {
+                } ?: run {
                     back()
                 }
             }
@@ -124,58 +111,64 @@ class PlayingFragment: AbsToolBarFragment(), SeekBar.OnSeekBarChangeListener, Mu
             } else {
                 MusicManager.updateMusicIndex()
             }
-            (fragment_playing_itemsview_musics as ItemsView<Music>).items = MusicManager.musics
+            fragment_playing_itemsview_musics.items = MusicManager.musics
         }
     }
 
-    inner class MusicHelper: ItemsView.Helper<Music>() {
-        override fun onBindItem(itemView: View, items: List<Music>, position: Int) {
+    inner class MusicHelper: ItemsView.Helper() {
+        override fun onBindItem(itemView: View, items: MutableList<*>, position: Int) {
             val music = items[position]
-            val alpha = if (currentMusicId == music.id) 1f else .5f
-            itemView.item_music_imageview_artwork.alpha = alpha
-            itemView.item_music_textview_title.alpha = alpha
-            itemView.item_music_textview_infos.alpha = alpha
-            itemView.item_music_imageview_artwork.setImage(music, absActivity.getDrawable(R.drawable.ic_music))
-            itemView.item_music_imageview_artwork.transitionName = music.id.toString()
-            itemView.item_music_textview_title.text = music.title
-            itemView.item_music_textview_title.typeface = if (currentMusicId == music.id) Typeface.DEFAULT_BOLD else Typeface.DEFAULT
-            itemView.item_music_textview_infos.text = music.getInfos(
-                title = false,
-                artist = true,
-                album = true,
-                duration = true
-            )
-            itemView.item_music_textview_infos.typeface = if (currentMusicId == music.id) Typeface.DEFAULT_BOLD else Typeface.DEFAULT
-            itemView.item_music_imagebutton.setImageResource(R.drawable.ic_drag)
+            if (music is Music) {
+                val alpha = if (currentMusicId == music.id) 1f else .5f
+                itemView.item_music_imageview_artwork.alpha = alpha
+                itemView.item_music_textview_title.alpha = alpha
+                itemView.item_music_textview_infos.alpha = alpha
+                itemView.item_music_imageview_artwork.setImage(music, absActivity.getDrawable(R.drawable.ic_music))
+                itemView.item_music_imageview_artwork.transitionName = music.id.toString()
+                itemView.item_music_textview_title.text = music.title
+                itemView.item_music_textview_title.typeface = if (currentMusicId == music.id) Typeface.DEFAULT_BOLD else Typeface.DEFAULT
+                itemView.item_music_textview_infos.text = music.getInfos(
+                    title = false,
+                    artist = true,
+                    album = true,
+                    duration = true
+                )
+                itemView.item_music_textview_infos.typeface = if (currentMusicId == music.id) Typeface.DEFAULT_BOLD else Typeface.DEFAULT
+                itemView.item_music_imagebutton.setImageResource(R.drawable.ic_drag)
+            }
         }
-        override fun onItemClick(itemView: View, items: List<Music>, position: Int) {
+        override fun onItemClick(itemView: View, items: MutableList<*>, position: Int) {
             val music = items[position]
-            MusicManager.jumpTo(music)
+            if (music is Music) {
+                MusicManager.jumpTo(music)
+            }
         }
-        override fun onItemLongClick(itemView: View, items: List<Music>, position: Int) {
+        override fun onItemLongClick(itemView: View, items: MutableList<*>, position: Int) {
             val music = items[position]
-            val artwork = (itemView.item_music_imageview_artwork.drawable as? BitmapDrawable)?.bitmap
-            PopupMenu(absActivity, itemView).apply {
-                menuInflater.inflate(R.menu.item, menu)
-                menu.findItem(R.id.item_play).isVisible = false
-                menu.findItem(R.id.item_add).isVisible = false
-                setOnMenuItemClickListener {
-                    when (it.itemId) {
-                        R.id.item_edit_infos -> showFragment(EditMusicFragment.getInstance(music, artwork), transitionView = itemView.item_music_imageview_artwork)
-                        R.id.item_delete -> MusicManager.deleteMusicFile(absActivity, music)
-                        R.id.item_playlists -> showFragment(MusicPlaylistsFragment.getInstance(music))
+            if (music is Music) {
+                val artwork = (itemView.item_music_imageview_artwork.drawable as? BitmapDrawable)?.bitmap
+                PopupMenu(absActivity, itemView).apply {
+                    menuInflater.inflate(R.menu.item, menu)
+                    menu.findItem(R.id.item_play).isVisible = false
+                    menu.findItem(R.id.item_add).isVisible = false
+                    setOnMenuItemClickListener {
+                        when (it.itemId) {
+                            R.id.item_edit_infos -> showFragment(EditMusicFragment.getInstance(music, artwork), transitionView = itemView.item_music_imageview_artwork)
+                            R.id.item_delete -> MusicManager.deleteMusicFile(absActivity, music)
+                            R.id.item_playlists -> showFragment(MusicPlaylistsFragment.getInstance(music))
+                        }
+                        true
                     }
-                    true
-                }
-            }.show()
+                }.show()
+            }
         }
-        override fun getDragView(itemView: View, items: List<Music>, position: Int): View? = itemView.item_music_imagebutton
-        override fun onItemsMove(items: List<Music>) {
-            MusicManager.musics = items.toMutableList()
+        override fun getDragView(itemView: View, items: MutableList<*>, position: Int): View? = itemView.item_music_imagebutton
+        override fun onItemsMove(items: MutableList<*>) {
+            MusicManager.musics = items.map { it as Music }.toMutableList()
             MusicManager.updateMusicIndex()
         }
-        override fun onItemSwipe(itemView: View, items: List<Music>, position: Int) {
-            MusicManager.musics = items.toMutableList()
+        override fun onItemSwipe(itemView: View, items: MutableList<*>, position: Int) {
+            MusicManager.musics = items.map { it as Music }.toMutableList()
             if (MusicManager.musicPosition == position) {
                 MusicManager.previous()
             } else {

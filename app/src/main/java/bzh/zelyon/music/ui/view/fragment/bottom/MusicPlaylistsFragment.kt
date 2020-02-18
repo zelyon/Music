@@ -26,7 +26,7 @@ class MusicPlaylistsFragment private constructor(): AbsToolBarBottomSheetFragmen
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        (fragment_musicplaylists_itemsview_playlists as ItemsView<Playlist>).apply {
+        fragment_musicplaylists_itemsview_playlists.apply {
             idLayoutItem = R.layout.item_musicplaylist
             idLayoutEmpty = R.layout.item_playlist_empty
             helper = PlaylistHelper()
@@ -66,24 +66,26 @@ class MusicPlaylistsFragment private constructor(): AbsToolBarBottomSheetFragmen
     }
 
     private fun loadPlayLists() {
-        (fragment_musicplaylists_itemsview_playlists as ItemsView<Playlist>).items = DB.getPlaylistDao().getAll().toMutableList()
+        fragment_musicplaylists_itemsview_playlists.items = DB.getPlaylistDao().getAll().toMutableList()
     }
 
-    inner class PlaylistHelper: ItemsView.Helper<Playlist>() {
-        override fun onBindItem(itemView: View, items: List<Playlist>, position: Int) {
+    inner class PlaylistHelper: ItemsView.Helper() {
+        override fun onBindItem(itemView: View, items: MutableList<*>, position: Int) {
             val playlist = items[position]
-            itemView.item_music_playlist_textview_name.text = playlist.name
-            itemView.item_music_playlist_checkbox.isChecked = playlist.musics.any { it.id == music.id }
-            itemView.item_music_playlist_checkbox.setOnCheckedChangeListener { _, isChecked ->
-                if (isChecked) {
-                    playlist.musics.add(music)
-                } else {
-                    playlist.musics.remove(music)
+            if (playlist is Playlist) {
+                itemView.item_music_playlist_textview_name.text = playlist.name
+                itemView.item_music_playlist_checkbox.isChecked = playlist.musics.any { it.id == music.id }
+                itemView.item_music_playlist_checkbox.setOnCheckedChangeListener { _, isChecked ->
+                    if (isChecked) {
+                        playlist.musics.add(music)
+                    } else {
+                        playlist.musics.remove(music)
+                    }
+                    DB.getPlaylistDao().update(playlist)
                 }
-                DB.getPlaylistDao().update(playlist)
             }
         }
-        override fun onItemClick(itemView: View, items: List<Playlist>, position: Int) {
+        override fun onItemClick(itemView: View, items: MutableList<*>, position: Int) {
             itemView.item_music_playlist_checkbox.isChecked = !itemView.item_music_playlist_checkbox.isChecked
         }
     }

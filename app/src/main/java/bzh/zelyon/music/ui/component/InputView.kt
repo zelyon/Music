@@ -200,7 +200,7 @@ class InputView @JvmOverloads constructor(context: Context, attrs: AttributeSet?
             field = value
             text = value.joinToString(separator = ", ") { it.label }
         }
-    val selectedChoice: Choice? get() = selectedChoices.firstOrNull()
+    val selectedChoice get() = selectedChoices.firstOrNull()
     var choicesPopup: Dialog? = null
 
     init {
@@ -282,33 +282,37 @@ class InputView @JvmOverloads constructor(context: Context, attrs: AttributeSet?
         choicesPopup?.dismiss()
         choicesPopup = BottomSheetDialog(context).apply {
             val finalChoices = choices
-            val itemsView = ItemsView<Choice>(context).apply {
+            val itemsView = ItemsView(context).apply {
                 idLayoutItem = R.layout.item_input_list
-                helper = object : ItemsView.Helper<Choice>() {
-                    override fun onBindItem(itemView: View, items: List<Choice>, position: Int) {
-                        val item = items[position]
-                        itemView.item_input_list_textview.text = item.label
-                        item.icon?.let { icon ->
-                            itemView.item_input_list_imageview.setImageDrawable(icon)
-                        }
-                        itemView.item_input_list_checkbox.isVisible = multi
-                    }
-                    override fun onItemClick(itemView: View, itemList: List<Choice>, position: Int) {
-                        val item = itemList[position]
-                        if (item.children.isNullOrEmpty()) {
-                            if (multi) {
-                                if (selectedChoices.contains(item)) {
-                                    selectedChoices.remove(item)
-                                } else {
-                                    selectedChoices.add(item)
-                                }
-                            } else {
-                                selectedChoices = mutableListOf(item)
-                                dismiss()
+                helper = object : ItemsView.Helper() {
+                    override fun onBindItem(itemView: View, items: MutableList<*>, position: Int) {
+                        val choice = items[position]
+                        if (choice is Choice) {
+                            itemView.item_input_list_textview.text = choice.label
+                            choice.icon?.let { icon ->
+                                itemView.item_input_list_imageview.setImageDrawable(icon)
                             }
-                            text = selectedChoices.joinToString(separator = ", ") { it.label }
-                        } else {
-                            items = item.children
+                            itemView.item_input_list_checkbox.isVisible = multi
+                        }
+                    }
+                    override fun onItemClick(itemView: View, itemList: MutableList<*>, position: Int) {
+                        val choice = items[position]
+                        if (choice is Choice) {
+                            if (choice.children.isNullOrEmpty()) {
+                                if (multi) {
+                                    if (selectedChoices.contains(choice)) {
+                                        selectedChoices.remove(choice)
+                                    } else {
+                                        selectedChoices.add(choice)
+                                    }
+                                } else {
+                                    selectedChoices = mutableListOf(choice)
+                                    dismiss()
+                                }
+                                text = selectedChoices.joinToString(separator = ", ") { it.label }
+                            } else {
+                                items = choice.children
+                            }
                         }
                     }
                 }

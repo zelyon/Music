@@ -20,16 +20,16 @@ object MusicManager {
 
     private val mediaPlayer = MediaPlayer()
     private var lastCurrentPosition = 0
-    val isPlaying: Boolean get() = mediaPlayer.isPlaying
-    val currentPosition: Int get() = mediaPlayer.currentPosition
-    val duration: Int get() = mediaPlayer.duration
-    val previousExist: Boolean get() = musicPosition > 0
-    val nextExist: Boolean get() = musicPosition < musics.size - 1
+    val isPlaying get() = mediaPlayer.isPlaying
+    val currentPosition get() = mediaPlayer.currentPosition
+    val duration get() = mediaPlayer.duration
+    val previousExist get() = musicPosition > 0
+    val nextExist get() = musicPosition < musics.size - 1
     val listeners = mutableListOf<Listener>()
     var musicPosition = 0
     var musics = mutableListOf<Music>()
     var currentMusic: Music? = null
-    var isPlayingOrPause = false
+    val isPlayingOrPause get() = currentMusic != null
 
     fun getMusics(context: Context, query: String = "1 = 1", vararg args: String): List<Music> {
         val musics = mutableListOf<Music>()
@@ -131,7 +131,6 @@ object MusicManager {
         if (musicPosition in musics.indices) {
             val music = musics[musicPosition]
             if (File(music.path).exists()) {
-                isPlayingOrPause = true
                 currentMusic = music
                 mediaPlayer.reset()
                 mediaPlayer.setDataSource(music.path)
@@ -161,7 +160,6 @@ object MusicManager {
     }
 
     fun stop() {
-        isPlayingOrPause = false
         musics.clear()
         musicPosition = 0
         currentMusic = null

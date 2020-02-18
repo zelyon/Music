@@ -23,9 +23,7 @@ abstract class AbsToolBarFragment: AbsFragment() {
         toolbar = view.findViewById(getIdToolbar())
         toolbar?.let {
             absActivity.setSupportActionBar(it)
-            absActivity.supportActionBar?.title = getToolBarTitle()
-            absActivity.supportActionBar?.subtitle = getToolBarSubTitle()
-            absActivity.supportActionBar?.setDisplayHomeAsUpEnabled(showBack())
+            updateToolBar()
         }
     }
 
@@ -49,6 +47,12 @@ abstract class AbsToolBarFragment: AbsFragment() {
     }
 
     abstract fun getIdToolbar(): Int
+
+    fun updateToolBar() {
+        absActivity.supportActionBar?.title = getToolBarTitle()
+        absActivity.supportActionBar?.subtitle = getToolBarSubTitle()
+        absActivity.supportActionBar?.setDisplayHomeAsUpEnabled(showBack())
+    }
 
     open fun getToolBarTitle() = ""
 

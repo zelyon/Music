@@ -24,9 +24,9 @@ import kotlin.math.max
 import kotlin.math.pow
 import kotlin.math.round
 
-class ItemsView<T> @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0): RecyclerView(context, attrs, defStyleAttr) {
+class ItemsView @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0): RecyclerView(context, attrs, defStyleAttr) {
 
-    var items = mutableListOf<T>()
+    var items: MutableList<*> = mutableListOf<Any>()
         set(value) {
             field = value
             notifyDataSetChanged()
@@ -70,7 +70,7 @@ class ItemsView<T> @JvmOverloads constructor(context: Context, attrs: AttributeS
             notifyDataSetChanged()
         }
 
-    var helper: Helper<T>? = null
+    var helper: Helper? = null
         set(value) {
             field = value
             notifyDataSetChanged()
@@ -138,14 +138,14 @@ class ItemsView<T> @JvmOverloads constructor(context: Context, attrs: AttributeS
 
     private var thumbHeight = 0F
     private var thumbTop = 0F
-    private val thumbBottom: Float get() = thumbTop + thumbHeight
-    private val thumbLeft: Float get() = right - thumbMarginRight - thumbWidth
-    private val thumbRight: Float get() = thumbLeft + thumbWidth
-    private val thumbCenterY: Float get() = thumbTop + thumbHeight/2
-    private val thumbMinY: Float get() = top + thumbMarginTop
-    private val thumbMaxY: Float get() = bottom - thumbMarginBottom
-    private val thumbScrollingHeight: Float get() = height - thumbMarginTop - thumbMarginBottom
-    private val thumbMoveHeight: Float get() = computeVerticalScrollRange() - thumbMarginTop - thumbMarginBottom
+    private val thumbBottom get() = thumbTop + thumbHeight
+    private val thumbLeft get() = right - thumbMarginRight - thumbWidth
+    private val thumbRight get() = thumbLeft + thumbWidth
+    private val thumbCenterY get() = thumbTop + thumbHeight/2
+    private val thumbMinY get() = top + thumbMarginTop
+    private val thumbMaxY get() = bottom - thumbMarginBottom
+    private val thumbScrollingHeight get() = height - thumbMarginTop - thumbMarginBottom
+    private val thumbMoveHeight get() = computeVerticalScrollRange() - thumbMarginTop - thumbMarginBottom
     private var thumbNeedShow = false
     private var thumbDragging = false
 
@@ -359,23 +359,23 @@ class ItemsView<T> @JvmOverloads constructor(context: Context, attrs: AttributeS
         adapter?.notifyDataSetChanged()
     }
 
-    open class Helper<T> {
+    open class Helper {
         open fun onScroll(goUp: Boolean) {}
 
         open fun onBindHeader(headerView: View) {}
         open fun onBindFooter(footerView: View) {}
         open fun onBindEmpty(emptyView: View) {}
 
-        open fun onBindItem(itemView: View, items: List<T>, position: Int) {}
-        open fun onItemClick(itemView: View, items: List<T>, position: Int) {}
-        open fun onItemLongClick(itemView: View, items: List<T>, position: Int) {}
+        open fun onBindItem(itemView: View, items: MutableList<*>, position: Int) {}
+        open fun onItemClick(itemView: View, items: MutableList<*>, position: Int) {}
+        open fun onItemLongClick(itemView: View, items: MutableList<*>, position: Int) {}
 
-        open fun getIndexScroll(items: List<T>, position: Int): String? = null
+        open fun getIndexScroll(items: MutableList<*>, position: Int): String? = null
 
-        open fun getDragView(itemView: View, items: List<T>, position: Int): View? = null
-        open fun onItemsMove(items: List<T>) {}
-        open fun onItemStartDrag(itemView: View, items: List<T>, position: Int) {}
-        open fun onItemEndDrag(itemView: View, items: List<T>, position: Int) {}
-        open fun onItemSwipe(itemView: View, items: List<T>, position: Int) {}
+        open fun getDragView(itemView: View, items: MutableList<*>, position: Int): View? = null
+        open fun onItemsMove(items: MutableList<*>) {}
+        open fun onItemStartDrag(itemView: View, items: MutableList<*>, position: Int) {}
+        open fun onItemEndDrag(itemView: View, items: MutableList<*>, position: Int) {}
+        open fun onItemSwipe(itemView: View, items: MutableList<*>, position: Int) {}
     }
 }

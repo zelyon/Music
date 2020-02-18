@@ -28,7 +28,7 @@ class PlaylistsFragment: AbsFragment(), MusicManager.Listener {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        (fragment_playlists_itemsview_playlists as ItemsView<Playlist>).apply {
+        fragment_playlists_itemsview_playlists.apply {
             nbColumns = 2
             spaceDivider = absActivity.dpToPx(8).toInt()
             idLayoutItem = R.layout.item_playlist
@@ -43,44 +43,50 @@ class PlaylistsFragment: AbsFragment(), MusicManager.Listener {
     override fun getLayoutId() = R.layout.fragment_playlists
 
     private fun loadPlayLists() {
-        (fragment_playlists_itemsview_playlists as ItemsView<Playlist>).items = DB.getPlaylistDao().getAll().toMutableList()
+        fragment_playlists_itemsview_playlists.items = DB.getPlaylistDao().getAll().toMutableList()
     }
 
-    inner class PlaylistHelper: ItemsView.Helper<Playlist>() {
-        override fun onBindItem(itemView: View, items: List<Playlist>, position: Int) {
+    inner class PlaylistHelper: ItemsView.Helper() {
+        override fun onBindItem(itemView: View, items: MutableList<*>, position: Int) {
             val playlist = items[position]
-            itemView.item_playlist_imageview_artwork.setImage(playlist, absActivity.getDrawable(R.drawable.ic_playlist))
-            itemView.item_playlist_imageview_artwork.transitionName = playlist.getTransitionName()
-            itemView.item_playlist_textview_name.text = playlist.name
-            itemView.item_playlist_textview_nbmusic.text = resources.getQuantityString(R.plurals.item_music_nb, playlist.musics.size, playlist.musics.size)
-            itemView.item_playlist_button_more.setOnClickListener { onItemLongClick(itemView, items, position) }
-        }
-        override fun onItemClick(itemView: View, items: List<Playlist>, position: Int) {
-            val playlist = items[position]
-            if (playlist.musics.isNotEmpty()) {
-                showFragment(MusicsFragment.getInstance(playlist.name, playlist.musics))
+            if (playlist is Playlist) {
+                itemView.item_playlist_imageview_artwork.setImage(playlist, absActivity.getDrawable(R.drawable.ic_playlist))
+                itemView.item_playlist_imageview_artwork.transitionName = playlist.getTransitionName()
+                itemView.item_playlist_textview_name.text = playlist.name
+                itemView.item_playlist_textview_nbmusic.text = resources.getQuantityString(R.plurals.item_music_nb, playlist.musics.size, playlist.musics.size)
+                itemView.item_playlist_button_more.setOnClickListener { onItemLongClick(itemView, items, position) }
             }
         }
-        override fun onItemLongClick(itemView: View, items: List<Playlist>, position: Int) {
+        override fun onItemClick(itemView: View, items: MutableList<*>, position: Int) {
             val playlist = items[position]
-            val artwork = (itemView.item_playlist_imageview_artwork.drawable as? BitmapDrawable)?.bitmap
-            PopupMenu(absActivity, itemView.item_playlist_button_more).apply {
-                menuInflater.inflate(R.menu.item, menu)
-                menu.findItem(R.id.item_add).isVisible = MusicManager.isPlayingOrPause
-                menu.findItem(R.id.item_playlists).isVisible = false
-                setOnMenuItemClickListener {
-                    when (it.itemId) {
-                        R.id.item_play -> MusicManager.playMusics(playlist.musics)
-                        R.id.item_add -> MusicManager.addMusics(playlist.musics)
-                        R.id.item_edit_infos -> showFragment(EditPlaylistFragment.getInstance(playlist, artwork), transitionView = itemView.item_playlist_imageview_artwork)
-                        R.id.item_delete -> {
-                            DB.getPlaylistDao().delete(playlist)
-                            loadPlayLists()
-                        }
-                    }
-                    return@setOnMenuItemClickListener true
+            if (playlist is Playlist) {
+                if (playlist.musics.isNotEmpty()) {
+                    showFragment(MusicsFragment.getInstance(playlist.name, playlist.musics))
                 }
-            }.show()
+            }
+        }
+        override fun onItemLongClick(itemView: View, items: MutableList<*>, position: Int) {
+            val playlist = items[position]
+            if (playlist is Playlist) {
+                val artwork = (itemView.item_playlist_imageview_artwork.drawable as? BitmapDrawable)?.bitmap
+                PopupMenu(absActivity, itemView.item_playlist_button_more).apply {
+                    menuInflater.inflate(R.menu.item, menu)
+                    menu.findItem(R.id.item_add).isVisible = MusicManager.isPlayingOrPause
+                    menu.findItem(R.id.item_playlists).isVisible = false
+                    setOnMenuItemClickListener {
+                        when (it.itemId) {
+                            R.id.item_play -> MusicManager.playMusics(playlist.musics)
+                            R.id.item_add -> MusicManager.addMusics(playlist.musics)
+                            R.id.item_edit_infos -> showFragment(EditPlaylistFragment.getInstance(playlist, artwork), transitionView = itemView.item_playlist_imageview_artwork)
+                            R.id.item_delete -> {
+                                DB.getPlaylistDao().delete(playlist)
+                                loadPlayLists()
+                            }
+                        }
+                        return@setOnMenuItemClickListener true
+                    }
+                }.show()
+            }
         }
     }
 

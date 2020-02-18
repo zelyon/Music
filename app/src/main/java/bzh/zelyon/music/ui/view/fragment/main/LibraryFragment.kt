@@ -38,7 +38,7 @@ class LibraryFragment: AbsToolBarFragment(), MusicManager.Listener, SearchView.O
 
         fragment_library_searchview.setOnQueryTextListener(this)
 
-        (fragment_library_itemsview_artists as ItemsView<Artist>).apply {
+        fragment_library_itemsview_artists.apply {
             nbColumns = 2
             spaceDivider = absActivity.dpToPx(8).toInt()
             idLayoutItem = R.layout.item_artist
@@ -67,9 +67,7 @@ class LibraryFragment: AbsToolBarFragment(), MusicManager.Listener, SearchView.O
     override fun onIdClick(id: Int) {
         when (id) {
             R.id.fragment_library_shuffle -> {
-                val musics = MusicManager.getMusics(absActivity).toMutableList()
-                musics.shuffle()
-                MusicManager.playMusics(musics)
+                MusicManager.playMusics(MusicManager.getMusics(absActivity).shuffled())
             }
         }
     }
@@ -97,8 +95,7 @@ class LibraryFragment: AbsToolBarFragment(), MusicManager.Listener, SearchView.O
             Manifest.permission.READ_EXTERNAL_STORAGE,
             Manifest.permission.WRITE_EXTERNAL_STORAGE) {
             if (it) {
-                val musics = MusicManager.getMusicsBySearch(absActivity, currentSearch).toMutableList()
-                (fragment_library_itemsview_artists as ItemsView<Artist>).items = musics
+                fragment_library_itemsview_artists.items = MusicManager.getMusicsBySearch(absActivity, currentSearch).toMutableList()
             } else {
                 absActivity.showSnackbar(
                     getString(R.string.fragment_library_snackbar_permission_needed),
@@ -112,39 +109,45 @@ class LibraryFragment: AbsToolBarFragment(), MusicManager.Listener, SearchView.O
 
     private enum class AnimSate { SHOW, HIDE, FOLLOW_OFFSET }
 
-    inner class ArtistHelper: ItemsView.Helper<Artist>() {
+    inner class ArtistHelper: ItemsView.Helper() {
         private var animState: AnimSate? = null
-        override fun onBindItem(itemView: View, items: List<Artist>, position: Int) {
+        override fun onBindItem(itemView: View, items: MutableList<*>, position: Int) {
             val artist = items[position]
-            itemView.item_artist_imageview_artwork.setImage(artist, absActivity.getDrawable(R.drawable.ic_artist))
-            itemView.item_artist_imageview_artwork.transitionName = artist.getTransitionName()
-            itemView.item_artist_textview_name.text = artist.name
-            itemView.item_artist_textview_nbmusic.text = resources.getQuantityString(R.plurals.item_music_nb, artist.musics.size, artist.musics.size)
-            itemView.item_artist_button_more.setOnClickListener { onItemLongClick(itemView, items, position) }
+            if (artist is Artist) {
+                itemView.item_artist_imageview_artwork.setImage(artist, absActivity.getDrawable(R.drawable.ic_artist))
+                itemView.item_artist_imageview_artwork.transitionName = artist.getTransitionName()
+                itemView.item_artist_textview_name.text = artist.name
+                itemView.item_artist_textview_nbmusic.text = resources.getQuantityString(R.plurals.item_music_nb, artist.musics.size, artist.musics.size)
+                itemView.item_artist_button_more.setOnClickListener { onItemLongClick(itemView, items, position) }
+            }
         }
-        override fun onItemClick(itemView: View, items: List<Artist>, position: Int) {
+        override fun onItemClick(itemView: View, items: MutableList<*>, position: Int) {
             val artist = items[position]
-            showFragment(MusicsFragment.getInstance(artist.name, artist.musics))
+            if (artist is Artist) {
+                showFragment(MusicsFragment.getInstance(artist.name, artist.musics))
+            }
         }
-        override fun onItemLongClick(itemView: View, items: List<Artist>, position: Int) {
+        override fun onItemLongClick(itemView: View, items: MutableList<*>, position: Int) {
             val artist = items[position]
-            val artwork = (itemView.item_artist_imageview_artwork.drawable as? BitmapDrawable)?.bitmap
-            PopupMenu(absActivity, itemView.item_artist_button_more).apply {
-                menuInflater.inflate(R.menu.item, menu)
-                menu.findItem(R.id.item_add).isVisible = MusicManager.isPlayingOrPause
-                menu.findItem(R.id.item_delete).isVisible = false
-                menu.findItem(R.id.item_playlists).isVisible = false
-                setOnMenuItemClickListener {
-                    when (it.itemId) {
-                        R.id.item_play -> MusicManager.playMusics(artist.musics)
-                        R.id.item_add -> MusicManager.addMusics(artist.musics)
-                        R.id.item_edit_infos -> showFragment(EditArtistFragment.getInstance(artist, artwork), transitionView = itemView.item_artist_imageview_artwork)
+            if (artist is Artist) {
+                val artwork = (itemView.item_artist_imageview_artwork.drawable as? BitmapDrawable)?.bitmap
+                PopupMenu(absActivity, itemView.item_artist_button_more).apply {
+                    menuInflater.inflate(R.menu.item, menu)
+                    menu.findItem(R.id.item_add).isVisible = MusicManager.isPlayingOrPause
+                    menu.findItem(R.id.item_delete).isVisible = false
+                    menu.findItem(R.id.item_playlists).isVisible = false
+                    setOnMenuItemClickListener {
+                        when (it.itemId) {
+                            R.id.item_play -> MusicManager.playMusics(artist.musics)
+                            R.id.item_add -> MusicManager.addMusics(artist.musics)
+                            R.id.item_edit_infos -> showFragment(EditArtistFragment.getInstance(artist, artwork), transitionView = itemView.item_artist_imageview_artwork)
+                        }
+                        return@setOnMenuItemClickListener true
                     }
-                    return@setOnMenuItemClickListener true
-                }
-            }.show()
+                }.show()
+            }
         }
-        override fun getIndexScroll(items: List<Artist>, position: Int) = items[position].name.first().toUpperCase().toString()
+        override fun getIndexScroll(items: MutableList<*>, position: Int) = (items[position] as Artist).name.first().toUpperCase().toString()
         override fun onScroll(goUp: Boolean) {
             safeRun {
                 val toolbarHeight = fragment_library_cardview_toolbar.height + fragment_library_cardview_toolbar.marginTop + fragment_library_cardview_toolbar.marginBottom
