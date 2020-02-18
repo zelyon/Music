@@ -6,7 +6,7 @@ import android.os.Bundle
 import android.view.View
 import android.widget.SeekBar
 import androidx.appcompat.widget.PopupMenu
-import androidx.core.view.isInvisible
+import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
 import bzh.zelyon.music.R
 import bzh.zelyon.music.db.model.Music
@@ -69,8 +69,8 @@ class PlayingFragment: AbsToolBarFragment(), SeekBar.OnSeekBarChangeListener, Mu
                     fragment_playing_textview_current.text = MusicManager.currentPosition.millisecondstoDuration()
                     fragment_playing_seekbar_current.max = MusicManager.duration
                     fragment_playing_seekbar_current.progress = MusicManager.currentPosition
-                    fragment_playing_imagebutton_previous.isInvisible = !MusicManager.previousExist
-                    fragment_playing_imagebutton_next.isInvisible = !MusicManager.nextExist
+                    fragment_playing_imagebutton_previous.isVisible = MusicManager.previousExist
+                    fragment_playing_imagebutton_next.isVisible = MusicManager.nextExist
                 } ?: run {
                     back()
                 }
