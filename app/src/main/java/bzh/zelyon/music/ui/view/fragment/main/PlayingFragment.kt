@@ -7,6 +7,7 @@ import android.view.View
 import android.widget.SeekBar
 import androidx.appcompat.widget.PopupMenu
 import androidx.core.view.isInvisible
+import androidx.recyclerview.widget.LinearLayoutManager
 import bzh.zelyon.music.R
 import bzh.zelyon.music.db.model.Music
 import bzh.zelyon.music.ui.component.ItemsView
@@ -50,9 +51,19 @@ class PlayingFragment: AbsToolBarFragment(), SeekBar.OnSeekBarChangeListener, Mu
                 MusicManager.currentMusic?.let { currentMusic ->
                     if(currentMusicId != currentMusic.id) {
                         currentMusicId = currentMusic.id
-                        fragment_playing_itemsview_musics.smoothScrollToPosition(MusicManager.musics.indexOf(currentMusic) + 1)
                         fragment_playing_itemsview_musics.notifyDataSetChanged()
                         updateToolBar()
+                        val musicPosition = MusicManager.musics.indexOf(currentMusic) + 1
+                        val itemsManager = fragment_playing_itemsview_musics.layoutManager as LinearLayoutManager
+                        val firstPositionVisible = itemsManager.findFirstVisibleItemPosition()
+                        val lastPositionVisible = itemsManager.findLastVisibleItemPosition()
+                        when {
+                            musicPosition < firstPositionVisible -> musicPosition
+                            musicPosition > lastPositionVisible -> musicPosition + (lastPositionVisible - firstPositionVisible)/2
+                            else -> null
+                        }?.let {
+                            fragment_playing_itemsview_musics.smoothScrollToPosition(it)
+                        }
                     }
                     fragment_playing_textview_duration.text = MusicManager.duration.millisecondstoDuration()
                     fragment_playing_textview_current.text = MusicManager.currentPosition.millisecondstoDuration()
