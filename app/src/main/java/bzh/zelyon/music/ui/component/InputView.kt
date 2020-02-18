@@ -24,9 +24,9 @@ import androidx.appcompat.widget.Toolbar
 import androidx.core.view.isVisible
 import androidx.core.widget.addTextChangedListener
 import bzh.zelyon.music.R
+import bzh.zelyon.music.extension.closeKeyboard
+import bzh.zelyon.music.extension.vibrate
 import bzh.zelyon.music.ui.view.abs.activity.AbsActivity
-import bzh.zelyon.music.utils.closeKeyboard
-import bzh.zelyon.music.utils.vibrate
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.textfield.TextInputLayout
 import kotlinx.android.synthetic.main.item_input_list.view.*

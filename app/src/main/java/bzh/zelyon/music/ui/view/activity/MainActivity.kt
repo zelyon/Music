@@ -10,7 +10,9 @@ import bzh.zelyon.music.ui.view.abs.activity.AbsActivity
 import bzh.zelyon.music.ui.view.fragment.main.LibraryFragment
 import bzh.zelyon.music.ui.view.fragment.main.PlayingFragment
 import bzh.zelyon.music.ui.view.fragment.main.PlaylistsFragment
-import bzh.zelyon.music.utils.MusicManager
+import bzh.zelyon.music.util.MusicContent
+import bzh.zelyon.music.util.MusicPlayer
+import bzh.zelyon.music.util.MusicService
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlin.concurrent.fixedRateTimer
 
@@ -32,11 +34,11 @@ class MainActivity : AbsActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         DB.init(this)
-        startService(Intent(this, MusicManager.Service::class.java))
+        startService(Intent(this, MusicService::class.java))
 
         activity_main_fab.setOnClickListener {
             if (playingFragmentIsVisible) {
-                MusicManager.pauseOrPlay()
+                MusicPlayer.pauseOrPlay()
             } else {
                 showFragment(playingFragment)
             }
@@ -62,15 +64,15 @@ class MainActivity : AbsActivity() {
                     .setDuration(DURATION)
                     .start()
 
-                if (MusicManager.isPlayingOrPause) {
+                if (MusicPlayer.currentMusic != null) {
 
                     activity_main_fab.show()
 
                     when {
-                        playingFragmentIsVisible && MusicManager.isPlaying -> FABState.ICON_PLAY
-                        playingFragmentIsVisible && !MusicManager.isPlaying -> FABState.ICON_PAUSE
-                        !playingFragmentIsVisible && MusicManager.isPlaying -> FABState.ANIM_PLAY
-                        !playingFragmentIsVisible && !MusicManager.isPlaying -> FABState.ANIM_PAUSE
+                        playingFragmentIsVisible && MusicPlayer.isPlaying -> FABState.ICON_PLAY
+                        playingFragmentIsVisible && !MusicPlayer.isPlaying -> FABState.ICON_PAUSE
+                        !playingFragmentIsVisible && MusicPlayer.isPlaying -> FABState.ANIM_PLAY
+                        !playingFragmentIsVisible && !MusicPlayer.isPlaying -> FABState.ANIM_PAUSE
                         else -> null
                     }?.let {
                         if (it != fabState) {
@@ -97,8 +99,8 @@ class MainActivity : AbsActivity() {
     override fun handleIntent(intent: Intent) {
         super.handleIntent(intent)
         intent.data?.let { uri ->
-            MusicManager.getMusicFromUri(this, uri)?.let { music ->
-                MusicManager.playMusics(listOf(music))
+            MusicContent.getMusicFromUri(this, uri)?.let { music ->
+                MusicPlayer.playMusics(listOf(music))
             }
         }
     }

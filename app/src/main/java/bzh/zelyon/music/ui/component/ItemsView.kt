@@ -16,8 +16,8 @@ import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import bzh.zelyon.music.R
-import bzh.zelyon.music.utils.dpToPx
-import bzh.zelyon.music.utils.getResIdFromAndroidAttr
+import bzh.zelyon.music.extension.dpToPx
+import bzh.zelyon.music.extension.getResIdFromAndroidAttr
 import java.util.*
 import kotlin.math.abs
 import kotlin.math.max

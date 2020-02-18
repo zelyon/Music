@@ -6,11 +6,11 @@ import android.view.View
 import androidx.appcompat.widget.PopupMenu
 import bzh.zelyon.music.R
 import bzh.zelyon.music.db.model.Music
+import bzh.zelyon.music.extension.setImage
 import bzh.zelyon.music.ui.component.ItemsView
 import bzh.zelyon.music.ui.view.abs.fragment.AbsToolBarBottomSheetFragment
 import bzh.zelyon.music.ui.view.fragment.edit.EditMusicFragment
-import bzh.zelyon.music.utils.MusicManager
-import bzh.zelyon.music.utils.setImage
+import bzh.zelyon.music.util.MusicPlayer
 import kotlinx.android.synthetic.main.fragment_musics.*
 import kotlinx.android.synthetic.main.item_music.view.*
 
@@ -56,23 +56,23 @@ class MusicsFragment private constructor(): AbsToolBarBottomSheetFragment() {
                 itemView.item_music_imagebutton.setOnClickListener { onItemLongClick(itemView, items, position) }
             }
         }
-        override fun onItemClick(itemView: View, items: MutableList<*>, position: Int) = MusicManager.playMusics(listOf(items[position] as Music))
+        override fun onItemClick(itemView: View, items: MutableList<*>, position: Int) = MusicPlayer.playMusics(listOf(items[position] as Music))
         override fun onItemLongClick(itemView: View, items: MutableList<*>, position: Int) {
             val music = items[position]
             if (music is Music) {
                 val artwork = (itemView.item_music_imageview_artwork.drawable as? BitmapDrawable)?.bitmap
                 PopupMenu(absActivity, itemView.item_music_imagebutton).apply {
                     menuInflater.inflate(R.menu.item, menu)
-                    menu.findItem(R.id.item_add).isVisible = MusicManager.isPlayingOrPause
+                    menu.findItem(R.id.item_add).isVisible = MusicPlayer.currentMusic != null
                     setOnMenuItemClickListener {
                         when (it.itemId) {
-                            R.id.item_play -> MusicManager.playMusics(listOf(music))
-                            R.id.item_add -> MusicManager.addMusics(listOf(music))
+                            R.id.item_play -> MusicPlayer.playMusics(listOf(music))
+                            R.id.item_add -> MusicPlayer.addMusics(listOf(music))
                             R.id.item_edit_infos -> {
                                 this@MusicsFragment.dismiss()
                                 showFragment(EditMusicFragment.getInstance(music, artwork), transitionView = itemView.item_music_imageview_artwork)
                             }
-                            R.id.item_delete -> MusicManager.deleteMusicFile(absActivity, music)
+                            R.id.item_delete -> MusicPlayer.deleteMusicFile(absActivity, music)
                             R.id.item_playlists -> {
                                 this@MusicsFragment.dismiss()
                                 showFragment(MusicPlaylistsFragment.getInstance(music))

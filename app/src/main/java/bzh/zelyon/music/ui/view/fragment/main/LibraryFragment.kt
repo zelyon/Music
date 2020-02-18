@@ -12,25 +12,26 @@ import androidx.recyclerview.widget.RecyclerView
 import bzh.zelyon.music.R
 import bzh.zelyon.music.db.model.Artist
 import bzh.zelyon.music.db.model.Music
+import bzh.zelyon.music.extension.closeKeyboard
+import bzh.zelyon.music.extension.dpToPx
+import bzh.zelyon.music.extension.setImage
 import bzh.zelyon.music.ui.component.ItemsView
 import bzh.zelyon.music.ui.view.abs.fragment.AbsToolBarFragment
 import bzh.zelyon.music.ui.view.fragment.bottom.MusicsFragment
 import bzh.zelyon.music.ui.view.fragment.edit.EditArtistFragment
-import bzh.zelyon.music.utils.MusicManager
-import bzh.zelyon.music.utils.closeKeyboard
-import bzh.zelyon.music.utils.dpToPx
-import bzh.zelyon.music.utils.setImage
+import bzh.zelyon.music.util.MusicContent
+import bzh.zelyon.music.util.MusicPlayer
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.fragment_library.*
 import kotlinx.android.synthetic.main.item_artist.view.*
 
-class LibraryFragment: AbsToolBarFragment(), MusicManager.Listener, SearchView.OnQueryTextListener {
+class LibraryFragment: AbsToolBarFragment(), MusicPlayer.Listener, SearchView.OnQueryTextListener {
 
     private var currentSearch = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        MusicManager.listeners.add(this)
+        MusicPlayer.listeners.add(this)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -67,7 +68,7 @@ class LibraryFragment: AbsToolBarFragment(), MusicManager.Listener, SearchView.O
     override fun onIdClick(id: Int) {
         when (id) {
             R.id.fragment_library_shuffle -> {
-                MusicManager.playMusics(MusicManager.getMusics(absActivity).shuffled())
+                MusicPlayer.playMusics(MusicContent.getMusics(absActivity).shuffled())
             }
         }
     }
@@ -95,7 +96,7 @@ class LibraryFragment: AbsToolBarFragment(), MusicManager.Listener, SearchView.O
             Manifest.permission.READ_EXTERNAL_STORAGE,
             Manifest.permission.WRITE_EXTERNAL_STORAGE) {
             if (it) {
-                fragment_library_itemsview_artists.items = MusicManager.getMusicsBySearch(absActivity, currentSearch).toMutableList()
+                fragment_library_itemsview_artists.items = MusicContent.getMusicsBySearch(absActivity, currentSearch).toMutableList()
             } else {
                 absActivity.showSnackbar(
                     getString(R.string.fragment_library_snackbar_permission_needed),
@@ -133,13 +134,13 @@ class LibraryFragment: AbsToolBarFragment(), MusicManager.Listener, SearchView.O
                 val artwork = (itemView.item_artist_imageview_artwork.drawable as? BitmapDrawable)?.bitmap
                 PopupMenu(absActivity, itemView.item_artist_button_more).apply {
                     menuInflater.inflate(R.menu.item, menu)
-                    menu.findItem(R.id.item_add).isVisible = MusicManager.isPlayingOrPause
+                    menu.findItem(R.id.item_add).isVisible = MusicPlayer.currentMusic != null
                     menu.findItem(R.id.item_delete).isVisible = false
                     menu.findItem(R.id.item_playlists).isVisible = false
                     setOnMenuItemClickListener {
                         when (it.itemId) {
-                            R.id.item_play -> MusicManager.playMusics(artist.musics)
-                            R.id.item_add -> MusicManager.addMusics(artist.musics)
+                            R.id.item_play -> MusicPlayer.playMusics(artist.musics)
+                            R.id.item_add -> MusicPlayer.addMusics(artist.musics)
                             R.id.item_edit_infos -> showFragment(EditArtistFragment.getInstance(artist, artwork), transitionView = itemView.item_artist_imageview_artwork)
                         }
                         return@setOnMenuItemClickListener true

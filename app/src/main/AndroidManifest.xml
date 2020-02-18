@@ -41,7 +41,7 @@
         </activity>
 
         <service
-            android:name=".utils.MusicManager$Service"
+            android:name=".util.MusicService"
             android:enabled="true"
             android:exported="true">
             <intent-filter>
@@ -49,7 +49,7 @@
             </intent-filter>
         </service>
 
-        <receiver android:name=".utils.MusicManager$Receiver">
+        <receiver android:name=".util.MusicReceiver">
             <intent-filter>
                 <action android:name="android.intent.action.MEDIA_BUTTON" />
             </intent-filter>

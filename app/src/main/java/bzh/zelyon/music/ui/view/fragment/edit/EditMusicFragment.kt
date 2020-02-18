@@ -11,7 +11,7 @@ import androidx.lifecycle.Observer
 import bzh.zelyon.music.R
 import bzh.zelyon.music.db.model.Music
 import bzh.zelyon.music.ui.component.InputView
-import bzh.zelyon.music.utils.MusicManager
+import bzh.zelyon.music.util.MusicContent
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import kotlinx.android.synthetic.main.fragment_edit_music.*
 import kotlinx.android.synthetic.main.view_artwork.view.*
@@ -35,7 +35,7 @@ class EditMusicFragment private constructor(): AbsEditFragment<Music>() {
         val artistNames = mutableListOf<String>()
         val albumNames = mutableListOf<String>()
         val genres = mutableListOf<String>()
-        MusicManager.getMusics(absActivity).forEach { music ->
+        MusicContent.getMusics(absActivity).forEach { music ->
             if (!artistNames.contains(music.artistName)) {
                 artistNames.add(music.artistName)
             }

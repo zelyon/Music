@@ -1,4 +1,4 @@
-package bzh.zelyon.music.utils
+package bzh.zelyon.music.util
 
 import android.content.Context
 import bzh.zelyon.music.db.model.Artist
@@ -19,7 +19,7 @@ import com.bumptech.glide.signature.ObjectKey
 import java.io.InputStream
 
 @GlideModule
-class MusicModule: AppGlideModule() {
+class MusicGlideModule: AppGlideModule() {
 
     abstract class AbsModelLoaderFactory<T>: ModelLoaderFactory<T, InputStream> {
         override fun teardown() {}
