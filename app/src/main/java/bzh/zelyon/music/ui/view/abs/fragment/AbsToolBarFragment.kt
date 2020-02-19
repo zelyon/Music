@@ -42,7 +42,7 @@ abstract class AbsToolBarFragment: AbsFragment() {
     override fun onIdClick(id: Int) {
         super.onIdClick(id)
         if (id == android.R.id.home) {
-            back()
+            absActivity.onBackPressed()
         }
     }
 
