@@ -84,7 +84,14 @@ class PlayingFragment: AbsToolBarFragment(), SeekBar.OnSeekBarChangeListener, Mu
         when (id) {
             R.id.fragment_playing_imagebutton_previous -> MusicPlayer.previous()
             R.id.fragment_playing_imagebutton_next -> MusicPlayer.next()
-            R.id.fragment_playing_imagebutton_shuffle -> MusicPlayer.shuffle()
+            R.id.fragment_playing_imagebutton_repeat -> {
+                MusicPlayer.isRepeat = !MusicPlayer.isRepeat
+                fragment_playing_imagebutton_repeat.alpha = if (MusicPlayer.isRepeat) 1F else 0.5F
+            }
+            R.id.fragment_playing_imagebutton_shuffle -> {
+                MusicPlayer.isShuffle = !MusicPlayer.isShuffle
+                fragment_playing_imagebutton_shuffle.alpha = if (MusicPlayer.isShuffle) 1F else 0.5F
+            }
         }
     }
 

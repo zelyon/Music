@@ -101,11 +101,24 @@
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:layout_marginEnd="8dp"
+            android:alpha=".5"
             android:background="?attr/selectableItemBackgroundBorderless"
             app:layout_constraintBottom_toBottomOf="@+id/fragment_playing_imagebutton_next"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@+id/fragment_playing_imagebutton_next"
             app:srcCompat="@drawable/ic_shuffle" />
+
+        <androidx.appcompat.widget.AppCompatImageButton
+            android:id="@+id/fragment_playing_imagebutton_repeat"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginStart="8dp"
+            android:alpha=".5"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            app:layout_constraintBottom_toBottomOf="@+id/fragment_playing_imagebutton_previous"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/fragment_playing_imagebutton_previous"
+            app:srcCompat="@drawable/ic_repeat" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

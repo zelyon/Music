@@ -7,6 +7,7 @@ import bzh.zelyon.music.R
 import bzh.zelyon.music.db.model.Music
 import bzh.zelyon.music.util.MusicPlayer.setOnCompletionListener
 import java.io.File
+import kotlin.random.Random
 
 object MusicPlayer: MediaPlayer() {
 
@@ -14,11 +15,12 @@ object MusicPlayer: MediaPlayer() {
     val listeners = mutableListOf<Listener>()
     var musics = mutableListOf<Music>()
     var musicPosition = -1
+    var isShuffle = false
+    var isRepeat = false
 
     fun playMusics(musics: List<Music>) {
         this.musics = musics.toMutableList()
         musicPosition = 0
-        setOnCompletionListener { next() }
         run()
     }
 
@@ -30,6 +32,7 @@ object MusicPlayer: MediaPlayer() {
         if (musicPosition in musics.indices && File(musics[musicPosition].path).exists()) {
             reset()
             setDataSource(musics[musicPosition].path)
+            setOnCompletionListener { next() }
             prepare()
             start()
         } else {
@@ -62,18 +65,31 @@ object MusicPlayer: MediaPlayer() {
     }
 
     fun previous() {
-        musicPosition--
-        run()
+        when {
+            isRepeat -> run()
+            isShuffle -> {
+                musicPosition = Random.nextInt(0, musics.size - 1)
+                run()
+            }
+            else -> {
+                musicPosition--
+                run()
+            }
+        }
     }
 
     fun next() {
-        musicPosition++
-        run()
-    }
-
-    fun shuffle() {
-        musics.shuffle()
-        run()
+        when {
+            isRepeat -> run()
+            isShuffle -> {
+                musicPosition = Random.nextInt(0, musics.size - 1)
+                run()
+            }
+            else -> {
+                musicPosition++
+                run()
+            }
+        }
     }
 
     fun deleteMusicFile(context: Context, music: Music) {
