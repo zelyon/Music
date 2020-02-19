@@ -30,7 +30,7 @@ class EditArtistFragment private constructor(): AbsEditFragment<Artist>() {
         }
 
         apiViewModel.getArtist(absModel.name).observe(absActivity, Observer {
-            infosFromLastFM = it?.artist?.bio?.summary.orEmpty() + "\n\n" + it?.artist?.bio?.content.orEmpty()
+            infosFromLastFM = it?.artist?.bio?.content.orEmpty()
         })
     }
 
