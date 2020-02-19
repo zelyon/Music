@@ -223,7 +223,7 @@ class ItemsView @JvmOverloads constructor(context: Context, attrs: AttributeSet?
             } else false
 
         fun onScroll() {
-            if (thumbMoveHeight > thumbScrollingHeight) {
+            if (thumbMoveHeight > thumbScrollingHeight && items.isNotEmpty()) {
                 thumbNeedShow = true
                 thumbHeight = max(thumbScrollingHeight.pow(2) / thumbMoveHeight, thumbMinHeight)
                 thumbTop = computeVerticalScrollOffset() * thumbScrollingHeight / thumbMoveHeight + thumbMarginTop
