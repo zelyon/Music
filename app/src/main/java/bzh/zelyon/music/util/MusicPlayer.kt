@@ -5,6 +5,7 @@ import android.media.MediaPlayer
 import androidx.appcompat.app.AlertDialog
 import bzh.zelyon.music.R
 import bzh.zelyon.music.db.model.Music
+import bzh.zelyon.music.util.MusicPlayer.setOnCompletionListener
 import java.io.File
 
 object MusicPlayer: MediaPlayer() {
@@ -12,12 +13,12 @@ object MusicPlayer: MediaPlayer() {
     private var lastCurrentPosition = 0
     val listeners = mutableListOf<Listener>()
     var musics = mutableListOf<Music>()
+    var musicPosition = 0
     var currentMusic: Music? = null
-    var currentMusicPosition = 0
 
     fun playMusics(musics: List<Music>) {
         this.musics = musics.toMutableList()
-        currentMusicPosition = 0
+        musicPosition = 0
         setOnCompletionListener { next() }
         playMusic()
     }
@@ -27,8 +28,8 @@ object MusicPlayer: MediaPlayer() {
     }
 
     private fun playMusic() {
-        if (currentMusicPosition in musics.indices) {
-            val music = musics[currentMusicPosition]
+        if (musicPosition in musics.indices) {
+            val music = musics[musicPosition]
             if (File(music.path).exists()) {
                 currentMusic = music
                 reset()
@@ -45,7 +46,7 @@ object MusicPlayer: MediaPlayer() {
 
     private fun cancel() {
         musics.clear()
-        currentMusicPosition = 0
+        musicPosition = 0
         currentMusic = null
         setOnCompletionListener {}
         stop()
@@ -75,25 +76,23 @@ object MusicPlayer: MediaPlayer() {
 
     fun previous() {
         updateMusicIndex()
-        currentMusicPosition = if (currentMusicPosition < 1) 0 else currentMusicPosition - 1
+        musicPosition = if (musicPosition < 1) 0 else musicPosition - 1
         playMusic()
     }
 
     fun next() {
         updateMusicIndex()
-        currentMusicPosition++
+        musicPosition++
         playMusic()
     }
 
     fun shuffle() {
-        updateMusicIndex()
         musics.shuffle()
-        currentMusic = musics[currentMusicPosition]
         playMusic()
     }
 
     fun updateMusicIndex() {
-        currentMusicPosition = if (musics.contains(currentMusic)) musics.indexOf(currentMusic) else currentMusicPosition
+        musicPosition = if (musics.contains(currentMusic)) musics.indexOf(currentMusic) else musicPosition
     }
 
     fun deleteMusicFile(context: Context, music: Music) {
