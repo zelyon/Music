@@ -5,19 +5,19 @@ import android.media.MediaPlayer
 import androidx.appcompat.app.AlertDialog
 import bzh.zelyon.music.R
 import bzh.zelyon.music.db.model.Music
-import bzh.zelyon.music.util.MusicPlayer.setOnCompletionListener
 import java.io.File
 
 object MusicPlayer: MediaPlayer() {
 
-    var lastCurrentPosition = 0
+    private var lastCurrentPosition = 0
     val listeners = mutableListOf<Listener>()
     var musics = mutableListOf<Music>()
     var currentMusic: Music? = null
+    var currentMusicPosition = 0
 
     fun playMusics(musics: List<Music>) {
         this.musics = musics.toMutableList()
-        currentMusic = musics[0]
+        currentMusicPosition = 0
         setOnCompletionListener { next() }
         playMusic()
     }
@@ -27,22 +27,29 @@ object MusicPlayer: MediaPlayer() {
     }
 
     private fun playMusic() {
-        currentMusic?.let { currentMusic ->
-            if (File(currentMusic.path).exists()) {
+        if (currentMusicPosition in musics.indices) {
+            val music = musics[currentMusicPosition]
+            if (File(music.path).exists()) {
+                currentMusic = music
                 reset()
-                setDataSource(currentMusic.path)
+                setDataSource(music.path)
                 prepare()
                 start()
             } else {
-                next()
+                cancel()
             }
-        } ?: run {
-            musics.clear()
-            currentMusic = null
-            setOnCompletionListener {}
-            stop()
-            reset()
+        } else {
+            cancel()
         }
+    }
+
+    private fun cancel() {
+        musics.clear()
+        currentMusicPosition = 0
+        currentMusic = null
+        setOnCompletionListener {}
+        stop()
+        reset()
     }
 
     fun pauseOrPlay() {
@@ -62,26 +69,31 @@ object MusicPlayer: MediaPlayer() {
 
     fun jumpTo(music: Music) {
         currentMusic = music
+        updateMusicIndex()
         playMusic()
     }
 
     fun previous() {
-        val position = musics.indexOf(currentMusic)
-        currentMusic = if (position > 0) musics[position - 1] else currentMusic
+        updateMusicIndex()
+        currentMusicPosition = if (currentMusicPosition < 1) 0 else currentMusicPosition - 1
         playMusic()
     }
 
     fun next() {
-        val position = musics.indexOf(currentMusic)
-        currentMusic = if (position < musics.size-1) musics[position + 1] else null
+        updateMusicIndex()
+        currentMusicPosition++
         playMusic()
     }
 
     fun shuffle() {
-        val position = musics.indexOf(currentMusic)
+        updateMusicIndex()
         musics.shuffle()
-        currentMusic = musics[position]
+        currentMusic = musics[currentMusicPosition]
         playMusic()
+    }
+
+    fun updateMusicIndex() {
+        currentMusicPosition = if (musics.contains(currentMusic)) musics.indexOf(currentMusic) else currentMusicPosition
     }
 
     fun deleteMusicFile(context: Context, music: Music) {

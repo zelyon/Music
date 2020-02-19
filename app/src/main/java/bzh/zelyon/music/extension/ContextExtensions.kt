@@ -42,12 +42,8 @@ fun Context.getLocalFileFromGalleryUri(uri: Uri, optionalName: String? = null): 
     val path = when {
         isFile -> uri.path
         isExternalStorage -> Environment.getExternalStorageDirectory().toString() + "/" + DocumentsContract.getDocumentId(uri).split(":")[1]
-        isDownloadStorage -> getPathFromCursor(
-            ContentUris.withAppendedId(Uri.parse("content://downloads/public_downloads"), DocumentsContract.getDocumentId(uri).toLong()), arrayOf(
-                MediaStore.Images.Media.DATA))
-        isImageStorage -> getPathFromCursor(
-            MediaStore.Images.Media.EXTERNAL_CONTENT_URI, arrayOf(
-                MediaStore.Images.Media.DATA), MediaStore.Images.Media._ID + "=?", DocumentsContract.getDocumentId(uri).split(":")[1])
+        isDownloadStorage -> getPathFromCursor(ContentUris.withAppendedId(Uri.parse("content://downloads/public_downloads"), DocumentsContract.getDocumentId(uri).toLong()), arrayOf(MediaStore.Images.Media.DATA))
+        isImageStorage -> getPathFromCursor(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, arrayOf(MediaStore.Images.Media.DATA), MediaStore.Images.Media._ID + "=?", DocumentsContract.getDocumentId(uri).split(":")[1])
         isGooglePhotos -> uri.lastPathSegment
         isContentStorage -> uri.path?.substring(uri.path?.indexOf("/storage") ?: 0)
         isDrive || isGooglePhotosNew || isContent -> getPathFromCursor(uri, arrayOf(MediaStore.Images.Media.DATA))
