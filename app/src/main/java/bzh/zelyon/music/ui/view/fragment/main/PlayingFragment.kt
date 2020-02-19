@@ -24,7 +24,7 @@ import kotlin.concurrent.fixedRateTimer
 
 class PlayingFragment: AbsToolBarFragment(), SeekBar.OnSeekBarChangeListener, MusicPlayer.Listener {
 
-    private var currentMusicId: Int? = null
+    private var musicPosition = -1
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -48,10 +48,9 @@ class PlayingFragment: AbsToolBarFragment(), SeekBar.OnSeekBarChangeListener, Mu
 
         fixedRateTimer(period = 400) {
             safeRun {
-                MusicPlayer.currentMusic?.let { currentMusic ->
-                    val musicPosition = MusicPlayer.musics.indexOf(currentMusic)
-                    if(currentMusicId != currentMusic.id) {
-                        currentMusicId = currentMusic.id
+                if (MusicPlayer.musicPosition >= 0) {
+                    if (musicPosition != MusicPlayer.musicPosition) {
+                        musicPosition = MusicPlayer.musicPosition
                         fragment_playing_itemsview_musics.notifyDataSetChanged()
                         updateToolBar()
                         val itemsManager = fragment_playing_itemsview_musics.layoutManager as LinearLayoutManager
@@ -71,7 +70,7 @@ class PlayingFragment: AbsToolBarFragment(), SeekBar.OnSeekBarChangeListener, Mu
                     fragment_playing_seekbar_current.progress = MusicPlayer.currentPosition
                     fragment_playing_imagebutton_previous.isVisible = musicPosition > 0
                     fragment_playing_imagebutton_next.isVisible = musicPosition < MusicPlayer.musics.size - 1
-                } ?: run {
+                } else {
                     back()
                 }
             }
@@ -91,19 +90,19 @@ class PlayingFragment: AbsToolBarFragment(), SeekBar.OnSeekBarChangeListener, Mu
 
     override fun getIdToolbar() = R.id.fragment_playing_toolbar
 
-    override fun getToolBarTitle() = MusicPlayer.currentMusic?.getInfos(
+    override fun getToolBarTitle() = MusicPlayer.musics[MusicPlayer.musicPosition].getInfos(
         title = true,
         artist = false,
         album = false,
         duration = false
-    ).orEmpty()
+    )
 
-    override fun getToolBarSubTitle() = MusicPlayer.currentMusic?.getInfos(
+    override fun getToolBarSubTitle() = MusicPlayer.musics[MusicPlayer.musicPosition].getInfos(
         title = false,
         artist = true,
         album = true,
         duration = false
-    ).orEmpty()
+    )
 
     override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {}
 
@@ -113,10 +112,15 @@ class PlayingFragment: AbsToolBarFragment(), SeekBar.OnSeekBarChangeListener, Mu
 
     override fun onMusicFileDeleted(music: Music) {
         safeRun {
-            MusicPlayer.musics.remove(music)
-            if (currentMusicId == music.id) {
-                MusicPlayer.previous()
+            val position = MusicPlayer.musics.indexOf(music)
+            if (position < musicPosition || position == musicPosition && position > 0) {
+                musicPosition--
+                MusicPlayer.musicPosition--
             }
+            if (position == musicPosition) {
+                MusicPlayer.run()
+            }
+            MusicPlayer.musics.remove(music)
             fragment_playing_itemsview_musics.items = MusicPlayer.musics
         }
     }
@@ -125,7 +129,7 @@ class PlayingFragment: AbsToolBarFragment(), SeekBar.OnSeekBarChangeListener, Mu
         override fun onBindItem(itemView: View, items: MutableList<*>, position: Int) {
             val music = items[position]
             if (music is Music) {
-                val isPlaying = currentMusicId == music.id
+                val isPlaying = musicPosition == position
                 val alpha = if (isPlaying) 1f else .5f
                 val typeface = if (isPlaying) Typeface.DEFAULT_BOLD else Typeface.DEFAULT
                 itemView.item_music_imageview_artwork.alpha = alpha
@@ -148,7 +152,7 @@ class PlayingFragment: AbsToolBarFragment(), SeekBar.OnSeekBarChangeListener, Mu
         override fun onItemClick(itemView: View, items: MutableList<*>, position: Int) {
             val music = items[position]
             if (music is Music) {
-                MusicPlayer.jumpTo(music)
+                MusicPlayer.jumpTo(position)
             }
         }
         override fun onItemLongClick(itemView: View, items: MutableList<*>, position: Int) {
@@ -172,16 +176,20 @@ class PlayingFragment: AbsToolBarFragment(), SeekBar.OnSeekBarChangeListener, Mu
         }
         override fun getDragView(itemView: View, items: MutableList<*>, position: Int): View? = itemView.item_music_imagebutton
         override fun onItemsMove(items: MutableList<*>) {
+            val playingMusic = MusicPlayer.musics[musicPosition]
             MusicPlayer.musics = items.map { it as Music }.toMutableList()
-            MusicPlayer.updateMusicIndex()
+            musicPosition = MusicPlayer.musics.indexOf(playingMusic)
+            MusicPlayer.musicPosition = musicPosition
         }
         override fun onItemSwipe(itemView: View, items: MutableList<*>, position: Int) {
-            MusicPlayer.musics = items.map { it as Music }.toMutableList()
-            if (MusicPlayer.musicPosition == position) {
-                MusicPlayer.previous()
-            } else {
-                MusicPlayer.updateMusicIndex()
+            if (position < musicPosition || position == musicPosition && position > 0) {
+                musicPosition--
+                MusicPlayer.musicPosition--
             }
+            if (position == musicPosition) {
+                MusicPlayer.run()
+            }
+            MusicPlayer.musics = items.map { it as Music }.toMutableList()
         }
     }
 }

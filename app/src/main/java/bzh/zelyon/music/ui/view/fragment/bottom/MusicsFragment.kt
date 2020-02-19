@@ -63,7 +63,7 @@ class MusicsFragment private constructor(): AbsToolBarBottomSheetFragment() {
                 val artwork = (itemView.item_music_imageview_artwork.drawable as? BitmapDrawable)?.bitmap
                 PopupMenu(absActivity, itemView.item_music_imagebutton).apply {
                     menuInflater.inflate(R.menu.item, menu)
-                    menu.findItem(R.id.item_add).isVisible = MusicPlayer.currentMusic != null
+                    menu.findItem(R.id.item_add).isVisible = MusicPlayer.musicPosition != -1
                     setOnMenuItemClickListener {
                         when (it.itemId) {
                             R.id.item_play -> MusicPlayer.playMusics(listOf(music))

@@ -64,7 +64,7 @@ class MainActivity : AbsActivity() {
                     .setDuration(DURATION)
                     .start()
 
-                if (MusicPlayer.currentMusic != null) {
+                if (MusicPlayer.musicPosition >= 0) {
 
                     activity_main_fab.show()
 

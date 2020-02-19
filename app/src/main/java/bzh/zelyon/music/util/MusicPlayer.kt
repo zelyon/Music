@@ -13,44 +13,32 @@ object MusicPlayer: MediaPlayer() {
     private var lastCurrentPosition = 0
     val listeners = mutableListOf<Listener>()
     var musics = mutableListOf<Music>()
-    var musicPosition = 0
-    var currentMusic: Music? = null
+    var musicPosition = -1
 
     fun playMusics(musics: List<Music>) {
         this.musics = musics.toMutableList()
         musicPosition = 0
         setOnCompletionListener { next() }
-        playMusic()
+        run()
     }
 
     fun addMusics(musics: List<Music>) {
         this.musics.addAll(musics)
     }
 
-    private fun playMusic() {
-        if (musicPosition in musics.indices) {
-            val music = musics[musicPosition]
-            if (File(music.path).exists()) {
-                currentMusic = music
-                reset()
-                setDataSource(music.path)
-                prepare()
-                start()
-            } else {
-                cancel()
-            }
+    fun run() {
+        if (musicPosition in musics.indices && File(musics[musicPosition].path).exists()) {
+            reset()
+            setDataSource(musics[musicPosition].path)
+            prepare()
+            start()
         } else {
-            cancel()
+            musics.clear()
+            musicPosition = -1
+            setOnCompletionListener {}
+            stop()
+            reset()
         }
-    }
-
-    private fun cancel() {
-        musics.clear()
-        musicPosition = 0
-        currentMusic = null
-        setOnCompletionListener {}
-        stop()
-        reset()
     }
 
     fun pauseOrPlay() {
@@ -68,31 +56,24 @@ object MusicPlayer: MediaPlayer() {
         seekTo(current)
     }
 
-    fun jumpTo(music: Music) {
-        currentMusic = music
-        updateMusicIndex()
-        playMusic()
+    fun jumpTo(position: Int) {
+        musicPosition = position
+        run()
     }
 
     fun previous() {
-        updateMusicIndex()
-        musicPosition = if (musicPosition < 1) 0 else musicPosition - 1
-        playMusic()
+        musicPosition--
+        run()
     }
 
     fun next() {
-        updateMusicIndex()
         musicPosition++
-        playMusic()
+        run()
     }
 
     fun shuffle() {
         musics.shuffle()
-        playMusic()
-    }
-
-    fun updateMusicIndex() {
-        musicPosition = if (musics.contains(currentMusic)) musics.indexOf(currentMusic) else musicPosition
+        run()
     }
 
     fun deleteMusicFile(context: Context, music: Music) {

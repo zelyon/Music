@@ -134,7 +134,7 @@ class LibraryFragment: AbsToolBarFragment(), MusicPlayer.Listener, SearchView.On
                 val artwork = (itemView.item_artist_imageview_artwork.drawable as? BitmapDrawable)?.bitmap
                 PopupMenu(absActivity, itemView.item_artist_button_more).apply {
                     menuInflater.inflate(R.menu.item, menu)
-                    menu.findItem(R.id.item_add).isVisible = MusicPlayer.currentMusic != null
+                    menu.findItem(R.id.item_add).isVisible = MusicPlayer.musicPosition != -1
                     menu.findItem(R.id.item_delete).isVisible = false
                     menu.findItem(R.id.item_playlists).isVisible = false
                     setOnMenuItemClickListener {
