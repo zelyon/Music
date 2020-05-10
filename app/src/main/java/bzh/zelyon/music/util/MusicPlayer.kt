@@ -14,13 +14,14 @@ object MusicPlayer: MediaPlayer() {
     private var lastCurrentPosition = 0
     val listeners = mutableListOf<Listener>()
     var musics = mutableListOf<Music>()
-    var musicPosition = -1
+    val playingMusic get() = if (playingPosition in musics.indices) musics[playingPosition] else null
+    var playingPosition = -1
     var isShuffle = false
     var isRepeat = false
 
     fun playMusics(musics: List<Music>) {
         this.musics = musics.toMutableList()
-        musicPosition = 0
+        playingPosition = 0
         run()
     }
 
@@ -29,15 +30,15 @@ object MusicPlayer: MediaPlayer() {
     }
 
     fun run() {
-        if (musicPosition in musics.indices && File(musics[musicPosition].path).exists()) {
+        if (playingPosition in musics.indices && File(musics[playingPosition].path).exists()) {
             reset()
-            setDataSource(musics[musicPosition].path)
+            setDataSource(musics[playingPosition].path)
             setOnCompletionListener { next() }
             prepare()
             start()
         } else {
             musics.clear()
-            musicPosition = -1
+            playingPosition = -1
             setOnCompletionListener {}
             stop()
             reset()
@@ -60,7 +61,7 @@ object MusicPlayer: MediaPlayer() {
     }
 
     fun jumpTo(position: Int) {
-        musicPosition = position
+        playingPosition = position
         run()
     }
 
@@ -68,11 +69,11 @@ object MusicPlayer: MediaPlayer() {
         when {
             isRepeat -> run()
             isShuffle -> {
-                musicPosition = Random.nextInt(0, musics.size - 1)
+                playingPosition = Random.nextInt(0, musics.size - 1)
                 run()
             }
             else -> {
-                musicPosition--
+                playingPosition--
                 run()
             }
         }
@@ -82,11 +83,11 @@ object MusicPlayer: MediaPlayer() {
         when {
             isRepeat -> run()
             isShuffle -> {
-                musicPosition = Random.nextInt(0, musics.size - 1)
+                playingPosition = Random.nextInt(0, musics.size - 1)
                 run()
             }
             else -> {
-                musicPosition++
+                playingPosition++
                 run()
             }
         }

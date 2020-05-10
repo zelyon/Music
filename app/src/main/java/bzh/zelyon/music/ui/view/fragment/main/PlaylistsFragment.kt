@@ -71,7 +71,7 @@ class PlaylistsFragment: AbsFragment(), MusicPlayer.Listener {
                 val artwork = (itemView.item_playlist_imageview_artwork.drawable as? BitmapDrawable)?.bitmap
                 PopupMenu(absActivity, itemView.item_playlist_button_more).apply {
                     menuInflater.inflate(R.menu.item, menu)
-                    menu.findItem(R.id.item_add).isVisible = MusicPlayer.musicPosition != -1
+                    menu.findItem(R.id.item_add).isVisible = MusicPlayer.playingMusic != null
                     menu.findItem(R.id.item_playlists).isVisible = false
                     setOnMenuItemClickListener {
                         when (it.itemId) {

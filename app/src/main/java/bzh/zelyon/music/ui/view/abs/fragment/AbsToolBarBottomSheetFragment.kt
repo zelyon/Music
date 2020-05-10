@@ -45,6 +45,10 @@ abstract class AbsToolBarBottomSheetFragment: AbsBottomSheetFragment() {
         return super.onOptionsItemSelected(item)
     }
 
+    fun back() {
+        dismiss()
+    }
+
     abstract fun getIdToolbar(): Int
 
     open fun getToolBarTitle() = ""

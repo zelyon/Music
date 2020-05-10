@@ -53,16 +53,16 @@ object MusicContent {
     }
 
     fun getMusicsBySearch(context: Context, search: String): List<Artist> {
-        val artists = mutableMapOf<Int, Artist>()
+        val artists = mutableMapOf<String, Artist>()
         val query = MediaStore.Audio.AudioColumns.TITLE + " LIKE ? OR " +
                 MediaStore.Audio.AudioColumns.ARTIST + " LIKE ? OR " +
                 MediaStore.Audio.AudioColumns.ALBUM + " LIKE ? OR " +
                 MediaStore.Audio.AudioColumns.YEAR + " LIKE ? "
         getMusics(context, query, "%$search%", "%$search%", "%$search%", "%$search%").forEach { music ->
-            if (artists.containsKey(music.artistId)) {
-                artists.getValue(music.artistId).musics.add(music)
+            if (artists.containsKey(music.artistName)) {
+                artists.getValue(music.artistName).musics.add(music)
             } else {
-                artists[music.artistId] = Artist(music.artistId, music.artistName, mutableListOf(music))
+                artists[music.artistName] = Artist(music.artistId, music.artistName, mutableListOf(music))
             }
         }
         return artists.values.toList()

@@ -56,27 +56,25 @@ class MusicsFragment private constructor(): AbsToolBarBottomSheetFragment() {
                 itemView.item_music_imagebutton.setOnClickListener { onItemLongClick(itemView, items, position) }
             }
         }
-        override fun onItemClick(itemView: View, items: MutableList<*>, position: Int) = MusicPlayer.playMusics(listOf(items[position] as Music))
+        override fun onItemClick(itemView: View, items: MutableList<*>, position: Int)  {
+            back()
+            MusicPlayer.playMusics(listOf(items[position] as Music))
+        }
         override fun onItemLongClick(itemView: View, items: MutableList<*>, position: Int) {
             val music = items[position]
             if (music is Music) {
                 val artwork = (itemView.item_music_imageview_artwork.drawable as? BitmapDrawable)?.bitmap
                 PopupMenu(absActivity, itemView.item_music_imagebutton).apply {
                     menuInflater.inflate(R.menu.item, menu)
-                    menu.findItem(R.id.item_add).isVisible = MusicPlayer.musicPosition != -1
+                    menu.findItem(R.id.item_add).isVisible = MusicPlayer.playingMusic != null
                     setOnMenuItemClickListener {
+                        back()
                         when (it.itemId) {
                             R.id.item_play -> MusicPlayer.playMusics(listOf(music))
                             R.id.item_add -> MusicPlayer.addMusics(listOf(music))
-                            R.id.item_edit_infos -> {
-                                this@MusicsFragment.dismiss()
-                                showFragment(EditMusicFragment.getInstance(music, artwork), transitionView = itemView.item_music_imageview_artwork)
-                            }
+                            R.id.item_edit_infos -> showFragment(EditMusicFragment.getInstance(music, artwork), transitionView = itemView.item_music_imageview_artwork)
                             R.id.item_delete -> MusicPlayer.deleteMusicFile(absActivity, music)
-                            R.id.item_playlists -> {
-                                this@MusicsFragment.dismiss()
-                                showFragment(MusicPlaylistsFragment.getInstance(music))
-                            }
+                            R.id.item_playlists -> showFragment(MusicPlaylistsFragment.getInstance(music))
                         }
                         true
                     }

@@ -97,10 +97,14 @@ class ItemsView @JvmOverloads constructor(context: Context, attrs: AttributeSet?
                         var position = parent.getChildAdapterPosition(view)
                         if (position != 0 && position != items.size + 1 && !items.isNullOrEmpty()) {
                             position--
-                            outRect.top = if (position < nbColumns) value else value / 2
-                            outRect.left = if (position % nbColumns == 0) value else value / 2
-                            outRect.right = if ((position + 1) % nbColumns == 0) value else value / 2
-                            outRect.bottom = if (position > items.size - nbColumns) value else value / 2
+                            if (position < nbColumns) {
+                                outRect.top = value
+                            }
+                            outRect.bottom = value
+                            if (position % nbColumns == 0) {
+                                outRect.left = value
+                            }
+                            outRect.right = value
                         }
                     }
                 }
@@ -259,7 +263,7 @@ class ItemsView @JvmOverloads constructor(context: Context, attrs: AttributeSet?
                 targetPosition--
                 if (sourcePosition in items.indices && targetPosition in items.indices) {
                     Collections.swap(items, sourcePosition, targetPosition)
-                    helper?.onItemsMove(items)
+                    helper?.onItemsMove(viewHolder.itemView, items, sourcePosition, targetPosition)
                 }
                 true
             } else false
@@ -373,7 +377,7 @@ class ItemsView @JvmOverloads constructor(context: Context, attrs: AttributeSet?
         open fun getIndexScroll(items: MutableList<*>, position: Int): String? = null
 
         open fun getDragView(itemView: View, items: MutableList<*>, position: Int): View? = null
-        open fun onItemsMove(items: MutableList<*>) {}
+        open fun onItemsMove(itemView: View, items: MutableList<*>, fromPosition: Int, toPosition: Int) {}
         open fun onItemStartDrag(itemView: View, items: MutableList<*>, position: Int) {}
         open fun onItemEndDrag(itemView: View, items: MutableList<*>, position: Int) {}
         open fun onItemSwipe(itemView: View, items: MutableList<*>, position: Int) {}
