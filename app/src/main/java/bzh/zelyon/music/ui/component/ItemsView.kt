@@ -97,14 +97,10 @@ class ItemsView @JvmOverloads constructor(context: Context, attrs: AttributeSet?
                         var position = parent.getChildAdapterPosition(view)
                         if (position != 0 && position != items.size + 1 && !items.isNullOrEmpty()) {
                             position--
-                            if (position < nbColumns) {
-                                outRect.top = value
-                            }
-                            outRect.bottom = value
-                            if (position % nbColumns == 0) {
-                                outRect.left = value
-                            }
-                            outRect.right = value
+                            outRect.top = if (position < nbColumns) value else value / 2
+                            outRect.left = if (position % nbColumns == 0) value else value / 2
+                            outRect.right = if ((position + 1) % nbColumns == 0) value else value / 2
+                            outRect.bottom = if (position > items.size - nbColumns) value else value / 2
                         }
                     }
                 }
@@ -292,6 +288,7 @@ class ItemsView @JvmOverloads constructor(context: Context, attrs: AttributeSet?
             val position = viewHolder.adapterPosition
             if (position != -1) {
                 helper?.onItemEndDrag(viewHolder.itemView, items, position - 1)
+                adapter?.notifyDataSetChanged()
             }
         }
 
