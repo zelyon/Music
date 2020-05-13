@@ -20,7 +20,7 @@ class MusicsFragment private constructor(): AbsToolBarBottomSheetFragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        musics = arguments?.getSerializable(ARG_MUSICS) as List<Music>
+        musics = (arguments?.getSerializable(ARG_MUSICS) as List<*>).map { it as Music }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -37,7 +37,7 @@ class MusicsFragment private constructor(): AbsToolBarBottomSheetFragment() {
 
     override fun getLayoutId() = R.layout.fragment_musics
 
-    override fun getToolBarTitle() = arguments?.getString(ARG_TITLE).toString()
+    override fun getTitleToolBar() = arguments?.getString(ARG_TITLE).toString()
 
     inner class MusicHelper: ItemsView.Helper() {
         override fun onBindItem(itemView: View, items: MutableList<*>, position: Int) {

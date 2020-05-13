@@ -56,9 +56,9 @@ abstract class AbsEditFragment<T: AbsModel>: AbsToolBarFragment() {
         getInputViews(view)
     }
 
-    override fun getLayoutId() = R.layout.fragment_edit
+    override fun getIdLayout() = R.layout.fragment_edit
 
-    override fun getToolBarTitle() = absModel.getDeclaration()
+    override fun getTitleToolBar() = absModel.getDeclaration()
 
     override fun getIdToolbar() = R.id.fragment_edit_toolbar
 

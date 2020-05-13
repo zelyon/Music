@@ -271,10 +271,10 @@ class ItemsView @JvmOverloads constructor(context: Context, attrs: AttributeSet?
 
         override fun onSwiped(viewHolder: ViewHolder, direction: Int) {
             val position = viewHolder.adapterPosition
-            adapter?.notifyItemRemoved(position)
             items.removeAt(position - 1)
-            helper?.onItemSwipe(viewHolder.itemView, items, position - 1)
+            adapter?.notifyItemRemoved(position)
             adapter?.notifyDataSetChanged()
+            helper?.onItemSwipe(viewHolder.itemView, items, position - 1)
         }
 
         override fun onSelectedChanged(viewHolder: ViewHolder?, actionState: Int) {

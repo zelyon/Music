@@ -40,7 +40,7 @@ class PlaylistsFragment: AbsFragment(), MusicPlayer.Listener {
         loadPlayLists()
     }
 
-    override fun getLayoutId() = R.layout.fragment_playlists
+    override fun getIdLayout() = R.layout.fragment_playlists
 
     private fun loadPlayLists() {
         fragment_playlists_itemsview_playlists.items = DB.getPlaylistDao().getAll().toMutableList()

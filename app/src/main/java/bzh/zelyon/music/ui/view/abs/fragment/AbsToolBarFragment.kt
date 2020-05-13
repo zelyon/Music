@@ -49,14 +49,14 @@ abstract class AbsToolBarFragment: AbsFragment() {
     abstract fun getIdToolbar(): Int
 
     fun updateToolBar() {
-        absActivity.supportActionBar?.title = getToolBarTitle()
-        absActivity.supportActionBar?.subtitle = getToolBarSubTitle()
+        absActivity.supportActionBar?.title = getTitleToolBar()
+        absActivity.supportActionBar?.subtitle = getSubTitleToolBar()
         absActivity.supportActionBar?.setDisplayHomeAsUpEnabled(showBack())
     }
 
-    open fun getToolBarTitle() = ""
+    open fun getTitleToolBar() = ""
 
-    open fun getToolBarSubTitle() = ""
+    open fun getSubTitleToolBar() = ""
 
     open fun showBack() = absActivity.supportFragmentManager.backStackEntryCount > 0
 

@@ -13,8 +13,8 @@ object MusicPlayer: MediaPlayer() {
 
     private var lastCurrentPosition = 0
     val listeners = mutableListOf<Listener>()
+    val playingMusic get() = if (playingPosition in musics.indices && File(musics[playingPosition].path).exists()) musics[playingPosition] else null
     var musics = mutableListOf<Music>()
-    val playingMusic get() = if (playingPosition in musics.indices) musics[playingPosition] else null
     var playingPosition = -1
     var isShuffle = false
     var isRepeat = false
@@ -30,13 +30,13 @@ object MusicPlayer: MediaPlayer() {
     }
 
     fun run() {
-        if (playingPosition in musics.indices && File(musics[playingPosition].path).exists()) {
+        playingMusic?.let {
             reset()
-            setDataSource(musics[playingPosition].path)
+            setDataSource(it.path)
             setOnCompletionListener { next() }
             prepare()
             start()
-        } else {
+        } ?: run {
             musics.clear()
             playingPosition = -1
             setOnCompletionListener {}
@@ -67,30 +67,20 @@ object MusicPlayer: MediaPlayer() {
 
     fun previous() {
         when {
-            isRepeat -> run()
-            isShuffle -> {
-                playingPosition = Random.nextInt(0, musics.size - 1)
-                run()
-            }
-            else -> {
-                playingPosition--
-                run()
-            }
+            isRepeat -> {}
+            isShuffle -> playingPosition = Random.nextInt(0, musics.size - 1)
+            else -> playingPosition--
         }
+        run()
     }
 
     fun next() {
         when {
-            isRepeat -> run()
-            isShuffle -> {
-                playingPosition = Random.nextInt(0, musics.size - 1)
-                run()
-            }
-            else -> {
-                playingPosition++
-                run()
-            }
+            isRepeat -> {}
+            isShuffle -> playingPosition = Random.nextInt(0, musics.size - 1)
+            else -> playingPosition++
         }
+        run()
     }
 
     fun deleteMusicFile(context: Context, music: Music) {

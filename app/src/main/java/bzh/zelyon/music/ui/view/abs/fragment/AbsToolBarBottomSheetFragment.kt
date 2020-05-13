@@ -22,8 +22,8 @@ abstract class AbsToolBarBottomSheetFragment: AbsBottomSheetFragment() {
         super.onViewCreated(view, savedInstanceState)
         toolbar = view.findViewById(getIdToolbar())
         toolbar?.apply {
-            title = getToolBarTitle()
-            subtitle = getToolBarSubTitle()
+            title = getTitleToolBar()
+            subtitle = getSubTitleToolBar()
             setNavigationIcon(R.drawable.ic_close)
             setNavigationOnClickListener {
                 dismiss()
@@ -45,15 +45,11 @@ abstract class AbsToolBarBottomSheetFragment: AbsBottomSheetFragment() {
         return super.onOptionsItemSelected(item)
     }
 
-    fun back() {
-        dismiss()
-    }
-
     abstract fun getIdToolbar(): Int
 
-    open fun getToolBarTitle() = ""
+    open fun getTitleToolBar() = ""
 
-    open fun getToolBarSubTitle() = ""
+    open fun getSubTitleToolBar() = ""
 
     open fun getIdMenu() = R.menu.empty
 

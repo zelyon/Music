@@ -23,7 +23,8 @@ abstract class AbsFragment: Fragment() {
         startPostponedEnterTransition()
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View = inflater.inflate(getLayoutId(), container, false)
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View =
+        inflater.inflate(getIdLayout(), container, false)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -39,7 +40,7 @@ abstract class AbsFragment: Fragment() {
         }
     }
 
-    abstract fun getLayoutId(): Int
+    abstract fun getIdLayout(): Int
 
     open fun onIdClick(id: Int) {}
 

@@ -18,9 +18,7 @@ abstract class AbsBottomSheetFragment: BottomSheetDialogFragment() {
         absActivity = activity as AbsActivity
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
-        return inflater.inflate(getLayoutId(), container, false)
-    }
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View = inflater.inflate(getLayoutId(), container, false)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -50,5 +48,9 @@ abstract class AbsBottomSheetFragment: BottomSheetDialogFragment() {
         if (isVisible) {
             absActivity.runOnUiThread(action)
         }
+    }
+
+    fun back() {
+        dismiss()
     }
 }

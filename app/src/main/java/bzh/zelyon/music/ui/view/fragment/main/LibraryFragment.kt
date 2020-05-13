@@ -63,7 +63,7 @@ class LibraryFragment: AbsToolBarFragment(), MusicPlayer.Listener, SearchView.On
         loadMusics()
     }
 
-    override fun getLayoutId() = R.layout.fragment_library
+    override fun getIdLayout() = R.layout.fragment_library
 
     override fun onIdClick(id: Int) {
         when (id) {

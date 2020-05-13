@@ -90,7 +90,8 @@ abstract class AbsActivity: AppCompatActivity() {
         message: String,
         duration: Int = Snackbar.LENGTH_LONG,
         actionMessage: String? = null,
-        actionResult:() -> Unit = {}) = Snackbar.make(findViewById(android.R.id.content), message, duration).apply {
+        actionResult:() -> Unit = {}) =
+        Snackbar.make(findViewById(android.R.id.content), message, duration).apply {
             setAction(actionMessage) {
                 actionResult.invoke()
             }
