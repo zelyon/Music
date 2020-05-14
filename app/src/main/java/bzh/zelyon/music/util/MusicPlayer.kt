@@ -1,19 +1,17 @@
 package bzh.zelyon.music.util
 
-import android.content.Context
 import android.media.MediaPlayer
-import androidx.appcompat.app.AlertDialog
-import bzh.zelyon.music.R
 import bzh.zelyon.music.db.model.Music
 import bzh.zelyon.music.util.MusicPlayer.setOnCompletionListener
 import java.io.File
 import kotlin.random.Random
+import kotlin.random.nextInt
 
 object MusicPlayer: MediaPlayer() {
 
     private var lastCurrentPosition = 0
-    val listeners = mutableListOf<Listener>()
     val playingMusic get() = if (playingPosition in musics.indices && File(musics[playingPosition].path).exists()) musics[playingPosition] else null
+    var playingPositions = mutableListOf<Int>()
     var musics = mutableListOf<Music>()
     var playingPosition = -1
     var isShuffle = false
@@ -22,6 +20,7 @@ object MusicPlayer: MediaPlayer() {
     fun playMusics(musics: List<Music>) {
         this.musics = musics.toMutableList()
         playingPosition = 0
+        playingPositions.add(playingPosition)
         run()
     }
 
@@ -33,12 +32,13 @@ object MusicPlayer: MediaPlayer() {
         playingMusic?.let {
             reset()
             setDataSource(it.path)
-            setOnCompletionListener { next() }
+            setOnCompletionListener { next(true) }
             prepare()
             start()
         } ?: run {
             musics.clear()
             playingPosition = -1
+            playingPositions.clear()
             setOnCompletionListener {}
             stop()
             reset()
@@ -62,41 +62,23 @@ object MusicPlayer: MediaPlayer() {
 
     fun jumpTo(position: Int) {
         playingPosition = position
+        playingPositions.add(playingPosition)
         run()
     }
 
     fun previous() {
-        when {
-            isRepeat -> {}
-            isShuffle -> playingPosition = Random.nextInt(0, musics.size - 1)
-            else -> playingPosition--
-        }
+        playingPositions = playingPositions.dropLast(1).toMutableList()
+        playingPosition = playingPositions.last()
         run()
     }
 
-    fun next() {
+    fun next(auto: Boolean = false) {
         when {
-            isRepeat -> {}
-            isShuffle -> playingPosition = Random.nextInt(0, musics.size - 1)
+            isRepeat -> if (!auto) playingPosition++
+            isShuffle -> playingPosition = Random.nextInt(musics.indices)
             else -> playingPosition++
         }
+        playingPositions.add(playingPosition)
         run()
-    }
-
-    fun deleteMusicFile(context: Context, music: Music) {
-        AlertDialog.Builder(context)
-            .setTitle(R.string.item_popup_delete_title)
-            .setMessage(context.getString(R.string.item_popup_delete_message, music.title))
-            .setPositiveButton(R.string.item_popup_delete_positive) { _, _ ->
-                File(music.path).delete()
-                listeners.forEach {
-                    it.onMusicFileDeleted(music)
-                }
-            }
-            .show()
-    }
-
-    interface Listener {
-        fun onMusicFileDeleted(music: Music)
     }
 }

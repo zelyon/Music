@@ -25,14 +25,9 @@ import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.fragment_library.*
 import kotlinx.android.synthetic.main.item_artist.view.*
 
-class LibraryFragment: AbsToolBarFragment(), MusicPlayer.Listener, SearchView.OnQueryTextListener {
+class LibraryFragment: AbsToolBarFragment(), SearchView.OnQueryTextListener {
 
     private var currentSearch = ""
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        MusicPlayer.listeners.add(this)
-    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -83,12 +78,6 @@ class LibraryFragment: AbsToolBarFragment(), MusicPlayer.Listener, SearchView.On
         currentSearch = query
         loadMusics()
         return true
-    }
-
-    override fun onMusicFileDeleted(music: Music) {
-        safeRun {
-            loadMusics()
-        }
     }
 
     private fun loadMusics() {

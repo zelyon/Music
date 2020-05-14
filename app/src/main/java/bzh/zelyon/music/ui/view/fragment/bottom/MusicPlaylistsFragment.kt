@@ -48,6 +48,7 @@ class MusicPlaylistsFragment private constructor(): AbsToolBarBottomSheetFragmen
                     mandatory = true
                 }
                 AlertDialog.Builder(absActivity).apply {
+                    setTitle(R.string.fragment_musicplaylists_add)
                     setView(input)
                     setPositiveButton(R.string.popup_ok, null)
                 }.create().apply {
@@ -57,6 +58,7 @@ class MusicPlaylistsFragment private constructor(): AbsToolBarBottomSheetFragmen
                                 DB.getPlaylistDao().insert(Playlist(null, input.text.orEmpty()))
                                 dismiss()
                                 loadPlayLists()
+                                // TODO nicolas_leveque 14/05/2020: reload all
                             }
                         }
                     }
@@ -82,6 +84,7 @@ class MusicPlaylistsFragment private constructor(): AbsToolBarBottomSheetFragmen
                         playlist.musics.remove(music)
                     }
                     DB.getPlaylistDao().update(playlist)
+                    // TODO nicolas_leveque 14/05/2020: reload all
                 }
             }
         }

@@ -18,12 +18,7 @@ import bzh.zelyon.music.util.MusicPlayer
 import kotlinx.android.synthetic.main.fragment_playlists.*
 import kotlinx.android.synthetic.main.item_playlist.view.*
 
-class PlaylistsFragment: AbsFragment(), MusicPlayer.Listener {
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        MusicPlayer.listeners.add(this)
-    }
+class PlaylistsFragment: AbsFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -81,6 +76,7 @@ class PlaylistsFragment: AbsFragment(), MusicPlayer.Listener {
                             R.id.item_delete -> {
                                 DB.getPlaylistDao().delete(playlist)
                                 loadPlayLists()
+                                // TODO nicolas_leveque 14/05/2020: reload all
                             }
                         }
                         return@setOnMenuItemClickListener true
@@ -88,9 +84,5 @@ class PlaylistsFragment: AbsFragment(), MusicPlayer.Listener {
                 }.show()
             }
         }
-    }
-
-    override fun onMusicFileDeleted(music: Music) {
-        loadPlayLists()
     }
 }

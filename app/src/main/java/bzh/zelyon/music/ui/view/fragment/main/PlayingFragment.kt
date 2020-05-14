@@ -15,6 +15,7 @@ import bzh.zelyon.music.extension.millisecondstoDuration
 import bzh.zelyon.music.extension.setImage
 import bzh.zelyon.music.ui.component.ItemsView
 import bzh.zelyon.music.ui.view.abs.fragment.AbsToolBarFragment
+import bzh.zelyon.music.ui.view.dialog.DeleteMusicDialog
 import bzh.zelyon.music.ui.view.fragment.bottom.MusicPlaylistsFragment
 import bzh.zelyon.music.ui.view.fragment.edit.EditMusicFragment
 import bzh.zelyon.music.util.MusicPlayer
@@ -50,8 +51,8 @@ class PlayingFragment: AbsToolBarFragment(), SeekBar.OnSeekBarChangeListener {
                     fragment_playing_textview_current.text = MusicPlayer.currentPosition.millisecondstoDuration()
                     fragment_playing_seekbar_current.max = MusicPlayer.duration
                     fragment_playing_seekbar_current.progress = MusicPlayer.currentPosition
-                    fragment_playing_imagebutton_previous.isVisible = MusicPlayer.playingPosition > 0
-                    fragment_playing_imagebutton_next.isVisible = MusicPlayer.playingPosition < MusicPlayer.musics.size - 1
+                    fragment_playing_imagebutton_previous.isVisible = MusicPlayer.playingPositions.size > 1
+                    fragment_playing_imagebutton_next.isVisible = MusicPlayer.isShuffle || MusicPlayer.playingPosition < MusicPlayer.musics.size - 1
                     fragment_playing_imagebutton_repeat.alpha = if (MusicPlayer.isRepeat) 1F else 0.5F
                     fragment_playing_imagebutton_shuffle.alpha = if (MusicPlayer.isShuffle) 1F else 0.5F
                     if (playingMusic != MusicPlayer.playingMusic) {
@@ -150,7 +151,7 @@ class PlayingFragment: AbsToolBarFragment(), SeekBar.OnSeekBarChangeListener {
                     setOnMenuItemClickListener {
                         when (it.itemId) {
                             R.id.item_edit_infos -> showFragment(EditMusicFragment.getInstance(music, artwork), transitionView = itemView.item_music_imageview_artwork)
-                            R.id.item_delete -> MusicPlayer.deleteMusicFile(absActivity, music)
+                            R.id.item_delete -> DeleteMusicDialog(absActivity, music).show()
                             R.id.item_playlists -> showFragment(MusicPlaylistsFragment.getInstance(music))
                         }
                         true
