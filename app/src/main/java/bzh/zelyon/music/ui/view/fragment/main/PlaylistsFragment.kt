@@ -16,6 +16,7 @@ import bzh.zelyon.music.ui.view.fragment.bottom.MusicsFragment
 import bzh.zelyon.music.util.MusicPlayer
 import kotlinx.android.synthetic.main.fragment_playlists.*
 import kotlinx.android.synthetic.main.item_playlist.view.*
+import java.io.File
 
 class PlaylistsFragment: AbsFragment() {
 
@@ -37,7 +38,20 @@ class PlaylistsFragment: AbsFragment() {
     override fun getIdLayout() = R.layout.fragment_playlists
 
     private fun loadPlayLists() {
-        fragment_playlists_itemsview_playlists.items = DB.getPlaylistDao().getAll().toMutableList()
+        val playlists = DB.getPlaylistDao().getAll().toMutableList()
+        playlists.forEach { playlist ->
+            if (playlist.musics.isEmpty()) {
+                playlists.remove(playlist)
+            } else {
+                playlist.musics.forEach { music ->
+                    if (!File(music.path).exists()) {
+                        playlist.musics.remove(music)
+                        DB.getPlaylistDao().update(playlist)
+                    }
+                }
+            }
+        }
+        fragment_playlists_itemsview_playlists.items = playlists
     }
 
     inner class PlaylistHelper: ItemsView.Helper() {

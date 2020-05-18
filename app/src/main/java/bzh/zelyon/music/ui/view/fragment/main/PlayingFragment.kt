@@ -15,7 +15,6 @@ import bzh.zelyon.music.extension.millisecondstoDuration
 import bzh.zelyon.music.extension.setImage
 import bzh.zelyon.music.ui.component.ItemsView
 import bzh.zelyon.music.ui.view.abs.fragment.AbsToolBarFragment
-import bzh.zelyon.music.ui.view.dialog.DeleteMusicDialog
 import bzh.zelyon.music.ui.view.fragment.bottom.MusicPlaylistsFragment
 import bzh.zelyon.music.ui.view.fragment.edit.EditMusicFragment
 import bzh.zelyon.music.util.MusicPlayer
@@ -148,10 +147,10 @@ class PlayingFragment: AbsToolBarFragment(), SeekBar.OnSeekBarChangeListener {
                     menuInflater.inflate(R.menu.item, menu)
                     menu.findItem(R.id.item_play).isVisible = false
                     menu.findItem(R.id.item_add).isVisible = false
+                    menu.findItem(R.id.item_delete).isVisible = false
                     setOnMenuItemClickListener {
                         when (it.itemId) {
                             R.id.item_edit_infos -> showFragment(EditMusicFragment.getInstance(music, artwork), transitionView = itemView.item_music_imageview_artwork)
-                            R.id.item_delete -> DeleteMusicDialog(absActivity, music).show()
                             R.id.item_playlists -> showFragment(MusicPlaylistsFragment.getInstance(music))
                         }
                         true

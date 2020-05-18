@@ -3,17 +3,18 @@ package bzh.zelyon.music.ui.view.fragment.bottom
 import android.graphics.drawable.BitmapDrawable
 import android.os.Bundle
 import android.view.View
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.PopupMenu
 import bzh.zelyon.music.R
 import bzh.zelyon.music.db.model.Music
 import bzh.zelyon.music.extension.setImage
 import bzh.zelyon.music.ui.component.ItemsView
 import bzh.zelyon.music.ui.view.abs.fragment.AbsToolBarBottomSheetFragment
-import bzh.zelyon.music.ui.view.dialog.DeleteMusicDialog
 import bzh.zelyon.music.ui.view.fragment.edit.EditMusicFragment
 import bzh.zelyon.music.util.MusicPlayer
 import kotlinx.android.synthetic.main.fragment_musics.*
 import kotlinx.android.synthetic.main.item_music.view.*
+import java.io.File
 
 class MusicsFragment private constructor(): AbsToolBarBottomSheetFragment() {
 
@@ -74,7 +75,16 @@ class MusicsFragment private constructor(): AbsToolBarBottomSheetFragment() {
                             R.id.item_play -> MusicPlayer.playMusics(listOf(music))
                             R.id.item_add -> MusicPlayer.addMusics(listOf(music))
                             R.id.item_edit_infos -> showFragment(EditMusicFragment.getInstance(music, artwork), transitionView = itemView.item_music_imageview_artwork)
-                            R.id.item_delete -> DeleteMusicDialog(absActivity, music).show()
+                            R.id.item_delete -> {
+                                AlertDialog.Builder(absActivity)
+                                    .setTitle(R.string.item_popup_delete_title)
+                                    .setMessage(getString(R.string.item_popup_delete_message, music.title))
+                                    .setPositiveButton(R.string.item_popup_delete_positive) { _, _ ->
+                                        File(music.path).delete()
+                                        // TODO nicolas_leveque 14/05/2020: reload all
+                                    }
+                                    .show()
+                            }
                             R.id.item_playlists -> showFragment(MusicPlaylistsFragment.getInstance(music))
                         }
                         true
