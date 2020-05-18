@@ -14,11 +14,12 @@
 
     <!-- Playlists Fragment -->
     <string name="fragment_playlists_no_playlist">Aucune playlist trouvé</string>
+    <string name="fragment_playlists_rename">Renommer</string>
+    <string name="fragment_playlists_name">Nom</string>
 
     <!-- Edit Fragment -->
     <string name="fragment_edit_snackbar_failed">Modification impossible</string>
     <string name="fragment_edit_artist_name">Nom</string>
-    <string name="fragment_edit_playlist_name">Nom</string>
     <string name="fragment_edit_music_title">Titre</string>
     <string name="fragment_edit_music_artist">Artiste</string>
     <string name="fragment_edit_music_album">Album</string>
@@ -45,7 +46,7 @@
     <string name="item_popup_delete_positive">Oui</string>
     <string name="item_menu_play">Lecture</string>
     <string name="item_menu_add">Lire à la suite</string>
-    <string name="item_menu_edit_infos">Éditer informations</string>
+    <string name="item_menu_edit">Éditer</string>
     <string name="item_menu_delete">Supprimer</string>
     <string name="item_menu_playlists">Playlist : ajouter / supprimer</string>
 

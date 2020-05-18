@@ -58,7 +58,6 @@ class MusicPlaylistsFragment private constructor(): AbsToolBarBottomSheetFragmen
                                 DB.getPlaylistDao().insert(Playlist(null, input.text.orEmpty()))
                                 dismiss()
                                 loadPlayLists()
-                                // TODO nicolas_leveque 14/05/2020: reload all
                             }
                         }
                     }
@@ -84,7 +83,6 @@ class MusicPlaylistsFragment private constructor(): AbsToolBarBottomSheetFragmen
                         playlist.musics.remove(music)
                     }
                     DB.getPlaylistDao().update(playlist)
-                    // TODO nicolas_leveque 14/05/2020: reload all
                 }
             }
         }

@@ -8,11 +8,8 @@ import androidx.appcompat.widget.PopupMenu
 import androidx.appcompat.widget.SearchView
 import androidx.core.view.marginBottom
 import androidx.core.view.marginTop
-import androidx.recyclerview.widget.RecyclerView
 import bzh.zelyon.music.R
 import bzh.zelyon.music.db.model.Artist
-import bzh.zelyon.music.db.model.Music
-import bzh.zelyon.music.extension.closeKeyboard
 import bzh.zelyon.music.extension.dpToPx
 import bzh.zelyon.music.extension.setImage
 import bzh.zelyon.music.ui.component.ItemsView
@@ -45,14 +42,6 @@ class LibraryFragment: AbsToolBarFragment(), SearchView.OnQueryTextListener {
             thumbMarginTop = absActivity.dpToPx(80)
             thumbMarginBottom = absActivity.dpToPx(80)
             helper = ArtistHelper()
-            addOnScrollListener(object : RecyclerView.OnScrollListener() {
-                override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
-                    super.onScrollStateChanged(recyclerView, newState)
-                    if (scrollState == 0) {
-                        closeKeyboard()
-                    }
-                }
-            })
         }
 
         loadMusics()

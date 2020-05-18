@@ -3,7 +3,6 @@ package bzh.zelyon.music.util
 import android.content.Context
 import bzh.zelyon.music.db.model.Artist
 import bzh.zelyon.music.db.model.Music
-import bzh.zelyon.music.db.model.Playlist
 import com.bumptech.glide.Glide
 import com.bumptech.glide.Priority
 import com.bumptech.glide.Registry
@@ -54,22 +53,6 @@ class MusicGlideModule: AppGlideModule() {
         registry.prepend(Artist::class.java, InputStream::class.java, object : AbsModelLoaderFactory<Artist>() {
             override fun build(multiFactory: MultiModelLoaderFactory) = object : AbsModelLoader<Artist>() {
                 override fun buildLoadData(model: Artist, width: Int, height: Int, options: Options) = ModelLoader.LoadData(ObjectKey(model), object : AbsDataFetcher() {
-                    override fun loadData(priority: Priority, callback: DataFetcher.DataCallback<in InputStream>) {
-                        var index = 0
-                        while (inputStream == null && index < model.musics.size) {
-                            inputStream = model.musics[index].getArtworkInputStreamFromPath(context)
-                            index++
-                        }
-                        inputStream?.let {
-                            callback.onDataReady(inputStream)
-                        }
-                    }
-                })
-            }
-        })
-        registry.prepend(Playlist::class.java, InputStream::class.java, object : AbsModelLoaderFactory<Playlist>() {
-            override fun build(multiFactory: MultiModelLoaderFactory) = object : AbsModelLoader<Playlist>() {
-                override fun buildLoadData(model: Playlist, width: Int, height: Int, options: Options) = ModelLoader.LoadData(ObjectKey(model), object : AbsDataFetcher() {
                     override fun loadData(priority: Priority, callback: DataFetcher.DataCallback<in InputStream>) {
                         var index = 0
                         while (inputStream == null && index < model.musics.size) {
