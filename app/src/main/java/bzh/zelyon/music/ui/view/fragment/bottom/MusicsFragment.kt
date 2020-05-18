@@ -74,14 +74,14 @@ class MusicsFragment private constructor(): AbsToolBarBottomSheetFragment() {
                         when (it.itemId) {
                             R.id.item_play -> MusicPlayer.playMusics(listOf(music))
                             R.id.item_add -> MusicPlayer.addMusics(listOf(music))
-                            R.id.item_edit_infos -> showFragment(EditMusicFragment.getInstance(music, artwork), transitionView = itemView.item_music_imageview_artwork)
+                            R.id.item_edit -> showFragment(EditMusicFragment.getInstance(music, artwork), transitionView = itemView.item_music_imageview_artwork)
                             R.id.item_delete -> {
                                 AlertDialog.Builder(absActivity)
                                     .setTitle(R.string.item_popup_delete_title)
                                     .setMessage(getString(R.string.item_popup_delete_message, music.title))
                                     .setPositiveButton(R.string.item_popup_delete_positive) { _, _ ->
                                         File(music.path).delete()
-                                        // TODO nicolas_leveque 14/05/2020: reload all
+                                        // TODO nicolas_leveque 14/05/2020: reload library/playlist fragments
                                     }
                                     .show()
                             }

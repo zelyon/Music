@@ -119,7 +119,7 @@ class LibraryFragment: AbsToolBarFragment(), SearchView.OnQueryTextListener {
                         when (it.itemId) {
                             R.id.item_play -> MusicPlayer.playMusics(artist.musics)
                             R.id.item_add -> MusicPlayer.addMusics(artist.musics)
-                            R.id.item_edit_infos -> showFragment(EditArtistFragment.getInstance(artist, artwork), transitionView = itemView.item_artist_imageview_artwork)
+                            R.id.item_edit -> showFragment(EditArtistFragment.getInstance(artist, artwork), transitionView = itemView.item_artist_imageview_artwork)
                         }
                         return@setOnMenuItemClickListener true
                     }

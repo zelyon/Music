@@ -82,7 +82,7 @@ class PlaylistsFragment: AbsFragment() {
                         when (it.itemId) {
                             R.id.item_play -> MusicPlayer.playMusics(playlist.musics)
                             R.id.item_add -> MusicPlayer.addMusics(playlist.musics)
-                            R.id.item_edit_infos -> {
+                            R.id.item_edit -> {
                                 val input = InputView(absActivity).apply {
                                     type = InputView.Type.TEXT
                                     label = getString(R.string.fragment_playlists_name)

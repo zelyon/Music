@@ -83,7 +83,7 @@ class MusicPlaylistsFragment private constructor(): AbsToolBarBottomSheetFragmen
                         playlist.musics.remove(music)
                     }
                     DB.getPlaylistDao().update(playlist)
-                    // TODO nicolas_leveque 14/05/2020: reload all
+                    // TODO nicolas_leveque 14/05/2020: reload playlist fragments
                 }
             }
         }

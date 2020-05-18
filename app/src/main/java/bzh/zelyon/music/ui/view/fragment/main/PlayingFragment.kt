@@ -24,14 +24,18 @@ import kotlin.concurrent.fixedRateTimer
 import kotlin.math.max
 import kotlin.math.min
 
-class PlayingFragment: AbsToolBarFragment(), SeekBar.OnSeekBarChangeListener {
+class PlayingFragment: AbsToolBarFragment() {
 
     private var playingMusic: Music? = null
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        fragment_playing_seekbar_current.setOnSeekBarChangeListener(this)
+        fragment_playing_seekbar_current.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
+            override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {}
+            override fun onStartTrackingTouch(seekBar: SeekBar) {}
+            override fun onStopTrackingTouch(seekBar: SeekBar) = MusicPlayer.goTo(seekBar.progress)
+        })
         fragment_playing_itemsview_musics.apply {
             idLayoutItem = R.layout.item_music
             idLayoutFooter = R.layout.item_music_footer
@@ -102,12 +106,6 @@ class PlayingFragment: AbsToolBarFragment(), SeekBar.OnSeekBarChangeListener {
         duration = false
     ).orEmpty()
 
-    override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {}
-
-    override fun onStartTrackingTouch(seekBar: SeekBar) {}
-
-    override fun onStopTrackingTouch(seekBar: SeekBar) = MusicPlayer.goTo(seekBar.progress)
-
     inner class MusicHelper: ItemsView.Helper() {
         override fun onBindItem(itemView: View, items: MutableList<*>, position: Int) {
             val music = items[position]
@@ -150,7 +148,7 @@ class PlayingFragment: AbsToolBarFragment(), SeekBar.OnSeekBarChangeListener {
                     menu.findItem(R.id.item_delete).isVisible = false
                     setOnMenuItemClickListener {
                         when (it.itemId) {
-                            R.id.item_edit_infos -> showFragment(EditMusicFragment.getInstance(music, artwork), transitionView = itemView.item_music_imageview_artwork)
+                            R.id.item_edit -> showFragment(EditMusicFragment.getInstance(music, artwork), transitionView = itemView.item_music_imageview_artwork)
                             R.id.item_playlists -> showFragment(MusicPlaylistsFragment.getInstance(music))
                         }
                         true
