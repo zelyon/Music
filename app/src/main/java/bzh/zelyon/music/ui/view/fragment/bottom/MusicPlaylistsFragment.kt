@@ -8,6 +8,7 @@ import bzh.zelyon.music.R
 import bzh.zelyon.music.db.DB
 import bzh.zelyon.music.db.model.Music
 import bzh.zelyon.music.db.model.Playlist
+import bzh.zelyon.music.ui.Listener
 import bzh.zelyon.music.ui.component.InputView
 import bzh.zelyon.music.ui.component.ItemsView
 import bzh.zelyon.music.ui.view.abs.fragment.AbsToolBarBottomSheetFragment
@@ -17,10 +18,12 @@ import kotlinx.android.synthetic.main.item_musicplaylist.view.*
 class MusicPlaylistsFragment private constructor(): AbsToolBarBottomSheetFragment() {
 
     lateinit var music: Music
+    private var listener: Listener? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         music = arguments?.getSerializable(ARG_MUSIC) as Music
+        listener = arguments?.getSerializable(ARG_LISTENER) as? Listener
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -83,7 +86,7 @@ class MusicPlaylistsFragment private constructor(): AbsToolBarBottomSheetFragmen
                         playlist.musics.remove(music)
                     }
                     DB.getPlaylistDao().update(playlist)
-                    // TODO nicolas_leveque 14/05/2020: reload playlist fragments
+                    listener?.needToReload()
                 }
             }
         }
@@ -95,10 +98,12 @@ class MusicPlaylistsFragment private constructor(): AbsToolBarBottomSheetFragmen
     companion object {
 
         const val ARG_MUSIC = "ARG_MUSIC"
+        const val ARG_LISTENER = "ARG_LISTENER"
 
-        fun getInstance(music: Music) = MusicPlaylistsFragment().apply {
+        fun getInstance(music: Music, listener: Listener?) = MusicPlaylistsFragment().apply {
             arguments = Bundle().apply {
                 putSerializable(ARG_MUSIC, music)
+                putSerializable(ARG_LISTENER, listener)
             }
         }
     }

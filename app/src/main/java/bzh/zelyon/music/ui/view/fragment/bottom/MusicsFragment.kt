@@ -8,6 +8,7 @@ import androidx.appcompat.widget.PopupMenu
 import bzh.zelyon.music.R
 import bzh.zelyon.music.db.model.Music
 import bzh.zelyon.music.extension.setImage
+import bzh.zelyon.music.ui.Listener
 import bzh.zelyon.music.ui.component.ItemsView
 import bzh.zelyon.music.ui.view.abs.fragment.AbsToolBarBottomSheetFragment
 import bzh.zelyon.music.ui.view.fragment.edit.EditMusicFragment
@@ -19,10 +20,12 @@ import java.io.File
 class MusicsFragment private constructor(): AbsToolBarBottomSheetFragment() {
 
     lateinit var musics: List<Music>
+    private var listener: Listener? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         musics = (arguments?.getSerializable(ARG_MUSICS) as List<*>).map { it as Music }
+        listener = arguments?.getSerializable(ARG_LISTENER) as? Listener
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -81,11 +84,11 @@ class MusicsFragment private constructor(): AbsToolBarBottomSheetFragment() {
                                     .setMessage(getString(R.string.item_popup_delete_message, music.title))
                                     .setPositiveButton(R.string.item_popup_delete_positive) { _, _ ->
                                         File(music.path).delete()
-                                        // TODO nicolas_leveque 14/05/2020: reload library/playlist fragments
+                                        listener?.needToReload()
                                     }
                                     .show()
                             }
-                            R.id.item_playlists -> showFragment(MusicPlaylistsFragment.getInstance(music))
+                            R.id.item_playlists -> showFragment(MusicPlaylistsFragment.getInstance(music, listener))
                         }
                         true
                     }
@@ -98,11 +101,13 @@ class MusicsFragment private constructor(): AbsToolBarBottomSheetFragment() {
 
         const val ARG_TITLE = "ARG_TITLE"
         const val ARG_MUSICS = "ARG_MUSICS"
+        const val ARG_LISTENER = "ARG_LISTENER"
 
-        fun getInstance(title: String, musics: List<Music>) = MusicsFragment().apply {
+        fun getInstance(title: String, musics: List<Music>, listener: Listener?) = MusicsFragment().apply {
             arguments = Bundle().apply {
                 putString(ARG_TITLE, title)
                 putSerializable(ARG_MUSICS, ArrayList(musics))
+                putSerializable(ARG_LISTENER, listener)
             }
         }
     }

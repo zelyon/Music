@@ -12,6 +12,7 @@ import bzh.zelyon.music.R
 import bzh.zelyon.music.db.model.Artist
 import bzh.zelyon.music.extension.dpToPx
 import bzh.zelyon.music.extension.setImage
+import bzh.zelyon.music.ui.Listener
 import bzh.zelyon.music.ui.component.ItemsView
 import bzh.zelyon.music.ui.view.abs.fragment.AbsToolBarFragment
 import bzh.zelyon.music.ui.view.fragment.bottom.MusicsFragment
@@ -22,7 +23,7 @@ import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.fragment_library.*
 import kotlinx.android.synthetic.main.item_artist.view.*
 
-class LibraryFragment: AbsToolBarFragment(), SearchView.OnQueryTextListener {
+class LibraryFragment: AbsToolBarFragment(), SearchView.OnQueryTextListener, Listener {
 
     private var currentSearch = ""
 
@@ -69,6 +70,10 @@ class LibraryFragment: AbsToolBarFragment(), SearchView.OnQueryTextListener {
         return true
     }
 
+    override fun needToReload() {
+        loadMusics()
+    }
+
     private fun loadMusics() {
         absActivity.ifPermissions(
             Manifest.permission.READ_EXTERNAL_STORAGE,
@@ -103,7 +108,7 @@ class LibraryFragment: AbsToolBarFragment(), SearchView.OnQueryTextListener {
         override fun onItemClick(itemView: View, items: MutableList<*>, position: Int) {
             val artist = items[position]
             if (artist is Artist) {
-                showFragment(MusicsFragment.getInstance(artist.name, artist.musics))
+                showFragment(MusicsFragment.getInstance(artist.name, artist.musics, this@LibraryFragment))
             }
         }
         override fun onItemLongClick(itemView: View, items: MutableList<*>, position: Int) {

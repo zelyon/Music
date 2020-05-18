@@ -9,6 +9,7 @@ import bzh.zelyon.music.R
 import bzh.zelyon.music.db.DB
 import bzh.zelyon.music.db.model.Playlist
 import bzh.zelyon.music.extension.dpToPx
+import bzh.zelyon.music.ui.Listener
 import bzh.zelyon.music.ui.component.InputView
 import bzh.zelyon.music.ui.component.ItemsView
 import bzh.zelyon.music.ui.view.abs.fragment.AbsFragment
@@ -18,7 +19,7 @@ import kotlinx.android.synthetic.main.fragment_playlists.*
 import kotlinx.android.synthetic.main.item_playlist.view.*
 import java.io.File
 
-class PlaylistsFragment: AbsFragment() {
+class PlaylistsFragment: AbsFragment(), Listener {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -54,6 +55,10 @@ class PlaylistsFragment: AbsFragment() {
         fragment_playlists_itemsview_playlists.items = playlists
     }
 
+    override fun needToReload() {
+        loadPlayLists()
+    }
+
     inner class PlaylistHelper: ItemsView.Helper() {
         override fun onBindItem(itemView: View, items: MutableList<*>, position: Int) {
             val playlist = items[position]
@@ -67,7 +72,7 @@ class PlaylistsFragment: AbsFragment() {
             val playlist = items[position]
             if (playlist is Playlist) {
                 if (playlist.musics.isNotEmpty()) {
-                    showFragment(MusicsFragment.getInstance(playlist.name, playlist.musics))
+                    showFragment(MusicsFragment.getInstance(playlist.name, playlist.musics, this@PlaylistsFragment))
                 }
             }
         }
