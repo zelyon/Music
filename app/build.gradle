@@ -40,7 +40,7 @@ dependencies {
 
     //Google
     implementation 'com.google.code.gson:gson:2.8.6'
-    implementation 'com.google.android.material:material:1.2.0-alpha04'
+    implementation 'com.google.android.material:material:1.2.0-alpha06'
 
     //AndroidX
     implementation 'androidx.multidex:multidex:2.0.1'
@@ -63,8 +63,8 @@ dependencies {
     kapt "androidx.room:room-compiler:$room_version"
 
     //Retrofit
-    implementation 'com.squareup.okio:okio:2.4.3'
-    implementation 'com.squareup.okhttp3:okhttp:4.3.1'
+    implementation 'com.squareup.okio:okio:2.6.0'
+    implementation 'com.squareup.okhttp3:okhttp:4.7.2'
     implementation "com.squareup.retrofit2:retrofit:$retrofit2_version"
     implementation "com.squareup.retrofit2:converter-gson:$retrofit2_version"
 
