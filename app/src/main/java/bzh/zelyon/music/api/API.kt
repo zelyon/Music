@@ -23,30 +23,6 @@ interface API {
             .client(OkHttpClient.Builder().build())
             .build()
             .create(API::class.java)
-
-        fun getArtist(artist: String, callback: (ArtistResponse) -> Unit) {
-            API.getArtist(artist).enqueue(object : CallBack<ArtistResponse> {
-                override fun onSuccess(response: ArtistResponse) {
-                    callback.invoke(response)
-                }
-            })
-        }
-
-        fun getAlbum(artist: String, album: String, callback: (AlbumResponse) -> Unit) {
-            API.getAlbum(artist, album).enqueue(object : CallBack<AlbumResponse> {
-                override fun onSuccess(response: AlbumResponse) {
-                    callback.invoke(response)
-                }
-            })
-        }
-
-        fun getMusic(artist: String, track: String, callback: (MusicResponse) -> Unit) {
-            API.getMusic(artist, track).enqueue(object : CallBack<MusicResponse> {
-                override fun onSuccess(response: MusicResponse) {
-                    callback.invoke(response)
-                }
-            })
-        }
     }
 
     interface CallBack<T>: Callback<T> {

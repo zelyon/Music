@@ -76,8 +76,9 @@ data class Music(
             MP3File(path).tag.firstArtwork?.binaryData?.let {
                 bytes = it
             }
-            val artworkUri = ContentUris.withAppendedId(Uri.parse("content://media/external/audio/albumart"), albumId.toLong())
-            inputStream = context.contentResolver.openInputStream(artworkUri)
+            val artworkUri = Uri.parse("content://media/external/audio/albumart")
+            val artworkUriWithId = ContentUris.withAppendedId(artworkUri, albumId.toLong())
+            inputStream = context.contentResolver.openInputStream(artworkUriWithId)
         } catch (ignored: Exception) {
         } finally {
             if (bytes?.isNotEmpty() == true && ByteArrayInputStream(bytes).available() != 0) {
