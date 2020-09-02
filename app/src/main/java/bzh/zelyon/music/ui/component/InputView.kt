@@ -445,24 +445,17 @@ class InputView @JvmOverloads constructor(context: Context, attrs: AttributeSet?
     }
 
     fun setEndIcon(endIcon: EndIcon?) {
-        endIcon?.let {
-            when (endIcon) {
-                is TogglePasswordEndIcon -> {
-                    view_input_layout.endIconMode = TextInputLayout.END_ICON_PASSWORD_TOGGLE
+        view_input_layout.endIconMode = when(endIcon) {
+            null -> TextInputLayout.END_ICON_NONE
+            is TogglePasswordEndIcon -> TextInputLayout.END_ICON_PASSWORD_TOGGLE
+            is ClearTextEndIcon -> TextInputLayout.END_ICON_CLEAR_TEXT
+            else -> {
+                view_input_layout.endIconDrawable = endIcon.icon
+                view_input_layout.setEndIconOnClickListener {
+                    endIcon.action?.invoke()
                 }
-                is ClearTextEndIcon -> {
-                    view_input_layout.endIconMode = TextInputLayout.END_ICON_CLEAR_TEXT
-                }
-                else -> {
-                    view_input_layout.endIconMode = TextInputLayout.END_ICON_CUSTOM
-                    view_input_layout.endIconDrawable = endIcon.icon
-                    view_input_layout.setEndIconOnClickListener {
-                        endIcon.action?.invoke()
-                    }
-                }
+                TextInputLayout.END_ICON_CUSTOM
             }
-        } ?: run {
-            view_input_layout.endIconMode = TextInputLayout.END_ICON_NONE
         }
     }
 
