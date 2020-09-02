@@ -1,4 +1,4 @@
-package bzh.zelyon.music.ui.view.abs.activity
+package bzh.zelyon.common.ui.view.activity
 
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -7,8 +7,8 @@ import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
-import bzh.zelyon.music.ui.view.abs.fragment.AbsBottomSheetFragment
-import bzh.zelyon.music.ui.view.abs.fragment.AbsFragment
+import bzh.zelyon.common.ui.view.fragment.AbsBottomSheetFragment
+import bzh.zelyon.common.ui.view.fragment.AbsFragment
 import com.google.android.material.snackbar.Snackbar
 
 abstract class AbsActivity: AppCompatActivity() {

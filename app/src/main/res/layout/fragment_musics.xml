@@ -16,7 +16,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <bzh.zelyon.music.ui.component.ItemsView
+        <bzh.zelyon.common.ui.component.ItemsView
             android:id="@+id/fragment_musics_itemsview_musics"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"/>

@@ -5,7 +5,7 @@
         android:layout_height="match_parent"
         android:fitsSystemWindows="true">
 
-    <bzh.zelyon.music.ui.component.ItemsView
+    <bzh.zelyon.common.ui.component.ItemsView
             android:id="@+id/fragment_library_itemsview_artists"
             android:layout_width="match_parent"
             android:layout_height="match_parent"/>

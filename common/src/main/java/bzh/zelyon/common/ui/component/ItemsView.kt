@@ -1,4 +1,4 @@
-package bzh.zelyon.music.ui.component
+package bzh.zelyon.common.ui.component
 
 import android.content.Context
 import android.graphics.Canvas
@@ -15,9 +15,9 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import bzh.zelyon.music.R
-import bzh.zelyon.music.extension.dpToPx
-import bzh.zelyon.music.extension.getResIdFromAndroidAttr
+import bzh.zelyon.common.R
+import bzh.zelyon.common.extension.dpToPx
+import bzh.zelyon.common.extension.getResIdFromAndroidAttr
 import java.util.*
 import kotlin.math.abs
 import kotlin.math.max

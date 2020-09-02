@@ -1,4 +1,4 @@
-package bzh.zelyon.music.extension
+package bzh.zelyon.common.extension
 
 import android.content.ContentResolver
 import android.content.ContentUris

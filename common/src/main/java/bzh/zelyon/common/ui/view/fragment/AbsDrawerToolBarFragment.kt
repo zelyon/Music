@@ -1,9 +1,9 @@
-package bzh.zelyon.music.ui.view.abs.fragment
+package bzh.zelyon.common.ui.view.fragment
 
 import android.os.Bundle
 import android.view.View
-import bzh.zelyon.music.R
-import bzh.zelyon.music.ui.view.abs.activity.AbsDrawerActivity
+import bzh.zelyon.common.R
+import bzh.zelyon.common.ui.view.activity.AbsDrawerActivity
 
 abstract class AbsDrawerToolBarFragment: AbsToolBarFragment() {
 

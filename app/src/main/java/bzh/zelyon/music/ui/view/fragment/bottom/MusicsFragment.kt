@@ -7,10 +7,10 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.PopupMenu
 import bzh.zelyon.music.R
 import bzh.zelyon.music.db.model.Music
-import bzh.zelyon.music.extension.setImage
+import bzh.zelyon.common.extension.setImage
 import bzh.zelyon.music.ui.Listener
-import bzh.zelyon.music.ui.component.ItemsView
-import bzh.zelyon.music.ui.view.abs.fragment.AbsToolBarBottomSheetFragment
+import bzh.zelyon.common.ui.component.ItemsView
+import bzh.zelyon.common.ui.view.fragment.AbsToolBarBottomSheetFragment
 import bzh.zelyon.music.ui.view.fragment.edit.EditMusicFragment
 import bzh.zelyon.music.util.MusicPlayer
 import kotlinx.android.synthetic.main.fragment_musics.*

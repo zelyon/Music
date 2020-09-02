@@ -1,4 +1,4 @@
-package bzh.zelyon.music.extension
+package bzh.zelyon.common.extension
 
 import android.graphics.drawable.Drawable
 import android.widget.ImageView

@@ -9,7 +9,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-        <bzh.zelyon.music.ui.component.SquareView
+        <bzh.zelyon.common.ui.component.SquareView
                 android:id="@+id/item_artist_squareview"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -23,7 +23,7 @@
                     android:layout_height="match_parent"
                     android:scaleType="centerCrop"
                     app:srcCompat="@drawable/ic_artist" />
-        </bzh.zelyon.music.ui.component.SquareView>
+        </bzh.zelyon.common.ui.component.SquareView>
 
         <androidx.appcompat.widget.AppCompatImageButton
                 android:id="@+id/item_artist_button_more"

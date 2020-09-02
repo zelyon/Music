@@ -8,11 +8,11 @@ import androidx.appcompat.widget.PopupMenu
 import bzh.zelyon.music.R
 import bzh.zelyon.music.db.DB
 import bzh.zelyon.music.db.model.Playlist
-import bzh.zelyon.music.extension.dpToPx
+import bzh.zelyon.common.extension.dpToPx
 import bzh.zelyon.music.ui.Listener
-import bzh.zelyon.music.ui.component.InputView
-import bzh.zelyon.music.ui.component.ItemsView
-import bzh.zelyon.music.ui.view.abs.fragment.AbsFragment
+import bzh.zelyon.common.ui.component.InputView
+import bzh.zelyon.common.ui.component.ItemsView
+import bzh.zelyon.common.ui.view.fragment.AbsFragment
 import bzh.zelyon.music.ui.view.fragment.bottom.MusicsFragment
 import bzh.zelyon.music.util.MusicPlayer
 import kotlinx.android.synthetic.main.fragment_playlists.*

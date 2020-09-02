@@ -1,11 +1,11 @@
-package bzh.zelyon.music.ui.view.abs.activity
+package bzh.zelyon.common.ui.view.activity
 
 import android.os.Bundle
 import android.view.MenuItem
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
-import bzh.zelyon.music.R
-import bzh.zelyon.music.ui.view.abs.fragment.AbsFragment
+import bzh.zelyon.common.R
+import bzh.zelyon.common.ui.view.fragment.AbsFragment
 import com.google.android.material.navigation.NavigationView
 
 abstract class AbsDrawerActivity: AbsActivity(), NavigationView.OnNavigationItemSelectedListener {

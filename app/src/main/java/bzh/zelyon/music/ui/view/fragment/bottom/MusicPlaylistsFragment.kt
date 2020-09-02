@@ -9,9 +9,9 @@ import bzh.zelyon.music.db.DB
 import bzh.zelyon.music.db.model.Music
 import bzh.zelyon.music.db.model.Playlist
 import bzh.zelyon.music.ui.Listener
-import bzh.zelyon.music.ui.component.InputView
-import bzh.zelyon.music.ui.component.ItemsView
-import bzh.zelyon.music.ui.view.abs.fragment.AbsToolBarBottomSheetFragment
+import bzh.zelyon.common.ui.component.InputView
+import bzh.zelyon.common.ui.component.ItemsView
+import bzh.zelyon.common.ui.view.fragment.AbsToolBarBottomSheetFragment
 import kotlinx.android.synthetic.main.fragment_musicplaylists.*
 import kotlinx.android.synthetic.main.item_musicplaylist.view.*
 

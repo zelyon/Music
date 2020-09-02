@@ -10,11 +10,11 @@ import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
 import bzh.zelyon.music.R
 import bzh.zelyon.music.db.model.Music
-import bzh.zelyon.music.extension.dpToPx
-import bzh.zelyon.music.extension.millisecondstoDuration
-import bzh.zelyon.music.extension.setImage
-import bzh.zelyon.music.ui.component.ItemsView
-import bzh.zelyon.music.ui.view.abs.fragment.AbsToolBarFragment
+import bzh.zelyon.common.extension.dpToPx
+import bzh.zelyon.common.extension.millisecondstoDuration
+import bzh.zelyon.common.extension.setImage
+import bzh.zelyon.common.ui.component.ItemsView
+import bzh.zelyon.common.ui.view.fragment.AbsToolBarFragment
 import bzh.zelyon.music.ui.view.fragment.bottom.MusicPlaylistsFragment
 import bzh.zelyon.music.ui.view.fragment.edit.EditMusicFragment
 import bzh.zelyon.music.util.MusicPlayer

@@ -1,4 +1,4 @@
-package bzh.zelyon.music.ui.component
+package bzh.zelyon.common.ui.component
 
 import android.Manifest
 import android.app.AlertDialog
@@ -23,10 +23,10 @@ import android.widget.LinearLayout
 import androidx.appcompat.widget.Toolbar
 import androidx.core.view.isVisible
 import androidx.core.widget.addTextChangedListener
-import bzh.zelyon.music.R
-import bzh.zelyon.music.extension.closeKeyboard
-import bzh.zelyon.music.extension.vibrate
-import bzh.zelyon.music.ui.view.abs.activity.AbsActivity
+import bzh.zelyon.common.R
+import bzh.zelyon.common.extension.closeKeyboard
+import bzh.zelyon.common.extension.vibrate
+import bzh.zelyon.common.ui.view.activity.AbsActivity
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.textfield.TextInputLayout
 import kotlinx.android.synthetic.main.item_input_list.view.*

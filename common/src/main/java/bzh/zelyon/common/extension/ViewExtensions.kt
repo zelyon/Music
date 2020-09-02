@@ -1,4 +1,4 @@
-package bzh.zelyon.music.extension
+package bzh.zelyon.common.extension
 
 import android.app.Activity
 import android.view.View

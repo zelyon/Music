@@ -4,7 +4,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical">
 
-    <bzh.zelyon.music.ui.component.InputView
+    <bzh.zelyon.common.ui.component.InputView
         android:id="@+id/fragment_edit_music_inputview_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -12,7 +12,7 @@
         app:label="@string/fragment_edit_music_title"
         app:mandatory="true"/>
 
-    <bzh.zelyon.music.ui.component.InputView
+    <bzh.zelyon.common.ui.component.InputView
         android:id="@+id/fragment_edit_music_inputview_artist"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -20,7 +20,7 @@
         app:label="@string/fragment_edit_music_artist"
         app:mandatory="true"/>
 
-    <bzh.zelyon.music.ui.component.InputView
+    <bzh.zelyon.common.ui.component.InputView
         android:id="@+id/fragment_edit_music_inputview_album"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -28,21 +28,21 @@
         app:label="@string/fragment_edit_music_album"
         app:mandatory="true"/>
 
-    <bzh.zelyon.music.ui.component.InputView
+    <bzh.zelyon.common.ui.component.InputView
         android:id="@+id/fragment_edit_music_inputview_track"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:type="number"
         app:label="@string/fragment_edit_music_track"/>
 
-    <bzh.zelyon.music.ui.component.InputView
+    <bzh.zelyon.common.ui.component.InputView
         android:id="@+id/fragment_edit_music_inputview_year"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:type="number"
         app:label="@string/fragment_edit_music_year"/>
 
-    <bzh.zelyon.music.ui.component.InputView
+    <bzh.zelyon.common.ui.component.InputView
         android:id="@+id/fragment_edit_music_inputview_genre"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

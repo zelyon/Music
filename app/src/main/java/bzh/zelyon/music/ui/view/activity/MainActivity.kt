@@ -6,7 +6,7 @@ import androidx.fragment.app.Fragment
 import androidx.vectordrawable.graphics.drawable.AnimatedVectorDrawableCompat
 import bzh.zelyon.music.R
 import bzh.zelyon.music.db.DB
-import bzh.zelyon.music.ui.view.abs.activity.AbsActivity
+import bzh.zelyon.common.ui.view.activity.AbsActivity
 import bzh.zelyon.music.ui.view.fragment.main.LibraryFragment
 import bzh.zelyon.music.ui.view.fragment.main.PlayingFragment
 import bzh.zelyon.music.ui.view.fragment.main.PlaylistsFragment

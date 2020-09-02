@@ -10,7 +10,7 @@ import androidx.core.view.isVisible
 import androidx.lifecycle.Observer
 import bzh.zelyon.music.R
 import bzh.zelyon.music.db.model.Music
-import bzh.zelyon.music.ui.component.InputView
+import bzh.zelyon.common.ui.component.InputView
 import bzh.zelyon.music.util.MusicContent
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import kotlinx.android.synthetic.main.fragment_edit_music.*

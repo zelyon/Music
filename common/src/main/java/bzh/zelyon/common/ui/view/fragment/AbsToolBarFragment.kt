@@ -1,4 +1,4 @@
-package bzh.zelyon.music.ui.view.abs.fragment
+package bzh.zelyon.common.ui.view.fragment
 
 import android.os.Bundle
 import android.view.Menu
@@ -6,7 +6,7 @@ import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import androidx.appcompat.widget.Toolbar
-import bzh.zelyon.music.R
+import bzh.zelyon.common.R
 
 abstract class AbsToolBarFragment: AbsFragment() {
 

@@ -15,10 +15,10 @@ import androidx.lifecycle.ViewModelProvider
 import bzh.zelyon.music.R
 import bzh.zelyon.music.api.APIViewModel
 import bzh.zelyon.music.db.model.AbsModel
-import bzh.zelyon.music.extension.getLocalFileFromGalleryUri
-import bzh.zelyon.music.extension.setImage
-import bzh.zelyon.music.ui.component.InputView
-import bzh.zelyon.music.ui.view.abs.fragment.AbsToolBarFragment
+import bzh.zelyon.common.extension.getLocalFileFromGalleryUri
+import bzh.zelyon.common.extension.setImage
+import bzh.zelyon.common.ui.component.InputView
+import bzh.zelyon.common.ui.view.fragment.AbsToolBarFragment
 import kotlinx.android.synthetic.main.fragment_edit.*
 import org.jaudiotagger.tag.images.Artwork
 import org.jaudiotagger.tag.images.ArtworkFactory

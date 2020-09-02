@@ -1,9 +1,9 @@
-package bzh.zelyon.music.ui.component
+package bzh.zelyon.common.ui.component
 
 import android.content.Context
 import android.util.AttributeSet
 import android.widget.FrameLayout
-import bzh.zelyon.music.R
+import bzh.zelyon.common.R
 
 class SquareView @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0): FrameLayout(context, attrs, defStyleAttr) {
 
