@@ -36,18 +36,34 @@ import java.util.*
 
 class InputView @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0): FrameLayout(context, attrs, defStyleAttr) {
 
-    enum class Type {TEXT, MULTI_LINE, NUMBER, DECIMAL, EMAIL, PHONE, PASSWORD, PIN, DATE, DATE_TIME, TIME, LIST, LIST_CUSTOM, LIST_MULTI, LIST_CUSTOM_MULTI}
+    enum class Type {
+        TEXT,
+        MULTI_LINE,
+        NUMBER,
+        DECIMAL,
+        EMAIL,
+        PHONE,
+        PASSWORD,
+        PIN,
+        DATE,
+        DATE_TIME,
+        TIME,
+        LIST,
+        LIST_CUSTOM,
+        LIST_MULTI,
+        LIST_CUSTOM_MULTI
+    }
 
     var label = ""
         set(value) {
             field = value
-            view_input_layout.hint = value + if (mandatory) " *" else ""
+            refreshHint()
         }
 
     var mandatory = false
         set(value) {
             field = value
-            view_input_layout.hint = label + if (value) " *" else ""
+            refreshHint()
         }
 
     var type = Type.TEXT
@@ -59,13 +75,13 @@ class InputView @JvmOverloads constructor(context: Context, attrs: AttributeSet?
                 Type.NUMBER -> view_input_edittext.inputType = EditorInfo.TYPE_CLASS_NUMBER or EditorInfo.TYPE_NUMBER_VARIATION_NORMAL
                 Type.DECIMAL -> view_input_edittext.inputType = EditorInfo.TYPE_CLASS_NUMBER or EditorInfo.TYPE_NUMBER_FLAG_DECIMAL
                 Type.EMAIL -> {
-                    setEndIcon(EndIcon(context.getDrawable(R.drawable.ic_email)) {
+                    setEndIcon(EndIcon.Custom(context.getDrawable(R.drawable.ic_email)) {
                         context.startActivity(Intent(Intent.ACTION_SENDTO, Uri.parse("mailto:$text")))
                     })
                     view_input_edittext.inputType = EditorInfo.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS
                 }
                 Type.PHONE -> {
-                    setEndIcon(EndIcon(context.getDrawable(R.drawable.ic_call)) {
+                    setEndIcon(EndIcon.Custom(context.getDrawable(R.drawable.ic_call)) {
                         (context as? AbsActivity)?.ifPermissions(Manifest.permission.CALL_PHONE) {
                             if (it) {
                                 context.startActivity(Intent(Intent.ACTION_CALL, Uri.parse("tel:$text")))
@@ -76,19 +92,19 @@ class InputView @JvmOverloads constructor(context: Context, attrs: AttributeSet?
                     view_input_edittext.addTextChangedListener(PhoneNumberFormattingTextWatcher())
                 }
                 Type.PASSWORD -> {
-                    view_input_layout.endIconMode = TextInputLayout.END_ICON_PASSWORD_TOGGLE
+                    setEndIcon(EndIcon.TogglePassword)
                     view_input_edittext.inputType = EditorInfo.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD
                     view_input_edittext.typeface = Typeface.DEFAULT
                     isMenuContextEnabled = false
                 }
                 Type.PIN -> {
-                    view_input_layout.endIconMode = TextInputLayout.END_ICON_PASSWORD_TOGGLE
+                    setEndIcon(EndIcon.TogglePassword)
                     view_input_edittext.inputType = EditorInfo.TYPE_CLASS_NUMBER or InputType.TYPE_NUMBER_VARIATION_PASSWORD
                     view_input_edittext.typeface = Typeface.DEFAULT
                     isMenuContextEnabled = false
                 }
                 Type.DATE -> {
-                    setEndIcon(EndIcon(context.getDrawable(R.drawable.ic_event)) {
+                    setEndIcon(EndIcon.Custom(context.getDrawable(R.drawable.ic_event)) {
                         context.startActivity(Intent(Intent.ACTION_INSERT, CalendarContract.Events.CONTENT_URI).apply {
                             putExtra(CalendarContract.EXTRA_EVENT_BEGIN_TIME, date?.time ?: 0)
                         })
@@ -97,7 +113,7 @@ class InputView @JvmOverloads constructor(context: Context, attrs: AttributeSet?
                     onAction { showDate(Calendar.getInstance().apply { time = date ?: Date() }, false) }
                 }
                 Type.DATE_TIME -> {
-                    setEndIcon(EndIcon(context.getDrawable(R.drawable.ic_event)) {
+                    setEndIcon(EndIcon.Custom(context.getDrawable(R.drawable.ic_event)) {
                         context.startActivity(Intent(Intent.ACTION_INSERT, CalendarContract.Events.CONTENT_URI).apply {
                             putExtra(CalendarContract.EXTRA_EVENT_BEGIN_TIME, date?.time ?: 0)
                         })
@@ -106,7 +122,7 @@ class InputView @JvmOverloads constructor(context: Context, attrs: AttributeSet?
                     onAction { showDate(Calendar.getInstance().apply { time = date ?: Date() }, true) }
                 }
                 Type.TIME -> {
-                    setEndIcon(EndIcon(context.getDrawable(R.drawable.ic_event)) {
+                    setEndIcon(EndIcon.Custom(context.getDrawable(R.drawable.ic_event)) {
                         context.startActivity(Intent(Intent.ACTION_INSERT, CalendarContract.Events.CONTENT_URI).apply {
                             putExtra(CalendarContract.EXTRA_EVENT_BEGIN_TIME, date?.time ?: 0)
                         })
@@ -114,10 +130,10 @@ class InputView @JvmOverloads constructor(context: Context, attrs: AttributeSet?
                     dateFormat = "hh:mm"
                     onAction { showTime(Calendar.getInstance().apply { time = date ?: Date() }) }
                 }
-                Type.LIST -> onAction { showList(false, false) }
-                Type.LIST_CUSTOM -> onAction { showList(true, false) }
-                Type.LIST_MULTI ->  onAction { showList(false, true) }
-                Type.LIST_CUSTOM_MULTI -> onAction { showList(true, true) }
+                Type.LIST -> onAction { showList(custom = false, multi = false) }
+                Type.LIST_CUSTOM -> onAction { showList(custom = true, multi = false) }
+                Type.LIST_MULTI ->  onAction { showList(custom = false, multi = true) }
+                Type.LIST_CUSTOM_MULTI -> onAction { showList(custom = true, multi = true) }
             }
         }
 
@@ -243,6 +259,10 @@ class InputView @JvmOverloads constructor(context: Context, attrs: AttributeSet?
         }
 
         view_input_layout.errorIconDrawable = null
+    }
+
+    fun refreshHint() {
+        view_input_layout.hint = label + if (mandatory) " *" else ""
     }
 
     private fun showDate(calendar: Calendar, showTime: Boolean) {
@@ -447,25 +467,31 @@ class InputView @JvmOverloads constructor(context: Context, attrs: AttributeSet?
     fun setEndIcon(endIcon: EndIcon?) {
         view_input_layout.endIconMode = when(endIcon) {
             null -> TextInputLayout.END_ICON_NONE
-            is TogglePasswordEndIcon -> TextInputLayout.END_ICON_PASSWORD_TOGGLE
-            is ClearTextEndIcon -> TextInputLayout.END_ICON_CLEAR_TEXT
-            else -> {
+            is EndIcon.TogglePassword -> TextInputLayout.END_ICON_PASSWORD_TOGGLE
+            is EndIcon.ClearText -> TextInputLayout.END_ICON_CLEAR_TEXT
+            is EndIcon.Info, is EndIcon.Custom -> TextInputLayout.END_ICON_CUSTOM
+        }
+        when(endIcon) {
+            is EndIcon.Info -> {
+                view_input_layout.endIconDrawable = context.getDrawable(R.drawable.ic_info)
+                view_input_layout.setEndIconOnClickListener {
+                    AlertDialog.Builder(context).setMessage(endIcon.infos).show()
+                }
+            }
+            is EndIcon.Custom -> {
                 view_input_layout.endIconDrawable = endIcon.icon
                 view_input_layout.setEndIconOnClickListener {
                     endIcon.action?.invoke()
                 }
-                TextInputLayout.END_ICON_CUSTOM
             }
         }
     }
 
-    open class EndIcon(val icon: Drawable?, val action: (() -> Unit)?)
-
-    class TogglePasswordEndIcon: EndIcon(null, null)
-
-    class ClearTextEndIcon: EndIcon(null, null)
-
-    class InfoEndIcon(val context: Context, infos: String): EndIcon(context.getDrawable(R.drawable.ic_info), { AlertDialog.Builder(context).setMessage(infos).show() })
-
+    sealed class EndIcon {
+        object TogglePassword : EndIcon()
+        object ClearText : EndIcon()
+        data class Custom(val icon: Drawable?, val action: (() -> Unit)?) : EndIcon()
+        data class Info(val infos: String) : EndIcon()
+    }
     class Choice(val label: String, val value: Any, val selected: Boolean = false, val icon: Drawable? = null, val children: MutableList<Choice>? = null)
 }
