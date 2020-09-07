@@ -2,10 +2,12 @@
 
     <!-- InputView -->
     <string name="inputview_field_mandatory">Champ obligatoire</string>
-    <string name="inputview_field_min_lenght">Doit contenir au minimum %d charactères</string>
-    <string name="inputview_field_max_lenght">Doit contenir au maximum %d charactères</string>
-    <string name="inputview_field_min_number">Doit être superieur ou égale à %d</string>
-    <string name="inputview_field_max_number">Doit être inferieur ou égale à %d</string>
+    <string name="inputview_field_lenght">Entre %d1 et %d2 charactères</string>
+    <string name="inputview_field_min_lenght">Plus de %d charactères</string>
+    <string name="inputview_field_max_lenght">Moins de %d charactères</string>
+    <string name="inputview_field_number">Entre %d1 et %d2</string>
+    <string name="inputview_field_min_number">Plus de %d</string>
+    <string name="inputview_field_max_number">Moins de %d</string>
     <string name="inputview_field_email">Email invalide</string>
     <string name="inputview_field_phone">Numéro de téléphone invalide</string>
     <string name="inputview_search_or_add">Rechercher/Ajouter</string>

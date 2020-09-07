@@ -36,24 +36,6 @@ import java.util.*
 
 class InputView @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0): FrameLayout(context, attrs, defStyleAttr) {
 
-    enum class Type {
-        TEXT,
-        MULTI_LINE,
-        NUMBER,
-        DECIMAL,
-        EMAIL,
-        PHONE,
-        PASSWORD,
-        PIN,
-        DATE,
-        DATE_TIME,
-        TIME,
-        LIST,
-        LIST_CUSTOM,
-        LIST_MULTI,
-        LIST_CUSTOM_MULTI
-    }
-
     var label = ""
         set(value) {
             field = value
@@ -71,14 +53,17 @@ class InputView @JvmOverloads constructor(context: Context, attrs: AttributeSet?
             field = value
             when (value) {
                 Type.TEXT -> view_input_edittext.inputType = EditorInfo.TYPE_CLASS_TEXT
-                Type.MULTI_LINE -> view_input_edittext.inputType = EditorInfo.TYPE_CLASS_TEXT or EditorInfo.TYPE_TEXT_FLAG_MULTI_LINE
-                Type.NUMBER -> view_input_edittext.inputType = EditorInfo.TYPE_CLASS_NUMBER or EditorInfo.TYPE_NUMBER_VARIATION_NORMAL
-                Type.DECIMAL -> view_input_edittext.inputType = EditorInfo.TYPE_CLASS_NUMBER or EditorInfo.TYPE_NUMBER_FLAG_DECIMAL
+                Type.MULTI_LINE -> view_input_edittext.inputType = EditorInfo.TYPE_CLASS_TEXT or
+                        EditorInfo.TYPE_TEXT_FLAG_MULTI_LINE
+                Type.NUMBER -> view_input_edittext.inputType = EditorInfo.TYPE_CLASS_NUMBER
+                Type.DECIMAL -> view_input_edittext.inputType = EditorInfo.TYPE_CLASS_NUMBER or
+                        EditorInfo.TYPE_NUMBER_FLAG_DECIMAL
                 Type.EMAIL -> {
                     setEndIcon(EndIcon.Custom(context.getDrawable(R.drawable.ic_email)) {
                         context.startActivity(Intent(Intent.ACTION_SENDTO, Uri.parse("mailto:$text")))
                     })
-                    view_input_edittext.inputType = EditorInfo.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS
+                    view_input_edittext.inputType = EditorInfo.TYPE_CLASS_TEXT or
+                            InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS
                 }
                 Type.PHONE -> {
                     setEndIcon(EndIcon.Custom(context.getDrawable(R.drawable.ic_call)) {
@@ -93,13 +78,15 @@ class InputView @JvmOverloads constructor(context: Context, attrs: AttributeSet?
                 }
                 Type.PASSWORD -> {
                     setEndIcon(EndIcon.TogglePassword)
-                    view_input_edittext.inputType = EditorInfo.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD
+                    view_input_edittext.inputType = EditorInfo.TYPE_CLASS_TEXT or
+                            InputType.TYPE_TEXT_VARIATION_PASSWORD
                     view_input_edittext.typeface = Typeface.DEFAULT
                     isMenuContextEnabled = false
                 }
                 Type.PIN -> {
                     setEndIcon(EndIcon.TogglePassword)
-                    view_input_edittext.inputType = EditorInfo.TYPE_CLASS_NUMBER or InputType.TYPE_NUMBER_VARIATION_PASSWORD
+                    view_input_edittext.inputType = EditorInfo.TYPE_CLASS_NUMBER or
+                            InputType.TYPE_NUMBER_VARIATION_PASSWORD
                     view_input_edittext.typeface = Typeface.DEFAULT
                     isMenuContextEnabled = false
                 }
@@ -132,7 +119,7 @@ class InputView @JvmOverloads constructor(context: Context, attrs: AttributeSet?
                 }
                 Type.LIST -> onAction { showList(custom = false, multi = false) }
                 Type.LIST_CUSTOM -> onAction { showList(custom = true, multi = false) }
-                Type.LIST_MULTI ->  onAction { showList(custom = false, multi = true) }
+                Type.LIST_MULTI -> onAction { showList(custom = false, multi = true) }
                 Type.LIST_CUSTOM_MULTI -> onAction { showList(custom = true, multi = true) }
             }
         }
@@ -160,41 +147,38 @@ class InputView @JvmOverloads constructor(context: Context, attrs: AttributeSet?
             }
         }
 
-    var text: String? = null
+    var text: String = ""
         get() = view_input_edittext.text.toString()
         set(value) {
             field = value
             view_input_edittext.setText(value.orEmpty())
         }
 
-    var number: Int? = null
-        get() = text?.toInt()
+    var number: Int = 0
+        get() = try { text.toInt() } catch (ignored: NumberFormatException) { 0 }
         set(value) {
             field = value
             text = value.toString()
         }
-    var minNumber: Int? = null
-        set(value) {
-            field = if (value != -1) value else null
-        }
-    var maxNumber: Int? = null
-        set(value) {
-            field = if (value != -1) value else null
-        }
-
-    var decimal: Float? = null
-        get() = text?.toFloat()
+    var decimal: Float = 0F
+        get() = try { text.toFloat() } catch (ignored: NumberFormatException) { 0F }
         set(value) {
             field = value
             text = value.toString()
         }
-    var minDecimal: Int? = null
+    var minNumber: Float? = null
         set(value) {
-            field = if (value != -1) value else null
+            field = if (value != -1f) value else null
         }
-    var maxDecimal: Int? = null
+    var maxNumber: Float? = null
         set(value) {
-            field = if (value != -1) value else null
+            field = if (value != -1f) value else null
+        }
+    var negativeNumber: Boolean = false
+        set(value) {
+            view_input_edittext.inputType =  view_input_edittext.inputType or
+                    if (value) EditorInfo.TYPE_NUMBER_FLAG_SIGNED else EditorInfo.TYPE_NUMBER_VARIATION_NORMAL
+            field = value
         }
 
     var date: Date? = null
@@ -217,7 +201,8 @@ class InputView @JvmOverloads constructor(context: Context, attrs: AttributeSet?
             text = value.joinToString(separator = ", ") { it.label }
         }
     val selectedChoice get() = selectedChoices.firstOrNull()
-    var choicesPopup: Dialog? = null
+
+    private var choicesPopup: Dialog? = null
 
     init {
         LayoutInflater.from(context).inflate(R.layout.view_input, this, true)
@@ -245,10 +230,9 @@ class InputView @JvmOverloads constructor(context: Context, attrs: AttributeSet?
             }
             minLength = getInt(R.styleable.InputView_min_length, -1)
             maxLength = getInt(R.styleable.InputView_max_length, -1)
-            minNumber = getInt(R.styleable.InputView_min_number, -1)
-            maxNumber = getInt(R.styleable.InputView_max_number, -1)
-            minDecimal = getInt(R.styleable.InputView_min_decimal, -1)
-            maxDecimal = getInt(R.styleable.InputView_max_decimal, -1)
+            minNumber = getFloat(R.styleable.InputView_min_number, -1F)
+            maxNumber = getFloat(R.styleable.InputView_max_number, -1F)
+            negativeNumber = getBoolean(R.styleable.InputView_negative_number, false)
             recycle()
         }
 
@@ -261,12 +245,13 @@ class InputView @JvmOverloads constructor(context: Context, attrs: AttributeSet?
         view_input_layout.errorIconDrawable = null
     }
 
-    fun refreshHint() {
+    private fun refreshHint() {
         view_input_layout.hint = label + if (mandatory) " *" else ""
     }
 
     private fun showDate(calendar: Calendar, showTime: Boolean) {
-        DatePickerDialog(context,
+        DatePickerDialog(
+            context,
             DatePickerDialog.OnDateSetListener { _, year, month, day ->
                 calendar.set(Calendar.YEAR, year)
                 calendar.set(Calendar.MONTH, month)
@@ -279,14 +264,16 @@ class InputView @JvmOverloads constructor(context: Context, attrs: AttributeSet?
             },
             calendar.get(Calendar.YEAR),
             calendar.get(Calendar.MONTH),
-            calendar.get(Calendar.DAY_OF_MONTH)).apply {
+            calendar.get(Calendar.DAY_OF_MONTH)
+        ).apply {
             dateMin?.let { datePicker.minDate = it.time }
             dateMax?.let { datePicker.maxDate = it.time }
         }.show()
     }
 
     private fun showTime(calendar: Calendar) {
-        TimePickerDialog(context,
+        TimePickerDialog(
+            context,
             TimePickerDialog.OnTimeSetListener { _, hour, minute ->
                 calendar.set(Calendar.HOUR_OF_DAY, hour)
                 calendar.set(Calendar.MINUTE, minute)
@@ -295,13 +282,14 @@ class InputView @JvmOverloads constructor(context: Context, attrs: AttributeSet?
             },
             calendar.get(Calendar.HOUR_OF_DAY),
             calendar.get(Calendar.MINUTE),
-            true).show()
+            true
+        ).show()
     }
 
     private fun showList(custom: Boolean, multi: Boolean) {
         choicesPopup?.dismiss()
         choicesPopup = BottomSheetDialog(context).apply {
-            val finalChoices = choices
+            val allChoices = choices
             val itemsView = ItemsView(context).apply {
                 idLayoutItem = R.layout.item_input_list
                 helper = object : ItemsView.Helper() {
@@ -336,7 +324,7 @@ class InputView @JvmOverloads constructor(context: Context, attrs: AttributeSet?
                         }
                     }
                 }
-                items = finalChoices
+                items = allChoices
             }
             val toolbar = Toolbar(context).apply {
                 title = label
@@ -355,7 +343,7 @@ class InputView @JvmOverloads constructor(context: Context, attrs: AttributeSet?
             val inputView = InputView(context).apply {
                 label = context.getString(if (custom) R.string.inputview_search_or_add else R.string.inputview_search)
                 onTextChange { search ->
-                    itemsView.items = finalChoices.filter {
+                    itemsView.items = allChoices.filter {
                         it.label.toLowerCase(Locale.getDefault()).contains(search.toLowerCase(Locale.getDefault()))
                     }.toMutableList().apply {
                         if (custom && search.isNotBlank()) {
@@ -374,7 +362,7 @@ class InputView @JvmOverloads constructor(context: Context, attrs: AttributeSet?
         choicesPopup?.show()
     }
 
-    private fun onAction(action:() -> Unit) {
+    private fun onAction(action: () -> Unit) {
         view_input_edittext.inputType = InputType.TYPE_NULL
         listOf(this, view_input_edittext).forEach {
             it.setOnFocusChangeListener { _, hasFocus ->
@@ -392,68 +380,39 @@ class InputView @JvmOverloads constructor(context: Context, attrs: AttributeSet?
 
     fun checkValidity(vibrate: Boolean = true): Boolean {
         val errorsMessages = mutableListOf<String>()
-        if (mandatory && text.isNullOrBlank()) {
+        if (mandatory && text.isBlank()) {
             errorsMessages.add(context.getString(R.string.inputview_field_mandatory))
         }
-        text?.trim()?.length?.let { length ->
-            minLength?.let { minLength ->
-                if (length < minLength) {
-                    errorsMessages.add(context.getString(R.string.inputview_field_min_lenght, minLength))
-                }
-            }
-            maxLength?.let { maxLength ->
-                if (length > maxLength) {
-                    errorsMessages.add(context.getString(R.string.inputview_field_max_lenght, maxLength))
-                }
-            }
+        if (text.trim().length !in (minLength?:Int.MIN_VALUE)..(maxLength?:Int.MAX_VALUE)) {
+            errorsMessages.add(when {
+                minLength != null && maxLength != null -> context.getString(R.string.inputview_field_lenght, minLength, maxLength)
+                minLength != null -> context.getString(R.string.inputview_field_min_lenght, minLength)
+                maxLength != null -> context.getString(R.string.inputview_field_max_lenght, maxLength)
+                else -> ""
+            })
         }
-        when (type) {
-            Type.NUMBER -> {
-                number?.let { number ->
-                    minNumber?.let { minNumber ->
-                        if (number < minNumber) {
-                            errorsMessages.add(context.getString(R.string.inputview_field_min_number, minNumber))
-                        }
-                    }
-                    maxNumber?.let { maxNumber ->
-                        if (number > maxNumber) {
-                            errorsMessages.add(context.getString(R.string.inputview_field_max_number, maxNumber))
-                        }
-                    }
-                }
-            }
-            Type.DECIMAL -> {
-                decimal?.let { decimal ->
-                    minDecimal?.let { minDecimal ->
-                        if (decimal < minDecimal) {
-                            errorsMessages.add(context.getString(R.string.inputview_field_min_number, minDecimal))
-                        }
-                    }
-                    maxDecimal?.let { maxDecimal ->
-                        if (decimal > maxDecimal) {
-                            errorsMessages.add(context.getString(R.string.inputview_field_max_number, maxDecimal))
-                        }
-                    }
-                }}
-            Type.PHONE -> {
-                if (!Patterns.PHONE.matcher(text.orEmpty()).matches()) {
-                    errorsMessages.add(context.getString(R.string.inputview_field_phone))
-                }
-            }
-            Type.EMAIL -> {
-                if (!Patterns.EMAIL_ADDRESS.matcher(text.orEmpty()).matches()) {
-                    errorsMessages.add(context.getString(R.string.inputview_field_email))
-                }
-            }
+        if (type in listOf(Type.NUMBER, Type.DECIMAL) && number !in (minNumber?.toInt()?:Int.MIN_VALUE)..(maxNumber?.toInt()?:Int.MAX_VALUE)) {
+            errorsMessages.add(when {
+                minLength != null && maxLength != null -> context.getString(R.string.inputview_field_number, minNumber, maxNumber)
+                minLength != null -> context.getString(R.string.inputview_field_min_number, minNumber)
+                maxLength != null -> context.getString(R.string.inputview_field_max_number, maxNumber)
+                else -> ""
+            })
+        }
+        if (type == Type.PHONE && !Patterns.PHONE.matcher(text).matches()) {
+            errorsMessages.add(context.getString(R.string.inputview_field_phone))
+        }
+        if (type == Type.EMAIL && !Patterns.EMAIL_ADDRESS.matcher(text).matches()) {
+            errorsMessages.add(context.getString(R.string.inputview_field_email))
         }
 
-        val noErrors = errorsMessages.isEmpty()
-        view_input_layout.isErrorEnabled = !noErrors
+        val isValid = errorsMessages.isEmpty()
+        view_input_layout.isErrorEnabled = !isValid
         view_input_layout.error = errorsMessages.joinToString(separator = "\n")
-        if (!noErrors && vibrate) {
+        if (!isValid && vibrate) {
             vibrate()
         }
-        return noErrors
+        return isValid
     }
 
     fun selectAll() = view_input_edittext.selectAll()
@@ -465,20 +424,19 @@ class InputView @JvmOverloads constructor(context: Context, attrs: AttributeSet?
     }
 
     fun setEndIcon(endIcon: EndIcon?) {
-        view_input_layout.endIconMode = when(endIcon) {
-            null -> TextInputLayout.END_ICON_NONE
-            is EndIcon.TogglePassword -> TextInputLayout.END_ICON_PASSWORD_TOGGLE
-            is EndIcon.ClearText -> TextInputLayout.END_ICON_CLEAR_TEXT
-            is EndIcon.Info, is EndIcon.Custom -> TextInputLayout.END_ICON_CUSTOM
-        }
         when(endIcon) {
+            null -> view_input_layout.endIconMode = TextInputLayout.END_ICON_NONE
+            is EndIcon.TogglePassword -> view_input_layout.endIconMode = TextInputLayout.END_ICON_PASSWORD_TOGGLE
+            is EndIcon.ClearText -> view_input_layout.endIconMode = TextInputLayout.END_ICON_CLEAR_TEXT
             is EndIcon.Info -> {
+                view_input_layout.endIconMode = TextInputLayout.END_ICON_CUSTOM
                 view_input_layout.endIconDrawable = context.getDrawable(R.drawable.ic_info)
                 view_input_layout.setEndIconOnClickListener {
                     AlertDialog.Builder(context).setMessage(endIcon.infos).show()
                 }
             }
             is EndIcon.Custom -> {
+                view_input_layout.endIconMode = TextInputLayout.END_ICON_CUSTOM
                 view_input_layout.endIconDrawable = endIcon.icon
                 view_input_layout.setEndIconOnClickListener {
                     endIcon.action?.invoke()
@@ -487,11 +445,36 @@ class InputView @JvmOverloads constructor(context: Context, attrs: AttributeSet?
         }
     }
 
+    enum class Type {
+        TEXT,
+        MULTI_LINE,
+        NUMBER,
+        DECIMAL,
+        EMAIL,
+        PHONE,
+        PASSWORD,
+        PIN,
+        DATE,
+        DATE_TIME,
+        TIME,
+        LIST,
+        LIST_CUSTOM,
+        LIST_MULTI,
+        LIST_CUSTOM_MULTI
+    }
+
     sealed class EndIcon {
         object TogglePassword : EndIcon()
         object ClearText : EndIcon()
         data class Custom(val icon: Drawable?, val action: (() -> Unit)?) : EndIcon()
         data class Info(val infos: String) : EndIcon()
     }
-    class Choice(val label: String, val value: Any, val selected: Boolean = false, val icon: Drawable? = null, val children: MutableList<Choice>? = null)
+
+    class Choice(
+        val label: String,
+        val value: Any,
+        val selected: Boolean = false,
+        val icon: Drawable? = null,
+        val children: MutableList<Choice>? = null
+    )
 }
