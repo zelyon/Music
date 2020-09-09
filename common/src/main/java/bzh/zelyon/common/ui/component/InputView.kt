@@ -30,11 +30,11 @@ import bzh.zelyon.common.ui.view.activity.AbsActivity
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.textfield.TextInputLayout
 import kotlinx.android.synthetic.main.item_input_list.view.*
-import kotlinx.android.synthetic.main.view_input.view.*
+import kotlinx.android.synthetic.main.view_input_outlinedbox.view.*
 import java.text.SimpleDateFormat
 import java.util.*
 
-class InputView @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0): FrameLayout(context, attrs, defStyleAttr) {
+class InputView @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0, box: Box = Box.OUTLINED): FrameLayout(context, attrs, defStyleAttr) {
 
     var label = ""
         set(value) {
@@ -154,13 +154,7 @@ class InputView @JvmOverloads constructor(context: Context, attrs: AttributeSet?
             view_input_edittext.setText(value.orEmpty())
         }
 
-    var number: Int = 0
-        get() = try { text.toInt() } catch (ignored: NumberFormatException) { 0 }
-        set(value) {
-            field = value
-            text = value.toString()
-        }
-    var decimal: Float = 0F
+    var number: Float = 0F
         get() = try { text.toFloat() } catch (ignored: NumberFormatException) { 0F }
         set(value) {
             field = value
@@ -205,36 +199,42 @@ class InputView @JvmOverloads constructor(context: Context, attrs: AttributeSet?
     private var choicesPopup: Dialog? = null
 
     init {
-        LayoutInflater.from(context).inflate(R.layout.view_input, this, true)
-
-        context.obtainStyledAttributes(attrs, R.styleable.InputView, defStyleAttr, 0).apply {
-            label = getString(R.styleable.InputView_label).orEmpty()
-            mandatory = getBoolean(R.styleable.InputView_mandatory, false)
-            type = when (getInt(R.styleable.InputView_type, 0)) {
-                0 -> Type.TEXT
-                1 -> Type.MULTI_LINE
-                2 -> Type.NUMBER
-                3 -> Type.DECIMAL
-                4 -> Type.EMAIL
-                5 -> Type.PHONE
-                6 -> Type.PASSWORD
-                7 -> Type.PIN
-                8 -> Type.DATE
-                9 -> Type.DATE_TIME
-                10 -> Type.TIME
-                11 -> Type.LIST
-                12 -> Type.LIST_CUSTOM
-                13 -> Type.LIST_MULTI
-                14 -> Type.LIST_CUSTOM_MULTI
-                else -> Type.TEXT
-            }
-            minLength = getInt(R.styleable.InputView_min_length, -1)
-            maxLength = getInt(R.styleable.InputView_max_length, -1)
-            minNumber = getFloat(R.styleable.InputView_min_number, -1F)
-            maxNumber = getFloat(R.styleable.InputView_max_number, -1F)
-            negativeNumber = getBoolean(R.styleable.InputView_negative_number, false)
-            recycle()
+        val typedArray = context.obtainStyledAttributes(attrs, R.styleable.InputView, defStyleAttr, 0)
+        LayoutInflater.from(context).inflate(when (when (typedArray.getInt(R.styleable.InputView_box, 2)) {
+            0 -> Box.OUTLINED
+            1 -> Box.FILLED
+            else -> box
+        }) {
+            Box.OUTLINED -> R.layout.view_input_outlinedbox
+            Box.FILLED -> R.layout.view_input_filledbox
+            else -> R.layout.view_input_outlinedbox
+        }, this, true)
+        label = typedArray.getString(R.styleable.InputView_label).orEmpty()
+        mandatory = typedArray.getBoolean(R.styleable.InputView_mandatory, false)
+        type = when (typedArray.getInt(R.styleable.InputView_type, 0)) {
+            0 -> Type.TEXT
+            1 -> Type.MULTI_LINE
+            2 -> Type.NUMBER
+            3 -> Type.DECIMAL
+            4 -> Type.EMAIL
+            5 -> Type.PHONE
+            6 -> Type.PASSWORD
+            7 -> Type.PIN
+            8 -> Type.DATE
+            9 -> Type.DATE_TIME
+            10 -> Type.TIME
+            11 -> Type.LIST
+            12 -> Type.LIST_CUSTOM
+            13 -> Type.LIST_MULTI
+            14 -> Type.LIST_CUSTOM_MULTI
+            else -> Type.TEXT
         }
+        minLength = typedArray.getInt(R.styleable.InputView_min_length, -1)
+        maxLength = typedArray.getInt(R.styleable.InputView_max_length, -1)
+        minNumber = typedArray.getFloat(R.styleable.InputView_min_number, -1F)
+        maxNumber = typedArray.getFloat(R.styleable.InputView_max_number, -1F)
+        negativeNumber = typedArray.getBoolean(R.styleable.InputView_negative_number, false)
+        typedArray.recycle()
 
         onTextChange {
             if (view_input_layout.isErrorEnabled) {
@@ -391,7 +391,7 @@ class InputView @JvmOverloads constructor(context: Context, attrs: AttributeSet?
                 else -> ""
             })
         }
-        if (type in listOf(Type.NUMBER, Type.DECIMAL) && number !in (minNumber?.toInt()?:Int.MIN_VALUE)..(maxNumber?.toInt()?:Int.MAX_VALUE)) {
+        if (type in listOf(Type.NUMBER, Type.DECIMAL) && number !in (minNumber?:Float.MIN_VALUE)..(maxNumber?:Float.MAX_VALUE)) {
             errorsMessages.add(when {
                 minLength != null && maxLength != null -> context.getString(R.string.inputview_field_number, minNumber, maxNumber)
                 minLength != null -> context.getString(R.string.inputview_field_min_number, minNumber)
@@ -443,6 +443,11 @@ class InputView @JvmOverloads constructor(context: Context, attrs: AttributeSet?
                 }
             }
         }
+    }
+
+    enum class Box {
+        OUTLINED,
+        FILLED
     }
 
     enum class Type {
