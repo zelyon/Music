@@ -5,14 +5,13 @@ import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.PopupMenu
+import bzh.zelyon.common.ui.component.InputView
+import bzh.zelyon.common.ui.component.CollectionsView
+import bzh.zelyon.common.ui.view.fragment.AbsFragment
 import bzh.zelyon.music.R
 import bzh.zelyon.music.db.DB
 import bzh.zelyon.music.db.model.Playlist
-import bzh.zelyon.common.extension.dpToPx
 import bzh.zelyon.music.ui.Listener
-import bzh.zelyon.common.ui.component.InputView
-import bzh.zelyon.common.ui.component.ItemsView
-import bzh.zelyon.common.ui.view.fragment.AbsFragment
 import bzh.zelyon.music.ui.view.fragment.bottom.MusicsFragment
 import bzh.zelyon.music.util.MusicPlayer
 import kotlinx.android.synthetic.main.fragment_playlists.*
@@ -24,14 +23,7 @@ class PlaylistsFragment: AbsFragment(), Listener {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        fragment_playlists_itemsview_playlists.apply {
-            nbColumns = 2
-            spaceDivider = absActivity.dpToPx(8).toInt()
-            idLayoutItem = R.layout.item_playlist
-            idLayoutEmpty = R.layout.item_playlist_empty
-            isFastScroll = true
-            helper = PlaylistHelper()
-        }
+        fragment_playlists_itemsview_playlists.helper = PlaylistHelper()
 
         loadPlayLists()
     }
@@ -59,7 +51,7 @@ class PlaylistsFragment: AbsFragment(), Listener {
         loadPlayLists()
     }
 
-    inner class PlaylistHelper: ItemsView.Helper() {
+    inner class PlaylistHelper: CollectionsView.Helper() {
         override fun onBindItem(itemView: View, items: MutableList<*>, position: Int) {
             val playlist = items[position]
             if (playlist is Playlist) {

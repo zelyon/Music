@@ -19,10 +19,16 @@
 
     </com.google.android.material.appbar.AppBarLayout>
 
-    <bzh.zelyon.common.ui.component.ItemsView
+    <bzh.zelyon.common.ui.component.CollectionsView
         android:id="@+id/fragment_playing_itemsview_musics"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        app:id_layout_item="@layout/item_music"
+        app:id_layout_footer="@layout/item_music_footer"
+        app:fast_scroll_enable="true"
+        app:drag_n_drop_enable="true"
+        app:swipe_enable="true"
+        app:thumb_margin_bottom="140"
         app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
     <androidx.constraintlayout.widget.ConstraintLayout

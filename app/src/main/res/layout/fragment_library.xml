@@ -5,32 +5,41 @@
         android:layout_height="match_parent"
         android:fitsSystemWindows="true">
 
-    <bzh.zelyon.common.ui.component.ItemsView
-            android:id="@+id/fragment_library_itemsview_artists"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"/>
+    <bzh.zelyon.common.ui.component.CollectionsView
+        android:id="@+id/fragment_library_itemsview_artists"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:nb_colums="2"
+        app:space_divider="8"
+        app:id_layout_item="@layout/item_artist"
+        app:id_layout_header="@layout/item_artist_header_footer"
+        app:id_layout_footer="@layout/item_artist_header_footer"
+        app:id_layout_empty="@layout/item_artist_empty"
+        app:fast_scroll_enable="true"
+        app:thumb_margin_top="80"
+        app:thumb_margin_bottom="80"/>
 
     <com.google.android.material.card.MaterialCardView
-            android:id="@+id/fragment_library_cardview_toolbar"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="16dp"
-            app:cardElevation="4dp"
-            app:cardCornerRadius="8dp">
+        android:id="@+id/fragment_library_cardview_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        app:cardElevation="4dp"
+        app:cardCornerRadius="8dp">
 
         <com.google.android.material.appbar.MaterialToolbar
-                android:id="@+id/fragment_library_toolbar"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+            android:id="@+id/fragment_library_toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
 
             <androidx.appcompat.widget.SearchView
-                    android:id="@+id/fragment_library_searchview"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    app:queryHint="@string/fragment_library_search_musics"
-                    app:iconifiedByDefault="false"
-                    app:searchIcon="@null"
-                    app:queryBackground="@null"/>
+                android:id="@+id/fragment_library_searchview"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:queryHint="@string/fragment_library_search_musics"
+                app:iconifiedByDefault="false"
+                app:searchIcon="@null"
+                app:queryBackground="@null"/>
 
         </com.google.android.material.appbar.MaterialToolbar>
 

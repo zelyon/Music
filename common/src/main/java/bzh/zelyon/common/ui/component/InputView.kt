@@ -154,17 +154,30 @@ class InputView @JvmOverloads constructor(context: Context, attrs: AttributeSet?
             view_input_edittext.setText(value.orEmpty())
         }
 
-    var number: Float = 0F
+    var number get() = decimal.toInt()
+        set(value) {
+            decimal = value.toFloat()
+        }
+    var minNumber get() = minDecimal?.toInt()
+        set(value) {
+            minDecimal = value?.toFloat()
+        }
+    var maxNumber get() = maxDecimal?.toInt()
+        set(value) {
+            maxDecimal = value?.toFloat()
+        }
+
+    var decimal: Float = 0F
         get() = try { text.toFloat() } catch (ignored: NumberFormatException) { 0F }
         set(value) {
             field = value
             text = value.toString()
         }
-    var minNumber: Float? = null
+    var minDecimal: Float? = null
         set(value) {
             field = if (value != -1f) value else null
         }
-    var maxNumber: Float? = null
+    var maxDecimal: Float? = null
         set(value) {
             field = if (value != -1f) value else null
         }
@@ -231,8 +244,8 @@ class InputView @JvmOverloads constructor(context: Context, attrs: AttributeSet?
         }
         minLength = typedArray.getInt(R.styleable.InputView_min_length, -1)
         maxLength = typedArray.getInt(R.styleable.InputView_max_length, -1)
-        minNumber = typedArray.getFloat(R.styleable.InputView_min_number, -1F)
-        maxNumber = typedArray.getFloat(R.styleable.InputView_max_number, -1F)
+        minDecimal = typedArray.getFloat(R.styleable.InputView_min_number, -1F)
+        maxDecimal = typedArray.getFloat(R.styleable.InputView_max_number, -1F)
         negativeNumber = typedArray.getBoolean(R.styleable.InputView_negative_number, false)
         typedArray.recycle()
 
@@ -290,9 +303,9 @@ class InputView @JvmOverloads constructor(context: Context, attrs: AttributeSet?
         choicesPopup?.dismiss()
         choicesPopup = BottomSheetDialog(context).apply {
             val allChoices = choices
-            val itemsView = ItemsView(context).apply {
+            val itemsView = CollectionsView(context).apply {
                 idLayoutItem = R.layout.item_input_list
-                helper = object : ItemsView.Helper() {
+                helper = object : CollectionsView.Helper() {
                     override fun onBindItem(itemView: View, items: MutableList<*>, position: Int) {
                         val choice = items[position]
                         if (choice is Choice) {
@@ -383,7 +396,7 @@ class InputView @JvmOverloads constructor(context: Context, attrs: AttributeSet?
         if (mandatory && text.isBlank()) {
             errorsMessages.add(context.getString(R.string.inputview_field_mandatory))
         }
-        if (text.trim().length !in (minLength?:Int.MIN_VALUE)..(maxLength?:Int.MAX_VALUE)) {
+        if (text.trim().length !in (minLength?:0)..(maxLength?:Int.MAX_VALUE)) {
             errorsMessages.add(when {
                 minLength != null && maxLength != null -> context.getString(R.string.inputview_field_lenght, minLength, maxLength)
                 minLength != null -> context.getString(R.string.inputview_field_min_lenght, minLength)
@@ -391,11 +404,11 @@ class InputView @JvmOverloads constructor(context: Context, attrs: AttributeSet?
                 else -> ""
             })
         }
-        if (type in listOf(Type.NUMBER, Type.DECIMAL) && number !in (minNumber?:Float.MIN_VALUE)..(maxNumber?:Float.MAX_VALUE)) {
+        if (type in listOf(Type.NUMBER, Type.DECIMAL) && decimal !in (minDecimal?:-Float.MAX_VALUE)..(maxDecimal?:Float.MAX_VALUE)) {
             errorsMessages.add(when {
-                minLength != null && maxLength != null -> context.getString(R.string.inputview_field_number, minNumber, maxNumber)
-                minLength != null -> context.getString(R.string.inputview_field_min_number, minNumber)
-                maxLength != null -> context.getString(R.string.inputview_field_max_number, maxNumber)
+                minDecimal != null && maxDecimal != null -> context.getString(R.string.inputview_field_number, minDecimal, maxDecimal)
+                minDecimal != null -> context.getString(R.string.inputview_field_min_number, minDecimal)
+                maxDecimal != null -> context.getString(R.string.inputview_field_max_number, maxDecimal)
                 else -> ""
             })
         }

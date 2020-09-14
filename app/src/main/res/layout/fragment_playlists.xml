@@ -1,5 +1,11 @@
-<bzh.zelyon.common.ui.component.ItemsView xmlns:android="http://schemas.android.com/apk/res/android"
+<bzh.zelyon.common.ui.component.CollectionsView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/fragment_playlists_itemsview_playlists"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:fitsSystemWindows="true"/>
+    android:fitsSystemWindows="true"
+    app:nb_colums="2"
+    app:id_layout_item="@layout/item_playlist"
+    app:id_layout_empty="@layout/item_playlist_empty"
+    app:space_divider="8"
+    app:fast_scroll_enable="true"/>

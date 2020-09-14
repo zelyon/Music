@@ -28,10 +28,12 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <bzh.zelyon.common.ui.component.ItemsView
+        <bzh.zelyon.common.ui.component.CollectionsView
             android:id="@+id/fragment_musicplaylists_itemsview_playlists"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content"
+            app:id_layout_item="@layout/item_musicplaylist"
+            app:id_layout_empty="@layout/item_playlist_empty"/>
 
     </androidx.core.widget.NestedScrollView>
 

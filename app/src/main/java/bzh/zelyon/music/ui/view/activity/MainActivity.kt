@@ -2,11 +2,10 @@ package bzh.zelyon.music.ui.view.activity
 
 import android.content.Intent
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import androidx.vectordrawable.graphics.drawable.AnimatedVectorDrawableCompat
+import bzh.zelyon.common.ui.view.activity.AbsActivity
 import bzh.zelyon.music.R
 import bzh.zelyon.music.db.DB
-import bzh.zelyon.common.ui.view.activity.AbsActivity
 import bzh.zelyon.music.ui.view.fragment.main.LibraryFragment
 import bzh.zelyon.music.ui.view.fragment.main.PlayingFragment
 import bzh.zelyon.music.ui.view.fragment.main.PlaylistsFragment
@@ -46,11 +45,13 @@ class MainActivity : AbsActivity() {
 
         activity_main_bottomnavigationview.setOnNavigationItemSelectedListener {
             fullBack()
-            showFragment(when (it.itemId) {
+            when (it.itemId) {
                 R.id.activity_main_library -> libraryFragment
                 R.id.activity_main_playlists -> playlistsFragment
-                else -> Fragment()
-            }, false)
+                else -> null
+            }?.let { fragment ->
+                showFragment(fragment, false)
+            }
             true
         }
 

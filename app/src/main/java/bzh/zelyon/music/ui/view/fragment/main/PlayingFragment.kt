@@ -8,13 +8,12 @@ import android.widget.SeekBar
 import androidx.appcompat.widget.PopupMenu
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
+import bzh.zelyon.common.extension.millisecondsToDuration
+import bzh.zelyon.common.extension.setImage
+import bzh.zelyon.common.ui.component.CollectionsView
+import bzh.zelyon.common.ui.view.fragment.AbsToolBarFragment
 import bzh.zelyon.music.R
 import bzh.zelyon.music.db.model.Music
-import bzh.zelyon.common.extension.dpToPx
-import bzh.zelyon.common.extension.millisecondstoDuration
-import bzh.zelyon.common.extension.setImage
-import bzh.zelyon.common.ui.component.ItemsView
-import bzh.zelyon.common.ui.view.fragment.AbsToolBarFragment
 import bzh.zelyon.music.ui.view.fragment.bottom.MusicPlaylistsFragment
 import bzh.zelyon.music.ui.view.fragment.edit.EditMusicFragment
 import bzh.zelyon.music.util.MusicPlayer
@@ -36,22 +35,14 @@ class PlayingFragment: AbsToolBarFragment() {
             override fun onStartTrackingTouch(seekBar: SeekBar) {}
             override fun onStopTrackingTouch(seekBar: SeekBar) = MusicPlayer.goTo(seekBar.progress)
         })
-        fragment_playing_itemsview_musics.apply {
-            idLayoutItem = R.layout.item_music
-            idLayoutFooter = R.layout.item_music_footer
-            isFastScroll = true
-            dragNDropEnable = true
-            swipeEnable = true
-            thumbMarginBottom = absActivity.dpToPx(140)
-            helper = MusicHelper()
-            items = MusicPlayer.musics
-        }
+        fragment_playing_itemsview_musics.helper = MusicHelper()
+        fragment_playing_itemsview_musics.items = MusicPlayer.musics
 
         fixedRateTimer(period = 400) {
             safeRun {
                 MusicPlayer.playingMusic?.let {
-                    fragment_playing_textview_duration.text = MusicPlayer.duration.millisecondstoDuration()
-                    fragment_playing_textview_current.text = MusicPlayer.currentPosition.millisecondstoDuration()
+                    fragment_playing_textview_duration.text = MusicPlayer.duration.millisecondsToDuration()
+                    fragment_playing_textview_current.text = MusicPlayer.currentPosition.millisecondsToDuration()
                     fragment_playing_seekbar_current.max = MusicPlayer.duration
                     fragment_playing_seekbar_current.progress = MusicPlayer.currentPosition
                     fragment_playing_imagebutton_previous.isVisible = MusicPlayer.playingPositions.size > 1
@@ -106,7 +97,7 @@ class PlayingFragment: AbsToolBarFragment() {
         duration = false
     ).orEmpty()
 
-    inner class MusicHelper: ItemsView.Helper() {
+    inner class MusicHelper: CollectionsView.Helper() {
         override fun onBindItem(itemView: View, items: MutableList<*>, position: Int) {
             val music = items[position]
             if (music is Music) {

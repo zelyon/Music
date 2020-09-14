@@ -1,9 +1,7 @@
 package bzh.zelyon.common.ui.component
 
 import android.content.Context
-import android.graphics.Canvas
-import android.graphics.Paint
-import android.graphics.Rect
+import android.graphics.*
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.MotionEvent
@@ -24,7 +22,11 @@ import kotlin.math.max
 import kotlin.math.pow
 import kotlin.math.round
 
-class ItemsView @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0): RecyclerView(context, attrs, defStyleAttr) {
+class CollectionsView @JvmOverloads constructor(
+    context: Context,
+    attrs: AttributeSet? = null,
+    defStyleAttr: Int = 0
+): RecyclerView(context, attrs, defStyleAttr) {
 
     var items: MutableList<*> = mutableListOf<Any>()
         set(value) {
@@ -32,17 +34,9 @@ class ItemsView @JvmOverloads constructor(context: Context, attrs: AttributeSet?
             notifyDataSetChanged()
         }
 
-    var nbColumns = 1
+    var helper: Helper? = null
         set(value) {
             field = value
-            layoutManager = when (value) {
-                1 -> LinearLayoutManager(context)
-                else -> GridLayoutManager(context, value).apply {
-                    spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
-                        override fun getSpanSize(position: Int) = if (position == 0 || position == items.size + 1) value else 1
-                    }
-                }
-            }
             notifyDataSetChanged()
         }
 
@@ -70,9 +64,44 @@ class ItemsView @JvmOverloads constructor(context: Context, attrs: AttributeSet?
             notifyDataSetChanged()
         }
 
-    var helper: Helper? = null
+    var nbColumns = 1
         set(value) {
             field = value
+            layoutManager = when (value) {
+                1 -> LinearLayoutManager(context)
+                else -> GridLayoutManager(context, value).apply {
+                    spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
+                        override fun getSpanSize(position: Int) = if (position == 0 || position == items.size + 1) value else 1
+                    }
+                }
+            }
+            notifyDataSetChanged()
+        }
+
+    var spaceDivider: Int = 0
+        set(value) {
+            field = value
+            addItemDecoration(object : ItemDecoration() {
+                override fun getItemOffsets(
+                    outRect: Rect,
+                    view: View,
+                    parent: RecyclerView,
+                    state: State
+                ) {
+                    if (spaceDivider > 0) {
+                        var position = parent.getChildAdapterPosition(view)
+                        if (position != 0 && position != items.size + 1 && !items.isNullOrEmpty()) {
+                            position--
+                            outRect.top = if (position < nbColumns) value else value / 2
+                            outRect.left = if (position % nbColumns == 0) value else value / 2
+                            outRect.right =
+                                if ((position + 1) % nbColumns == 0) value else value / 2
+                            outRect.bottom =
+                                if (position > items.size - nbColumns) value else value / 2
+                        }
+                    }
+                }
+            })
             notifyDataSetChanged()
         }
 
@@ -88,27 +117,7 @@ class ItemsView @JvmOverloads constructor(context: Context, attrs: AttributeSet?
             itemTouchHelper.attachToRecyclerView(if (value || dragNDropEnable) this else null)
         }
 
-    var spaceDivider: Int = 0
-        set(value) {
-            field = value
-            addItemDecoration(object : ItemDecoration() {
-                override fun getItemOffsets(outRect: Rect, view: View, parent: RecyclerView, state: State) {
-                    if (spaceDivider > 0) {
-                        var position = parent.getChildAdapterPosition(view)
-                        if (position != 0 && position != items.size + 1 && !items.isNullOrEmpty()) {
-                            position--
-                            outRect.top = if (position < nbColumns) value else value / 2
-                            outRect.left = if (position % nbColumns == 0) value else value / 2
-                            outRect.right = if ((position + 1) % nbColumns == 0) value else value / 2
-                            outRect.bottom = if (position > items.size - nbColumns) value else value / 2
-                        }
-                    }
-                }
-            })
-            notifyDataSetChanged()
-        }
-
-    var isFastScroll: Boolean = false
+    var fastScrollEnable: Boolean = false
         set(value) {
             field = value
             if (value) {
@@ -122,9 +131,9 @@ class ItemsView @JvmOverloads constructor(context: Context, attrs: AttributeSet?
         }
 
     @ColorInt
-    var thumbColor = context.getColor(context.getResIdFromAndroidAttr(android.R.attr.colorAccent))
+    var thumbEnableColor = context.getColor(context.getResIdFromAndroidAttr(android.R.attr.colorAccent))
     @ColorInt
-    var thumbColorDisable =  context.getColor(android.R.color.darker_gray)
+    var thumbDisableColor = context.getColor(android.R.color.darker_gray)
     @ColorInt
     var thumbTextColor =  context.getColor(android.R.color.white)
     var thumbMinHeight = context.dpToPx(36)
@@ -135,6 +144,7 @@ class ItemsView @JvmOverloads constructor(context: Context, attrs: AttributeSet?
     var thumbMarginTop = context.dpToPx(0)
     var thumbMarginBottom = context.dpToPx(0)
     var thumbTextSize = context.dpToPx(32)
+    var thumbShape = ThumbShape.DROP
 
     private var thumbHeight = 0F
     private var thumbTop = 0F
@@ -156,33 +166,107 @@ class ItemsView @JvmOverloads constructor(context: Context, attrs: AttributeSet?
         override fun onDrawOver(canvas: Canvas, parent: RecyclerView, state: State) {
             if (thumbNeedShow) {
                 val thumbPaint = Paint().apply {
-                    color = if (thumbDragging) thumbColor else thumbColorDisable
+                    color = if (thumbDragging) thumbEnableColor else thumbDisableColor
                     isAntiAlias = true
                 }
-                canvas.drawRoundRect(thumbLeft, thumbTop, thumbRight, thumbBottom, thumbCorner, thumbCorner, thumbPaint)
+                canvas.drawRoundRect(
+                    thumbLeft,
+                    thumbTop,
+                    thumbRight,
+                    thumbBottom,
+                    thumbCorner,
+                    thumbCorner,
+                    thumbPaint
+                )
                 if (thumbDragging) {
-                    val position = round(((items.size-1) * (thumbTop - thumbMarginTop) / thumbScrollingHeight)).toInt()
+                    val position = round(((items.size - 1) * (thumbTop - thumbMarginTop) / thumbScrollingHeight)).toInt()
                     helper?.getIndexScroll(items, position)?.let { index ->
-                        val centerX = thumbLeft - thumbMarginLeft - thumbTextSize/4 - thumbTextSize
+                        val centerX = thumbLeft - thumbMarginLeft - thumbTextSize*1.5f
                         val centerY = when {
                             thumbCenterY - thumbTextSize < thumbMinY -> thumbMinY + thumbTextSize
                             thumbCenterY + thumbTextSize > thumbMaxY -> thumbMaxY - thumbTextSize
                             else -> thumbCenterY
                         }
-                        canvas.apply {
-                            save()
-                            rotate(-45F, centerX, centerY)
-                            drawCircle(centerX, centerY, thumbTextSize, thumbPaint)
-                            drawRoundRect(centerX, centerY, centerX + thumbTextSize, centerY + thumbTextSize, thumbCorner, thumbCorner, thumbPaint)
-                            drawRect(centerX, centerY, centerX + thumbCorner, centerY + thumbTextSize, thumbPaint)
-                            drawRect(centerX, centerY, centerX + thumbTextSize, centerY + thumbCorner, thumbPaint)
-                            restore()
-                            drawText(index, centerX, centerY + thumbTextSize/3, Paint().apply {
-                                textSize = thumbTextSize
-                                textAlign = Paint.Align.CENTER
-                                color = thumbTextColor
-                            })
+                        when (thumbShape) {
+                            ThumbShape.DROP -> {
+                                canvas.apply {
+                                    save()
+                                    rotate(-45F, centerX, centerY)
+                                    drawRoundRect(
+                                        centerX,
+                                        centerY,
+                                        centerX + thumbTextSize,
+                                        centerY + thumbTextSize,
+                                        thumbCorner,
+                                        thumbCorner,
+                                        thumbPaint
+                                    )
+                                    drawRect(
+                                        centerX,
+                                        centerY,
+                                        centerX + thumbCorner,
+                                        centerY + thumbTextSize,
+                                        thumbPaint
+                                    )
+                                    drawRect(
+                                        centerX,
+                                        centerY,
+                                        centerX + thumbTextSize,
+                                        centerY + thumbCorner,
+                                        thumbPaint
+                                    )
+                                    restore()
+                                }
+                                canvas.drawCircle(
+                                    centerX,
+                                    centerY,
+                                    thumbTextSize,
+                                    thumbPaint
+                                )
+                            }
+                            ThumbShape.CIRCLE -> canvas.drawCircle(
+                                centerX,
+                                centerY,
+                                thumbTextSize,
+                                thumbPaint
+                            )
+                            ThumbShape.SQUARE -> canvas.drawRect(
+                                centerX - thumbTextSize,
+                                centerY - thumbTextSize,
+                                centerX + thumbTextSize,
+                                centerY + thumbTextSize,
+                                thumbPaint
+                            )
+                            ThumbShape.ROUND_SQUARE -> canvas.drawRoundRect(
+                                centerX - thumbTextSize,
+                                centerY - thumbTextSize,
+                                centerX + thumbTextSize,
+                                centerY + thumbTextSize,
+                                thumbTextSize / 2,
+                                thumbTextSize / 2,
+                                thumbPaint
+                            )
+                            ThumbShape.SQUIRCLE -> canvas.drawPath(Path().apply {
+                                val thumbTextSizeInt = thumbTextSize.toInt()
+                                val thumbTextSizePow3 = thumbTextSize.toDouble().pow(3.0)
+                                moveTo(-thumbTextSize, 0f)
+                                for (x in -thumbTextSizeInt..thumbTextSizeInt) {
+                                    lineTo(x.toFloat(), Math.cbrt(thumbTextSizePow3 - abs(x.toDouble().pow(3.0))).toFloat())
+                                }
+                                for (x in thumbTextSizeInt downTo -thumbTextSizeInt) {
+                                    lineTo(x.toFloat(), (-Math.cbrt(thumbTextSizePow3 - abs(x.toDouble().pow(3.0)))).toFloat())
+                                }
+                                close()
+                                transform(Matrix().apply {
+                                    postTranslate(centerX, centerY)
+                                })
+                            }, thumbPaint)
                         }
+                        canvas.drawText(index, centerX, centerY + thumbTextSize / 3, Paint().apply {
+                            textSize = thumbTextSize
+                            textAlign = Paint.Align.CENTER
+                            color = thumbTextColor
+                        })
                     }
                 }
             }
@@ -194,9 +278,7 @@ class ItemsView @JvmOverloads constructor(context: Context, attrs: AttributeSet?
             onInterceptTouchEvent(ev)
         }
 
-        override fun onInterceptTouchEvent(recyclerView: RecyclerView, ev: MotionEvent) = onMotionEventIsDragging(ev)
-
-        private fun onMotionEventIsDragging(motionEvent: MotionEvent) =
+        override fun onInterceptTouchEvent(recyclerView: RecyclerView, motionEvent: MotionEvent) =
             if (thumbNeedShow &&
                 motionEvent.action == MotionEvent.ACTION_DOWN &&
                 motionEvent.x > thumbLeft - thumbMarginLeft &&
@@ -209,10 +291,12 @@ class ItemsView @JvmOverloads constructor(context: Context, attrs: AttributeSet?
                 thumbDragging) {
                 motionEventY = 0f
                 thumbDragging = false
+                invalidate()
                 false
             } else if (thumbNeedShow &&
                 motionEvent.action == MotionEvent.ACTION_MOVE &&
-                thumbDragging && abs(thumbTop - motionEvent.y) >= 2) {
+                thumbDragging &&
+                abs(thumbTop - motionEvent.y) >= 2) {
                 val totalPossibleOffset = (thumbMoveHeight - thumbScrollingHeight).toInt()
                 val scrollingBy = ((motionEvent.y - motionEventY) / thumbScrollingHeight * totalPossibleOffset).toInt()
                 if (computeVerticalScrollOffset() + scrollingBy in 0 until totalPossibleOffset) {
@@ -236,7 +320,7 @@ class ItemsView @JvmOverloads constructor(context: Context, attrs: AttributeSet?
     private var scrollListener = object : RecyclerView.OnScrollListener() {
         override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
             helper?.onScroll(dy <= 0)
-            if (isFastScroll) {
+            if (fastScrollEnable) {
                 scrollItemDecorator.onScroll()
             }
         }
@@ -244,13 +328,21 @@ class ItemsView @JvmOverloads constructor(context: Context, attrs: AttributeSet?
 
     private val itemTouchHelper = ItemTouchHelper(object : ItemTouchHelper.Callback() {
 
-        override fun getMovementFlags(recyclerView: RecyclerView, viewHolder: ViewHolder) = makeMovementFlags(when {
-            dragNDropEnable && nbColumns == 1 -> ItemTouchHelper.UP or ItemTouchHelper.DOWN
-            dragNDropEnable -> ItemTouchHelper.UP or ItemTouchHelper.DOWN or ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT
-            else -> 0
-        }, if (swipeEnable && nbColumns == 1) ItemTouchHelper.START or ItemTouchHelper.END else 0)
+        override fun getMovementFlags(recyclerView: RecyclerView, viewHolder: ViewHolder) =
+            makeMovementFlags(
+                when {
+                    dragNDropEnable && nbColumns == 1 -> ItemTouchHelper.UP or ItemTouchHelper.DOWN
+                    dragNDropEnable -> ItemTouchHelper.UP or ItemTouchHelper.DOWN or ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT
+                    else -> 0
+                },
+                if (swipeEnable && nbColumns == 1) ItemTouchHelper.START or ItemTouchHelper.END else 0
+            )
 
-        override fun onMove(recyclerView: RecyclerView, viewHolder: ViewHolder, target: ViewHolder): Boolean {
+        override fun onMove(
+            recyclerView: RecyclerView,
+            viewHolder: ViewHolder,
+            target: ViewHolder
+        ): Boolean {
             var sourcePosition = viewHolder.adapterPosition
             var targetPosition = target.adapterPosition
             return if (sourcePosition in 1..items.size && targetPosition in 1..items.size) {
@@ -313,19 +405,23 @@ class ItemsView @JvmOverloads constructor(context: Context, attrs: AttributeSet?
             else -> DATA_TYPE
         }
 
-        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) = object : RecyclerView.ViewHolder(LayoutInflater.from(context).inflate(when (viewType) {
-            HEADER_TYPE -> idLayoutHeader
-            FOOTER_TYPE -> idLayoutFooter
-            EMPTY_TYPE -> idLayoutEmpty
-            else -> idLayoutItem
-        }, parent, false)) {}
+        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) = object : RecyclerView.ViewHolder(
+            LayoutInflater.from(context).inflate(
+                when (viewType) {
+                    HEADER_TYPE -> idLayoutHeader
+                    FOOTER_TYPE -> idLayoutFooter
+                    EMPTY_TYPE -> idLayoutEmpty
+                    else -> idLayoutItem
+                }, parent, false
+            )
+        ) {}
 
         override fun onBindViewHolder(viewHolder: ViewHolder, position: Int) {
             when (getItemViewType(position)) {
                 HEADER_TYPE -> helper?.onBindHeader(viewHolder.itemView)
                 FOOTER_TYPE -> helper?.onBindFooter(viewHolder.itemView)
                 EMPTY_TYPE -> helper?.onBindEmpty(viewHolder.itemView)
-                DATA_TYPE ->  {
+                DATA_TYPE -> {
                     helper?.onBindItem(viewHolder.itemView, items, position - 1)
                     viewHolder.itemView.setOnClickListener {
                         helper?.onItemClick(viewHolder.itemView, items, position - 1)
@@ -337,7 +433,7 @@ class ItemsView @JvmOverloads constructor(context: Context, attrs: AttributeSet?
 
                     helper?.getDragView(viewHolder.itemView, items, position - 1)?.let { dragView ->
                         dragView.isVisible = items.size > 1
-                        dragView.setOnTouchListener { _, event ->
+                        dragView.setOnTouchListener { _, event: MotionEvent ->
                             if (event.actionMasked == MotionEvent.ACTION_DOWN) {
                                 itemTouchHelper.startDrag(viewHolder)
                             }
@@ -350,7 +446,37 @@ class ItemsView @JvmOverloads constructor(context: Context, attrs: AttributeSet?
     }
 
     init {
-        nbColumns = 1
+        val typedArray = context.obtainStyledAttributes(attrs, R.styleable.CollectionsView, defStyleAttr, 0)
+        idLayoutItem = typedArray.getResourceId(R.styleable.CollectionsView_id_layout_item, R.layout.item_empty)
+        idLayoutHeader = typedArray.getResourceId(R.styleable.CollectionsView_id_layout_header, R.layout.item_empty)
+        idLayoutFooter = typedArray.getResourceId(R.styleable.CollectionsView_id_layout_footer, R.layout.item_empty)
+        idLayoutEmpty = typedArray.getResourceId(R.styleable.CollectionsView_id_layout_empty, R.layout.item_empty)
+        nbColumns = typedArray.getInt(R.styleable.CollectionsView_nb_colums, 1)
+        spaceDivider = context.dpToPx(typedArray.getInt(R.styleable.CollectionsView_space_divider, 0)).toInt()
+        dragNDropEnable = typedArray.getBoolean(R.styleable.CollectionsView_drag_n_drop_enable, false)
+        swipeEnable = typedArray.getBoolean(R.styleable.CollectionsView_swipe_enable, false)
+        fastScrollEnable = typedArray.getBoolean(R.styleable.CollectionsView_fast_scroll_enable, false)
+        thumbEnableColor = typedArray.getColor(R.styleable.CollectionsView_thumb_enable_color, context.getColor(context.getResIdFromAndroidAttr(android.R.attr.colorAccent)))
+        thumbDisableColor = typedArray.getColor(R.styleable.CollectionsView_thumb_disable_color, context.getColor(android.R.color.darker_gray))
+        thumbTextColor = typedArray.getColor(R.styleable.CollectionsView_thumb_text_color, context.getColor(android.R.color.white))
+        thumbMinHeight = context.dpToPx(typedArray.getInt(R.styleable.CollectionsView_thumb_min_height, 36))
+        thumbWidth = context.dpToPx(typedArray.getInt(R.styleable.CollectionsView_thumb_width, 4))
+        thumbCorner = context.dpToPx(typedArray.getInt(R.styleable.CollectionsView_thumb_corner, 8))
+        thumbMarginLeft = context.dpToPx(typedArray.getInt(R.styleable.CollectionsView_thumb_margin_left, 8))
+        thumbMarginRight = context.dpToPx(typedArray.getInt(R.styleable.CollectionsView_thumb_margin_right, 0))
+        thumbMarginTop = context.dpToPx(typedArray.getInt(R.styleable.CollectionsView_thumb_margin_top, 0))
+        thumbMarginBottom = context.dpToPx(typedArray.getInt(R.styleable.CollectionsView_thumb_margin_bottom, 0))
+        thumbTextSize = context.dpToPx(typedArray.getInt(R.styleable.CollectionsView_thumb_text_size, 32))
+        thumbShape = when (typedArray.getInt(R.styleable.CollectionsView_thumb_shape, 0)) {
+            0 -> ThumbShape.DROP
+            1 -> ThumbShape.CIRCLE
+            2 -> ThumbShape.SQUIRCLE
+            3 -> ThumbShape.SQUIRCLE
+            4 -> ThumbShape.ROUND_SQUARE
+            else -> ThumbShape.DROP
+        }
+        typedArray.recycle()
+
         adapter = itemsAdapter
         setHasFixedSize(false)
         addOnScrollListener(scrollListener)
@@ -358,6 +484,10 @@ class ItemsView @JvmOverloads constructor(context: Context, attrs: AttributeSet?
 
     fun notifyDataSetChanged() {
         adapter?.notifyDataSetChanged()
+    }
+
+    enum class ThumbShape {
+        SQUARE, ROUND_SQUARE, CIRCLE, DROP, SQUIRCLE
     }
 
     open class Helper {
@@ -374,7 +504,12 @@ class ItemsView @JvmOverloads constructor(context: Context, attrs: AttributeSet?
         open fun getIndexScroll(items: MutableList<*>, position: Int): String? = null
 
         open fun getDragView(itemView: View, items: MutableList<*>, position: Int): View? = null
-        open fun onItemsMove(itemView: View, items: MutableList<*>, fromPosition: Int, toPosition: Int) {}
+        open fun onItemsMove(
+            itemView: View,
+            items: MutableList<*>,
+            fromPosition: Int,
+            toPosition: Int
+        ) {}
         open fun onItemStartDrag(itemView: View, items: MutableList<*>, position: Int) {}
         open fun onItemEndDrag(itemView: View, items: MutableList<*>, position: Int) {}
         open fun onItemSwipe(itemView: View, items: MutableList<*>, position: Int) {}

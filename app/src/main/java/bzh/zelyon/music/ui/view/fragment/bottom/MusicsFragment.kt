@@ -5,12 +5,12 @@ import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.PopupMenu
+import bzh.zelyon.common.extension.setImage
+import bzh.zelyon.common.ui.component.CollectionsView
+import bzh.zelyon.common.ui.view.fragment.AbsToolBarBottomSheetFragment
 import bzh.zelyon.music.R
 import bzh.zelyon.music.db.model.Music
-import bzh.zelyon.common.extension.setImage
 import bzh.zelyon.music.ui.Listener
-import bzh.zelyon.common.ui.component.ItemsView
-import bzh.zelyon.common.ui.view.fragment.AbsToolBarBottomSheetFragment
 import bzh.zelyon.music.ui.view.fragment.edit.EditMusicFragment
 import bzh.zelyon.music.util.MusicPlayer
 import kotlinx.android.synthetic.main.fragment_musics.*
@@ -31,11 +31,8 @@ class MusicsFragment private constructor(): AbsToolBarBottomSheetFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        fragment_musics_itemsview_musics.apply {
-            idLayoutItem = R.layout.item_music
-            helper = MusicHelper()
-            items = musics.toMutableList()
-        }
+        fragment_musics_itemsview_musics.helper = MusicHelper()
+        fragment_musics_itemsview_musics.items = musics.toMutableList()
     }
 
     override fun getIdToolbar() = R.id.fragment_musics_toolbar
@@ -44,7 +41,7 @@ class MusicsFragment private constructor(): AbsToolBarBottomSheetFragment() {
 
     override fun getTitleToolBar() = arguments?.getString(ARG_TITLE).toString()
 
-    inner class MusicHelper: ItemsView.Helper() {
+    inner class MusicHelper: CollectionsView.Helper() {
         override fun onBindItem(itemView: View, items: MutableList<*>, position: Int) {
             val music = items[position]
             if (music is Music) {

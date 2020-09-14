@@ -2,7 +2,6 @@ package bzh.zelyon.music.util
 
 import android.media.MediaPlayer
 import bzh.zelyon.music.db.model.Music
-import bzh.zelyon.music.util.MusicPlayer.setOnCompletionListener
 import java.io.File
 import kotlin.random.Random
 import kotlin.random.nextInt
@@ -74,8 +73,9 @@ object MusicPlayer: MediaPlayer() {
 
     fun next(auto: Boolean = false) {
         when {
-            isRepeat -> if (!auto) playingPosition++
             isShuffle -> playingPosition = Random.nextInt(musics.indices)
+            isRepeat && auto -> {}
+            isRepeat && !auto -> playingPosition++
             else -> playingPosition++
         }
         playingPositions.add(playingPosition)

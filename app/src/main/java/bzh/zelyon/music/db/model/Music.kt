@@ -7,8 +7,8 @@ import android.net.Uri
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import bzh.zelyon.common.extension.millisecondsToDuration
 import bzh.zelyon.music.R
-import bzh.zelyon.common.extension.millisecondstoDuration
 import org.jaudiotagger.audio.mp3.MP3File
 import java.io.ByteArrayInputStream
 import java.io.File
@@ -60,7 +60,7 @@ data class Music(
             infos.add(albumName)
         }
         if (duration) {
-            infos.add(this.duration.millisecondstoDuration())
+            infos.add(this.duration.millisecondsToDuration())
         }
         return infos.joinToString(separator)
     }

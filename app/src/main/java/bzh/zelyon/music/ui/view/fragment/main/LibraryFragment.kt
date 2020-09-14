@@ -8,13 +8,12 @@ import androidx.appcompat.widget.PopupMenu
 import androidx.appcompat.widget.SearchView
 import androidx.core.view.marginBottom
 import androidx.core.view.marginTop
+import bzh.zelyon.common.extension.setImage
+import bzh.zelyon.common.ui.component.CollectionsView
+import bzh.zelyon.common.ui.view.fragment.AbsToolBarFragment
 import bzh.zelyon.music.R
 import bzh.zelyon.music.db.model.Artist
-import bzh.zelyon.common.extension.dpToPx
-import bzh.zelyon.common.extension.setImage
 import bzh.zelyon.music.ui.Listener
-import bzh.zelyon.common.ui.component.ItemsView
-import bzh.zelyon.common.ui.view.fragment.AbsToolBarFragment
 import bzh.zelyon.music.ui.view.fragment.bottom.MusicsFragment
 import bzh.zelyon.music.ui.view.fragment.edit.EditArtistFragment
 import bzh.zelyon.music.util.MusicContent
@@ -32,18 +31,7 @@ class LibraryFragment: AbsToolBarFragment(), SearchView.OnQueryTextListener, Lis
 
         fragment_library_searchview.setOnQueryTextListener(this)
 
-        fragment_library_itemsview_artists.apply {
-            nbColumns = 2
-            spaceDivider = absActivity.dpToPx(8).toInt()
-            idLayoutItem = R.layout.item_artist
-            idLayoutHeader = R.layout.item_artist_header_footer
-            idLayoutFooter = R.layout.item_artist_header_footer
-            idLayoutEmpty = R.layout.item_artist_empty
-            isFastScroll = true
-            thumbMarginTop = absActivity.dpToPx(80)
-            thumbMarginBottom = absActivity.dpToPx(80)
-            helper = ArtistHelper()
-        }
+        fragment_library_itemsview_artists.helper = ArtistHelper()
 
         loadMusics()
     }
@@ -52,9 +40,7 @@ class LibraryFragment: AbsToolBarFragment(), SearchView.OnQueryTextListener, Lis
 
     override fun onIdClick(id: Int) {
         when (id) {
-            R.id.fragment_library_shuffle -> {
-                MusicPlayer.playMusics(MusicContent.getMusics(absActivity).shuffled())
-            }
+            R.id.fragment_library_shuffle -> MusicPlayer.playMusics(MusicContent.getMusics(absActivity).shuffled())
         }
     }
 
@@ -93,7 +79,7 @@ class LibraryFragment: AbsToolBarFragment(), SearchView.OnQueryTextListener, Lis
 
     private enum class AnimSate { SHOW, HIDE, FOLLOW_OFFSET }
 
-    inner class ArtistHelper: ItemsView.Helper() {
+    inner class ArtistHelper: CollectionsView.Helper() {
         private var animState: AnimSate? = null
         override fun onBindItem(itemView: View, items: MutableList<*>, position: Int) {
             val artist = items[position]

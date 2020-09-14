@@ -4,14 +4,14 @@ import android.content.DialogInterface.BUTTON_POSITIVE
 import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AlertDialog
+import bzh.zelyon.common.ui.component.InputView
+import bzh.zelyon.common.ui.component.CollectionsView
+import bzh.zelyon.common.ui.view.fragment.AbsToolBarBottomSheetFragment
 import bzh.zelyon.music.R
 import bzh.zelyon.music.db.DB
 import bzh.zelyon.music.db.model.Music
 import bzh.zelyon.music.db.model.Playlist
 import bzh.zelyon.music.ui.Listener
-import bzh.zelyon.common.ui.component.InputView
-import bzh.zelyon.common.ui.component.ItemsView
-import bzh.zelyon.common.ui.view.fragment.AbsToolBarBottomSheetFragment
 import kotlinx.android.synthetic.main.fragment_musicplaylists.*
 import kotlinx.android.synthetic.main.item_musicplaylist.view.*
 
@@ -29,11 +29,8 @@ class MusicPlaylistsFragment private constructor(): AbsToolBarBottomSheetFragmen
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        fragment_musicplaylists_itemsview_playlists.apply {
-            idLayoutItem = R.layout.item_musicplaylist
-            idLayoutEmpty = R.layout.item_playlist_empty
-            helper = PlaylistHelper()
-        }
+        fragment_musicplaylists_itemsview_playlists.helper = PlaylistHelper()
+
         loadPlayLists()
     }
 
@@ -73,7 +70,7 @@ class MusicPlaylistsFragment private constructor(): AbsToolBarBottomSheetFragmen
         fragment_musicplaylists_itemsview_playlists.items = DB.getPlaylistDao().getAll().toMutableList()
     }
 
-    inner class PlaylistHelper: ItemsView.Helper() {
+    inner class PlaylistHelper: CollectionsView.Helper() {
         override fun onBindItem(itemView: View, items: MutableList<*>, position: Int) {
             val playlist = items[position]
             if (playlist is Playlist) {
