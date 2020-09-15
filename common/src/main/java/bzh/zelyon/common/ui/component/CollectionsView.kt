@@ -22,11 +22,7 @@ import kotlin.math.max
 import kotlin.math.pow
 import kotlin.math.round
 
-class CollectionsView @JvmOverloads constructor(
-    context: Context,
-    attrs: AttributeSet? = null,
-    defStyleAttr: Int = 0
-): RecyclerView(context, attrs, defStyleAttr) {
+class CollectionsView @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0): RecyclerView(context, attrs, defStyleAttr) {
 
     var items: MutableList<*> = mutableListOf<Any>()
         set(value) {
@@ -94,10 +90,8 @@ class CollectionsView @JvmOverloads constructor(
                             position--
                             outRect.top = if (position < nbColumns) value else value / 2
                             outRect.left = if (position % nbColumns == 0) value else value / 2
-                            outRect.right =
-                                if ((position + 1) % nbColumns == 0) value else value / 2
-                            outRect.bottom =
-                                if (position > items.size - nbColumns) value else value / 2
+                            outRect.right = if ((position + 1) % nbColumns == 0) value else value / 2
+                            outRect.bottom = if (position > items.size - nbColumns) value else value / 2
                         }
                     }
                 }
@@ -144,7 +138,7 @@ class CollectionsView @JvmOverloads constructor(
     var thumbMarginTop = context.dpToPx(0)
     var thumbMarginBottom = context.dpToPx(0)
     var thumbTextSize = context.dpToPx(32)
-    var thumbShape = ThumbShape.DROP
+    var thumbShape = ThumbShape.TEARDROP
 
     private var thumbHeight = 0F
     private var thumbTop = 0F
@@ -169,15 +163,7 @@ class CollectionsView @JvmOverloads constructor(
                     color = if (thumbDragging) thumbEnableColor else thumbDisableColor
                     isAntiAlias = true
                 }
-                canvas.drawRoundRect(
-                    thumbLeft,
-                    thumbTop,
-                    thumbRight,
-                    thumbBottom,
-                    thumbCorner,
-                    thumbCorner,
-                    thumbPaint
-                )
+                canvas.drawRoundRect(thumbLeft, thumbTop, thumbRight, thumbBottom, thumbCorner, thumbCorner, thumbPaint)
                 if (thumbDragging) {
                     val position = round(((items.size - 1) * (thumbTop - thumbMarginTop) / thumbScrollingHeight)).toInt()
                     helper?.getIndexScroll(items, position)?.let { index ->
@@ -188,64 +174,18 @@ class CollectionsView @JvmOverloads constructor(
                             else -> thumbCenterY
                         }
                         when (thumbShape) {
-                            ThumbShape.DROP -> {
-                                canvas.apply {
-                                    save()
-                                    rotate(-45F, centerX, centerY)
-                                    drawRoundRect(
-                                        centerX,
-                                        centerY,
-                                        centerX + thumbTextSize,
-                                        centerY + thumbTextSize,
-                                        thumbCorner,
-                                        thumbCorner,
-                                        thumbPaint
-                                    )
-                                    drawRect(
-                                        centerX,
-                                        centerY,
-                                        centerX + thumbCorner,
-                                        centerY + thumbTextSize,
-                                        thumbPaint
-                                    )
-                                    drawRect(
-                                        centerX,
-                                        centerY,
-                                        centerX + thumbTextSize,
-                                        centerY + thumbCorner,
-                                        thumbPaint
-                                    )
-                                    restore()
-                                }
-                                canvas.drawCircle(
-                                    centerX,
-                                    centerY,
-                                    thumbTextSize,
-                                    thumbPaint
-                                )
+                            ThumbShape.TEARDROP -> {
+                                canvas.drawCircle(centerX, centerY, thumbTextSize, thumbPaint)
+                                canvas.save()
+                                canvas.rotate(-45F, centerX, centerY)
+                                canvas.drawRoundRect(centerX, centerY, centerX + thumbTextSize, centerY + thumbTextSize, thumbCorner, thumbCorner, thumbPaint)
+                                canvas.drawRect(centerX, centerY, centerX + thumbCorner, centerY + thumbTextSize, thumbPaint)
+                                canvas.drawRect(centerX, centerY, centerX + thumbTextSize, centerY + thumbCorner, thumbPaint)
+                                canvas.restore()
                             }
-                            ThumbShape.CIRCLE -> canvas.drawCircle(
-                                centerX,
-                                centerY,
-                                thumbTextSize,
-                                thumbPaint
-                            )
-                            ThumbShape.SQUARE -> canvas.drawRect(
-                                centerX - thumbTextSize,
-                                centerY - thumbTextSize,
-                                centerX + thumbTextSize,
-                                centerY + thumbTextSize,
-                                thumbPaint
-                            )
-                            ThumbShape.ROUND_SQUARE -> canvas.drawRoundRect(
-                                centerX - thumbTextSize,
-                                centerY - thumbTextSize,
-                                centerX + thumbTextSize,
-                                centerY + thumbTextSize,
-                                thumbTextSize / 2,
-                                thumbTextSize / 2,
-                                thumbPaint
-                            )
+                            ThumbShape.CIRCLE -> canvas.drawCircle(centerX, centerY, thumbTextSize, thumbPaint)
+                            ThumbShape.SQUARE -> canvas.drawRect(centerX - thumbTextSize, centerY - thumbTextSize, centerX + thumbTextSize, centerY + thumbTextSize, thumbPaint)
+                            ThumbShape.ROUND_SQUARE -> canvas.drawRoundRect(centerX - thumbTextSize, centerY - thumbTextSize, centerX + thumbTextSize, centerY + thumbTextSize, thumbTextSize / 2, thumbTextSize / 2, thumbPaint)
                             ThumbShape.SQUIRCLE -> canvas.drawPath(Path().apply {
                                 val thumbTextSizeInt = thumbTextSize.toInt()
                                 val thumbTextSizePow3 = thumbTextSize.toDouble().pow(3.0)
@@ -338,11 +278,7 @@ class CollectionsView @JvmOverloads constructor(
                 if (swipeEnable && nbColumns == 1) ItemTouchHelper.START or ItemTouchHelper.END else 0
             )
 
-        override fun onMove(
-            recyclerView: RecyclerView,
-            viewHolder: ViewHolder,
-            target: ViewHolder
-        ): Boolean {
+        override fun onMove(recyclerView: RecyclerView, viewHolder: ViewHolder, target: ViewHolder): Boolean {
             var sourcePosition = viewHolder.adapterPosition
             var targetPosition = target.adapterPosition
             return if (sourcePosition in 1..items.size && targetPosition in 1..items.size) {
@@ -452,28 +388,28 @@ class CollectionsView @JvmOverloads constructor(
         idLayoutFooter = typedArray.getResourceId(R.styleable.CollectionsView_id_layout_footer, R.layout.item_empty)
         idLayoutEmpty = typedArray.getResourceId(R.styleable.CollectionsView_id_layout_empty, R.layout.item_empty)
         nbColumns = typedArray.getInt(R.styleable.CollectionsView_nb_colums, 1)
-        spaceDivider = context.dpToPx(typedArray.getInt(R.styleable.CollectionsView_space_divider, 0)).toInt()
+        spaceDivider = typedArray.getDimensionPixelSize(R.styleable.CollectionsView_space_divider, 0)
         dragNDropEnable = typedArray.getBoolean(R.styleable.CollectionsView_drag_n_drop_enable, false)
         swipeEnable = typedArray.getBoolean(R.styleable.CollectionsView_swipe_enable, false)
         fastScrollEnable = typedArray.getBoolean(R.styleable.CollectionsView_fast_scroll_enable, false)
         thumbEnableColor = typedArray.getColor(R.styleable.CollectionsView_thumb_enable_color, context.getColor(context.getResIdFromAndroidAttr(android.R.attr.colorAccent)))
         thumbDisableColor = typedArray.getColor(R.styleable.CollectionsView_thumb_disable_color, context.getColor(android.R.color.darker_gray))
         thumbTextColor = typedArray.getColor(R.styleable.CollectionsView_thumb_text_color, context.getColor(android.R.color.white))
-        thumbMinHeight = context.dpToPx(typedArray.getInt(R.styleable.CollectionsView_thumb_min_height, 36))
-        thumbWidth = context.dpToPx(typedArray.getInt(R.styleable.CollectionsView_thumb_width, 4))
-        thumbCorner = context.dpToPx(typedArray.getInt(R.styleable.CollectionsView_thumb_corner, 8))
-        thumbMarginLeft = context.dpToPx(typedArray.getInt(R.styleable.CollectionsView_thumb_margin_left, 8))
-        thumbMarginRight = context.dpToPx(typedArray.getInt(R.styleable.CollectionsView_thumb_margin_right, 0))
-        thumbMarginTop = context.dpToPx(typedArray.getInt(R.styleable.CollectionsView_thumb_margin_top, 0))
-        thumbMarginBottom = context.dpToPx(typedArray.getInt(R.styleable.CollectionsView_thumb_margin_bottom, 0))
-        thumbTextSize = context.dpToPx(typedArray.getInt(R.styleable.CollectionsView_thumb_text_size, 32))
+        thumbMinHeight = typedArray.getDimension(R.styleable.CollectionsView_thumb_min_height, context.dpToPx(36))
+        thumbWidth = typedArray.getDimension(R.styleable.CollectionsView_thumb_width, context.dpToPx(4))
+        thumbCorner = typedArray.getDimension(R.styleable.CollectionsView_thumb_corner, context.dpToPx(8))
+        thumbMarginLeft = typedArray.getDimension(R.styleable.CollectionsView_thumb_margin_left, context.dpToPx(8))
+        thumbMarginRight = typedArray.getDimension(R.styleable.CollectionsView_thumb_margin_right, 0f)
+        thumbMarginTop = typedArray.getDimension(R.styleable.CollectionsView_thumb_margin_top, 0f)
+        thumbMarginBottom = typedArray.getDimension(R.styleable.CollectionsView_thumb_margin_bottom, 0f)
+        thumbTextSize = typedArray.getDimension(R.styleable.CollectionsView_thumb_text_size, context.dpToPx(32))
         thumbShape = when (typedArray.getInt(R.styleable.CollectionsView_thumb_shape, 0)) {
-            0 -> ThumbShape.DROP
+            0 -> ThumbShape.TEARDROP
             1 -> ThumbShape.CIRCLE
             2 -> ThumbShape.SQUIRCLE
             3 -> ThumbShape.SQUIRCLE
             4 -> ThumbShape.ROUND_SQUARE
-            else -> ThumbShape.DROP
+            else -> ThumbShape.TEARDROP
         }
         typedArray.recycle()
 
@@ -487,7 +423,7 @@ class CollectionsView @JvmOverloads constructor(
     }
 
     enum class ThumbShape {
-        SQUARE, ROUND_SQUARE, CIRCLE, DROP, SQUIRCLE
+        SQUARE, ROUND_SQUARE, CIRCLE, TEARDROP, SQUIRCLE
     }
 
     open class Helper {
@@ -504,12 +440,7 @@ class CollectionsView @JvmOverloads constructor(
         open fun getIndexScroll(items: MutableList<*>, position: Int): String? = null
 
         open fun getDragView(itemView: View, items: MutableList<*>, position: Int): View? = null
-        open fun onItemsMove(
-            itemView: View,
-            items: MutableList<*>,
-            fromPosition: Int,
-            toPosition: Int
-        ) {}
+        open fun onItemsMove(itemView: View, items: MutableList<*>, fromPosition: Int, toPosition: Int) {}
         open fun onItemStartDrag(itemView: View, items: MutableList<*>, position: Int) {}
         open fun onItemEndDrag(itemView: View, items: MutableList<*>, position: Int) {}
         open fun onItemSwipe(itemView: View, items: MutableList<*>, position: Int) {}

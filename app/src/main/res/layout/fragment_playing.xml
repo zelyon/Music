@@ -28,7 +28,7 @@
         app:fast_scroll_enable="true"
         app:drag_n_drop_enable="true"
         app:swipe_enable="true"
-        app:thumb_margin_bottom="140"
+        app:thumb_margin_bottom="140dp"
         app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
