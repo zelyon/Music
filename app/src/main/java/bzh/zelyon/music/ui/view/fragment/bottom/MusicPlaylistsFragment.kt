@@ -4,9 +4,9 @@ import android.content.DialogInterface.BUTTON_POSITIVE
 import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AlertDialog
-import bzh.zelyon.common.ui.component.InputView
-import bzh.zelyon.common.ui.component.CollectionsView
-import bzh.zelyon.common.ui.view.fragment.AbsToolBarBottomSheetFragment
+import bzh.zelyon.libcommon.ui.component.CollectionsView
+import bzh.zelyon.libcommon.ui.component.InputView
+import bzh.zelyon.libcommon.ui.view.fragment.AbsToolBarBottomSheetFragment
 import bzh.zelyon.music.R
 import bzh.zelyon.music.db.DB
 import bzh.zelyon.music.db.model.Music

@@ -8,9 +8,9 @@ import androidx.appcompat.widget.PopupMenu
 import androidx.appcompat.widget.SearchView
 import androidx.core.view.marginBottom
 import androidx.core.view.marginTop
-import bzh.zelyon.common.extension.setImage
-import bzh.zelyon.common.ui.component.CollectionsView
-import bzh.zelyon.common.ui.view.fragment.AbsToolBarFragment
+import bzh.zelyon.libcommon.extension.setImage
+import bzh.zelyon.libcommon.ui.component.CollectionsView
+import bzh.zelyon.libcommon.ui.view.fragment.AbsToolBarFragment
 import bzh.zelyon.music.R
 import bzh.zelyon.music.db.model.Artist
 import bzh.zelyon.music.ui.Listener

@@ -2,7 +2,7 @@ package bzh.zelyon.music.api
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import bzh.zelyon.common.util.api.CallBack
+import bzh.zelyon.libcommon.util.api.CallBack
 import bzh.zelyon.music.api.model.AlbumResponse
 import bzh.zelyon.music.api.model.ArtistResponse
 import bzh.zelyon.music.api.model.MusicResponse

@@ -5,9 +5,9 @@ import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.PopupMenu
-import bzh.zelyon.common.ui.component.InputView
-import bzh.zelyon.common.ui.component.CollectionsView
-import bzh.zelyon.common.ui.view.fragment.AbsFragment
+import bzh.zelyon.libcommon.ui.component.CollectionsView
+import bzh.zelyon.libcommon.ui.component.InputView
+import bzh.zelyon.libcommon.ui.view.fragment.AbsFragment
 import bzh.zelyon.music.R
 import bzh.zelyon.music.db.DB
 import bzh.zelyon.music.db.model.Playlist

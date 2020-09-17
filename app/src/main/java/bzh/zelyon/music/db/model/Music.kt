@@ -7,7 +7,7 @@ import android.net.Uri
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import bzh.zelyon.common.extension.millisecondsToDuration
+import bzh.zelyon.libcommon.extension.millisecondsToDuration
 import bzh.zelyon.music.R
 import org.jaudiotagger.audio.mp3.MP3File
 import java.io.ByteArrayInputStream

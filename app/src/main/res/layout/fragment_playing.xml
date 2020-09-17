@@ -19,7 +19,7 @@
 
     </com.google.android.material.appbar.AppBarLayout>
 
-    <bzh.zelyon.common.ui.component.CollectionsView
+    <bzh.zelyon.libcommon.ui.component.CollectionsView
         android:id="@+id/fragment_playing_itemsview_musics"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

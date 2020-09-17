@@ -16,7 +16,7 @@
                 app:titleEnabled="false"
                 app:layout_scrollFlags="scroll|exitUntilCollapsed">
 
-            <bzh.zelyon.common.ui.component.SquareView
+            <bzh.zelyon.libcommon.ui.component.SquareView
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     app:layout_collapseMode="parallax"
@@ -27,7 +27,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"/>
 
-            </bzh.zelyon.common.ui.component.SquareView>
+            </bzh.zelyon.libcommon.ui.component.SquareView>
 
             <androidx.appcompat.widget.Toolbar
                     android:id="@+id/fragment_edit_toolbar"

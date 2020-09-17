@@ -1,9 +1,9 @@
 package bzh.zelyon.music.util
 
 import android.content.Context
-import bzh.zelyon.common.util.glide.AbsDataFetcher
-import bzh.zelyon.common.util.glide.AbsModelLoader
-import bzh.zelyon.common.util.glide.AbsModelLoaderFactory
+import bzh.zelyon.libcommon.util.glide.AbsDataFetcher
+import bzh.zelyon.libcommon.util.glide.AbsModelLoader
+import bzh.zelyon.libcommon.util.glide.AbsModelLoaderFactory
 import bzh.zelyon.music.db.model.Artist
 import bzh.zelyon.music.db.model.Music
 import com.bumptech.glide.Glide
