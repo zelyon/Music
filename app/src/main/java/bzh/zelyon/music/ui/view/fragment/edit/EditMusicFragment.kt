@@ -8,7 +8,8 @@ import android.view.LayoutInflater
 import android.view.View
 import androidx.core.view.isVisible
 import androidx.lifecycle.Observer
-import bzh.zelyon.libcommon.ui.component.InputView
+import bzh.zelyon.lib.extension.showSnackbar
+import bzh.zelyon.lib.ui.component.InputView
 import bzh.zelyon.music.R
 import bzh.zelyon.music.db.model.Music
 import bzh.zelyon.music.util.MusicContent

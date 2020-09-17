@@ -8,10 +8,10 @@ import android.widget.SeekBar
 import androidx.appcompat.widget.PopupMenu
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
-import bzh.zelyon.libcommon.extension.millisecondsToDuration
-import bzh.zelyon.libcommon.extension.setImage
-import bzh.zelyon.libcommon.ui.component.CollectionsView
-import bzh.zelyon.libcommon.ui.view.fragment.AbsToolBarFragment
+import bzh.zelyon.lib.extension.millisecondsToDuration
+import bzh.zelyon.lib.extension.setImage
+import bzh.zelyon.lib.ui.component.CollectionsView
+import bzh.zelyon.lib.ui.view.fragment.AbsToolBarFragment
 import bzh.zelyon.music.R
 import bzh.zelyon.music.db.model.Music
 import bzh.zelyon.music.ui.view.fragment.bottom.MusicPlaylistsFragment

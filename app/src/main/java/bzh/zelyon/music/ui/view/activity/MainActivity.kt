@@ -3,7 +3,10 @@ package bzh.zelyon.music.ui.view.activity
 import android.content.Intent
 import android.os.Bundle
 import androidx.vectordrawable.graphics.drawable.AnimatedVectorDrawableCompat
-import bzh.zelyon.libcommon.ui.view.activity.AbsActivity
+import bzh.zelyon.lib.extension.fullBack
+import bzh.zelyon.lib.extension.getCurrentFragment
+import bzh.zelyon.lib.extension.showFragment
+import bzh.zelyon.lib.ui.view.activity.AbsActivity
 import bzh.zelyon.music.R
 import bzh.zelyon.music.db.DB
 import bzh.zelyon.music.ui.view.fragment.main.LibraryFragment

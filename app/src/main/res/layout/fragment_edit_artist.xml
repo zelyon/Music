@@ -4,7 +4,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <bzh.zelyon.libcommon.ui.component.InputView
+    <bzh.zelyon.lib.ui.component.InputView
         android:id="@+id/fragment_edit_artist_inputview_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

@@ -12,10 +12,10 @@ import android.view.ViewGroup
 import androidx.appcompat.app.AlertDialog
 import androidx.core.view.children
 import androidx.lifecycle.ViewModelProvider
-import bzh.zelyon.libcommon.extension.getLocalFileFromGalleryUri
-import bzh.zelyon.libcommon.extension.setImage
-import bzh.zelyon.libcommon.ui.component.InputView
-import bzh.zelyon.libcommon.ui.view.fragment.AbsToolBarFragment
+import bzh.zelyon.lib.extension.getLocalFileFromGalleryUri
+import bzh.zelyon.lib.extension.setImage
+import bzh.zelyon.lib.ui.component.InputView
+import bzh.zelyon.lib.ui.view.fragment.AbsToolBarFragment
 import bzh.zelyon.music.R
 import bzh.zelyon.music.api.APIViewModel
 import bzh.zelyon.music.db.model.AbsModel

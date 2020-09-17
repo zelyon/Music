@@ -5,9 +5,9 @@ import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.PopupMenu
-import bzh.zelyon.libcommon.extension.setImage
-import bzh.zelyon.libcommon.ui.component.CollectionsView
-import bzh.zelyon.libcommon.ui.view.fragment.AbsToolBarBottomSheetFragment
+import bzh.zelyon.lib.extension.setImage
+import bzh.zelyon.lib.ui.component.CollectionsView
+import bzh.zelyon.lib.ui.view.fragment.AbsToolBarBottomSheetFragment
 import bzh.zelyon.music.R
 import bzh.zelyon.music.db.model.Music
 import bzh.zelyon.music.ui.Listener
