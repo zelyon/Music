@@ -8,6 +8,7 @@ import androidx.appcompat.widget.PopupMenu
 import androidx.appcompat.widget.SearchView
 import androidx.core.view.marginBottom
 import androidx.core.view.marginTop
+import bzh.zelyon.lib.extension.drawableResToDrawable
 import bzh.zelyon.lib.extension.setImage
 import bzh.zelyon.lib.extension.showSnackbar
 import bzh.zelyon.lib.ui.component.CollectionsView
@@ -85,7 +86,7 @@ class LibraryFragment: AbsToolBarFragment(), SearchView.OnQueryTextListener, Lis
         override fun onBindItem(itemView: View, items: MutableList<*>, position: Int) {
             val artist = items[position]
             if (artist is Artist) {
-                itemView.item_artist_imageview_artwork.setImage(artist, absActivity.getDrawable(R.drawable.ic_artist))
+                itemView.item_artist_imageview_artwork.setImage(artist, absActivity.drawableResToDrawable(R.drawable.ic_artist))
                 itemView.item_artist_imageview_artwork.transitionName = artist.getTransitionName()
                 itemView.item_artist_textview_name.text = artist.name
                 itemView.item_artist_textview_nbmusic.text = resources.getQuantityString(R.plurals.item_music_nb, artist.musics.size, artist.musics.size)

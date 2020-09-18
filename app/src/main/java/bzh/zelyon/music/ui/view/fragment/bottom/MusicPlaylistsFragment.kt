@@ -55,7 +55,7 @@ class MusicPlaylistsFragment private constructor(): AbsToolBarBottomSheetFragmen
                     setOnShowListener {
                         getButton(BUTTON_POSITIVE).setOnClickListener {
                             if (input.checkValidity()) {
-                                DB.getPlaylistDao().insert(Playlist(null, input.text.orEmpty()))
+                                DB.getPlaylistDao().insert(Playlist(null, input.text))
                                 dismiss()
                                 loadPlayLists()
                             }

@@ -93,7 +93,7 @@ class PlaylistsFragment: AbsFragment(), Listener {
                                     setOnShowListener {
                                         getButton(DialogInterface.BUTTON_POSITIVE).setOnClickListener {
                                             if (input.checkValidity()) {
-                                                playlist.name = input.text.orEmpty()
+                                                playlist.name = input.text
                                                 DB.getPlaylistDao().update(playlist)
                                                 dismiss()
                                                 loadPlayLists()

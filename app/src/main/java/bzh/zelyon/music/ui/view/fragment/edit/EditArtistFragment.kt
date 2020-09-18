@@ -6,7 +6,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import androidx.core.view.isVisible
-import androidx.lifecycle.Observer
 import bzh.zelyon.lib.extension.showSnackbar
 import bzh.zelyon.music.R
 import bzh.zelyon.music.db.model.Artist
@@ -30,7 +29,7 @@ class EditArtistFragment private constructor(): AbsEditFragment<Artist>() {
             paths.add(music.path)
         }
 
-        apiViewModel.getArtist(absModel.name).observe(absActivity, Observer {
+        apiViewModel.getArtist(absModel.name).observe(absActivity, {
             infosFromLastFM = it?.artist?.bio?.content.orEmpty()
         })
     }

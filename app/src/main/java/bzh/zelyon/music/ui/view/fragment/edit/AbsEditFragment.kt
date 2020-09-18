@@ -12,6 +12,7 @@ import android.view.ViewGroup
 import androidx.appcompat.app.AlertDialog
 import androidx.core.view.children
 import androidx.lifecycle.ViewModelProvider
+import bzh.zelyon.lib.extension.drawableResToDrawable
 import bzh.zelyon.lib.extension.getLocalFileFromGalleryUri
 import bzh.zelyon.lib.extension.setImage
 import bzh.zelyon.lib.ui.component.InputView
@@ -44,7 +45,7 @@ abstract class AbsEditFragment<T: AbsModel>: AbsToolBarFragment() {
         absModel = arguments?.getSerializable(ARG_ABS_MODEL) as T
         currentArtwork = (arguments?.getParcelable(ARG_ARTORK) as? Bitmap)?.let {
             BitmapDrawable(absActivity.resources, it)
-        } ?: absActivity.getDrawable(absModel.getPlaceholderId())
+        } ?: absActivity.drawableResToDrawable(absModel.getPlaceholderId())
         apiViewModel = ViewModelProvider(this).get(APIViewModel::class.java)
     }
 
@@ -89,9 +90,9 @@ abstract class AbsEditFragment<T: AbsModel>: AbsToolBarFragment() {
                     type = "image/*"
                     putExtra(Intent.EXTRA_ALLOW_MULTIPLE, false)
                 }) { _, result ->
-                    result.data?.let {
-                        absActivity.getLocalFileFromGalleryUri(it, absModel.getDeclaration() + ".png")?.let { file ->
-                            fragment_edit_imageview_artwork.setImage(File(file.path), absActivity.getDrawable(absModel.getPlaceholderId()))
+                    result.data?.let { uri ->
+                        absActivity.getLocalFileFromGalleryUri(uri, absModel.getDeclaration() + ".png")?.let { file ->
+                            fragment_edit_imageview_artwork.setImage(File(file.path), absActivity.drawableResToDrawable(absModel.getPlaceholderId()))
                             newArtwork = ArtworkFactory.createArtworkFromFile(file)
                             deleteCurrentArtwork = true
                         }
@@ -103,7 +104,7 @@ abstract class AbsEditFragment<T: AbsModel>: AbsToolBarFragment() {
 
     fun getImageFromLastFM() {
         imageUrlFromLastFM?.let { imageUrlFromLastFM ->
-            fragment_edit_imageview_artwork.setImage(imageUrlFromLastFM, absActivity.getDrawable(absModel.getPlaceholderId()))
+            fragment_edit_imageview_artwork.setImage(imageUrlFromLastFM, absActivity.drawableResToDrawable(absModel.getPlaceholderId()))
             newArtwork = ArtworkFactory.createLinkedArtworkFromURL(imageUrlFromLastFM)
             deleteCurrentArtwork = true
         }

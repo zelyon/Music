@@ -8,6 +8,7 @@ import android.widget.SeekBar
 import androidx.appcompat.widget.PopupMenu
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
+import bzh.zelyon.lib.extension.drawableResToDrawable
 import bzh.zelyon.lib.extension.millisecondsToDuration
 import bzh.zelyon.lib.extension.setImage
 import bzh.zelyon.lib.ui.component.CollectionsView
@@ -107,7 +108,7 @@ class PlayingFragment: AbsToolBarFragment() {
                 itemView.item_music_imageview_artwork.alpha = alpha
                 itemView.item_music_textview_title.alpha = alpha
                 itemView.item_music_textview_infos.alpha = alpha
-                itemView.item_music_imageview_artwork.setImage(music, absActivity.getDrawable(R.drawable.ic_music))
+                itemView.item_music_imageview_artwork.setImage(music, absActivity.drawableResToDrawable(R.drawable.ic_music))
                 itemView.item_music_imageview_artwork.transitionName = music.id.toString()
                 itemView.item_music_textview_title.text = music.title
                 itemView.item_music_textview_title.typeface = typeface

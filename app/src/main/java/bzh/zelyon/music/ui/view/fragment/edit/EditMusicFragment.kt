@@ -7,7 +7,6 @@ import android.provider.MediaStore
 import android.view.LayoutInflater
 import android.view.View
 import androidx.core.view.isVisible
-import androidx.lifecycle.Observer
 import bzh.zelyon.lib.extension.showSnackbar
 import bzh.zelyon.lib.ui.component.InputView
 import bzh.zelyon.music.R
@@ -61,7 +60,7 @@ class EditMusicFragment private constructor(): AbsEditFragment<Music>() {
         fragment_edit_music_inputview_genre.text = tag?.getFirst(FieldKey.GENRE) ?: ""
         fragment_edit_music_inputview_genre.choices = genres.map { InputView.Choice(it, it, tag?.getFirst(FieldKey.GENRE) ?: "" == it) }.toMutableList()
 
-        apiViewModel.getMusic(absModel.artistName, absModel.title).observe(absActivity, Observer {
+        apiViewModel.getMusic(absModel.artistName, absModel.title).observe(absActivity, {
             infosFromLastFM = it?.track?.wiki?.content.orEmpty()
             imageUrlFromLastFM = it?.track?.album?.image?.get(3)?.text
         })
