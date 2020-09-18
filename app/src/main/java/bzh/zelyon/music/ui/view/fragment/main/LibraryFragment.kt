@@ -70,8 +70,8 @@ class LibraryFragment: AbsToolBarFragment(), SearchView.OnQueryTextListener, Lis
             } else {
                 absActivity.showSnackbar(
                     getString(R.string.fragment_library_snackbar_permission_needed),
-                    Snackbar.LENGTH_INDEFINITE,
-                    getString(R.string.fragment_library_snackbar_permission_grant)) {
+                    duration =  Snackbar.LENGTH_INDEFINITE,
+                    actionMessage =    getString(R.string.fragment_library_snackbar_permission_grant)) {
                     loadMusics()
                 }
             }

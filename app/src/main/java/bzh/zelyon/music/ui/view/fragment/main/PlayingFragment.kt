@@ -51,7 +51,7 @@ class PlayingFragment: AbsToolBarFragment() {
                     fragment_playing_imagebutton_shuffle.alpha = if (MusicPlayer.isShuffle) 1F else 0.5F
                     if (playingMusic != MusicPlayer.playingMusic) {
                         playingMusic = MusicPlayer.playingMusic
-                        fragment_playing_itemsview_musics.notifyDataSetChanged()
+                        fragment_playing_itemsview_musics.refresh()
                         updateToolBar()
                         val itemsManager = fragment_playing_itemsview_musics.layoutManager as LinearLayoutManager
                         val firstPositionVisible = itemsManager.findFirstVisibleItemPosition()
@@ -125,7 +125,7 @@ class PlayingFragment: AbsToolBarFragment() {
             val music = items[position]
             if (music is Music) {
                 MusicPlayer.jumpTo(position)
-                fragment_playing_itemsview_musics.notifyDataSetChanged()
+                fragment_playing_itemsview_musics.refresh()
             }
         }
         override fun onItemLongClick(itemView: View, items: MutableList<*>, position: Int) {
