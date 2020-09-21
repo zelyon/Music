@@ -2,6 +2,7 @@ package bzh.zelyon.music.ui.view.activity
 
 import android.content.Intent
 import android.os.Bundle
+import android.view.WindowManager
 import androidx.vectordrawable.graphics.drawable.AnimatedVectorDrawableCompat
 import bzh.zelyon.lib.extension.fullBack
 import bzh.zelyon.lib.extension.getCurrentFragment
@@ -35,6 +36,9 @@ class MainActivity : AbsActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        window.setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS)
+
         DB.init(this)
         startService(Intent(this, MusicService::class.java))
 

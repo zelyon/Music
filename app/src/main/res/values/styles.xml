@@ -1,8 +1,6 @@
 <resources>
 
     <style name="AppTheme" parent="Theme.MaterialComponents.DayNight.NoActionBar">
-        <item name="android:windowTranslucentStatus">true</item>
-        <item name="colorPrimaryDark">?attr/colorSurface</item>
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorOnPrimary">@android:color/white</item>
         <item name="colorSecondary">@color/colorSecondary</item>
