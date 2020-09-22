@@ -1,9 +1,12 @@
 package bzh.zelyon.music.ui.view.fragment.bottom
 
+import android.content.DialogInterface
 import android.content.DialogInterface.BUTTON_POSITIVE
 import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.widget.PopupMenu
+import androidx.fragment.app.viewModels
 import bzh.zelyon.lib.ui.component.CollectionsView
 import bzh.zelyon.lib.ui.component.InputView
 import bzh.zelyon.lib.ui.view.fragment.AbsToolBarBottomSheetFragment
@@ -11,19 +14,19 @@ import bzh.zelyon.music.R
 import bzh.zelyon.music.db.DB
 import bzh.zelyon.music.db.model.Music
 import bzh.zelyon.music.db.model.Playlist
-import bzh.zelyon.music.ui.Listener
+import bzh.zelyon.music.ui.view.viewmodel.PlaylistViewModel
 import kotlinx.android.synthetic.main.fragment_musicplaylists.*
 import kotlinx.android.synthetic.main.item_musicplaylist.view.*
 
 class MusicPlaylistsFragment private constructor(): AbsToolBarBottomSheetFragment() {
 
     lateinit var music: Music
-    private var listener: Listener? = null
+
+    private val playlistViewModel: PlaylistViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         music = arguments?.getSerializable(ARG_MUSIC) as Music
-        listener = arguments?.getSerializable(ARG_LISTENER) as? Listener
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -31,7 +34,9 @@ class MusicPlaylistsFragment private constructor(): AbsToolBarBottomSheetFragmen
 
         fragment_musicplaylists_itemsview_playlists.helper = PlaylistHelper()
 
-        loadPlayLists()
+        playlistViewModel.playlists.observe(viewLifecycleOwner) {
+            fragment_musicplaylists_itemsview_playlists.items = it.toMutableList()
+        }
     }
 
     override fun getLayoutId() = R.layout.fragment_musicplaylists
@@ -57,17 +62,12 @@ class MusicPlaylistsFragment private constructor(): AbsToolBarBottomSheetFragmen
                             if (input.checkValidity()) {
                                 DB.getPlaylistDao().insert(Playlist(null, input.text))
                                 dismiss()
-                                loadPlayLists()
                             }
                         }
                     }
                 }.show()
             }
         }
-    }
-
-    private fun loadPlayLists() {
-        fragment_musicplaylists_itemsview_playlists.items = DB.getPlaylistDao().getAll().toMutableList()
     }
 
     inner class PlaylistHelper: CollectionsView.Helper() {
@@ -83,7 +83,42 @@ class MusicPlaylistsFragment private constructor(): AbsToolBarBottomSheetFragmen
                         playlist.musics.remove(music)
                     }
                     DB.getPlaylistDao().update(playlist)
-                    listener?.needToReload()
+                }
+                itemView.item_music_playlist_button_more.setOnClickListener {
+                    PopupMenu(absActivity, itemView.item_music_playlist_button_more).apply {
+                        menuInflater.inflate(R.menu.item, menu)
+                        menu.findItem(R.id.item_play).isVisible = false
+                        menu.findItem(R.id.item_add).isVisible = false
+                        menu.findItem(R.id.item_playlists).isVisible = false
+                        setOnMenuItemClickListener {
+                            when (it.itemId) {
+                                R.id.item_edit -> {
+                                    val input = InputView(absActivity).apply {
+                                        type = InputView.Type.TEXT
+                                        label = getString(R.string.fragment_playlists_name)
+                                        mandatory = true
+                                    }
+                                    AlertDialog.Builder(absActivity).apply {
+                                        setTitle(R.string.fragment_playlists_rename)
+                                        setView(input)
+                                        setPositiveButton(R.string.popup_ok, null)
+                                    }.create().apply {
+                                        setOnShowListener {
+                                            getButton(DialogInterface.BUTTON_POSITIVE).setOnClickListener {
+                                                if (input.checkValidity()) {
+                                                    playlist.name = input.text
+                                                    DB.getPlaylistDao().update(playlist)
+                                                    dismiss()
+                                                }
+                                            }
+                                        }
+                                    }.show()
+                                }
+                                R.id.item_delete -> DB.getPlaylistDao().delete(playlist)
+                            }
+                            return@setOnMenuItemClickListener true
+                        }
+                    }.show()
                 }
             }
         }
@@ -95,12 +130,10 @@ class MusicPlaylistsFragment private constructor(): AbsToolBarBottomSheetFragmen
     companion object {
 
         const val ARG_MUSIC = "ARG_MUSIC"
-        const val ARG_LISTENER = "ARG_LISTENER"
 
-        fun getInstance(music: Music, listener: Listener?) = MusicPlaylistsFragment().apply {
+        fun getInstance(music: Music) = MusicPlaylistsFragment().apply {
             arguments = Bundle().apply {
                 putSerializable(ARG_MUSIC, music)
-                putSerializable(ARG_LISTENER, listener)
             }
         }
     }

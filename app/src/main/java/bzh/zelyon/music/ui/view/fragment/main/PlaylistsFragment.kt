@@ -5,51 +5,34 @@ import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.PopupMenu
+import androidx.fragment.app.viewModels
 import bzh.zelyon.lib.ui.component.CollectionsView
 import bzh.zelyon.lib.ui.component.InputView
 import bzh.zelyon.lib.ui.view.fragment.AbsFragment
 import bzh.zelyon.music.R
 import bzh.zelyon.music.db.DB
 import bzh.zelyon.music.db.model.Playlist
-import bzh.zelyon.music.ui.Listener
 import bzh.zelyon.music.ui.view.fragment.bottom.MusicsFragment
+import bzh.zelyon.music.ui.view.viewmodel.PlaylistViewModel
 import bzh.zelyon.music.util.MusicPlayer
 import kotlinx.android.synthetic.main.fragment_playlists.*
 import kotlinx.android.synthetic.main.item_playlist.view.*
-import java.io.File
 
-class PlaylistsFragment: AbsFragment(), Listener {
+class PlaylistsFragment: AbsFragment() {
+
+    private val playlistViewModel: PlaylistViewModel by viewModels()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         fragment_playlists_itemsview_playlists.helper = PlaylistHelper()
 
-        loadPlayLists()
+        playlistViewModel.playlistsNotEmpty.observe(viewLifecycleOwner) {
+            fragment_playlists_itemsview_playlists.items = it.toMutableList()
+        }
     }
 
     override fun getIdLayout() = R.layout.fragment_playlists
-
-    private fun loadPlayLists() {
-        val playlists = DB.getPlaylistDao().getAll().toMutableList()
-        playlists.forEach { playlist ->
-            if (playlist.musics.isEmpty()) {
-                playlists.remove(playlist)
-            } else {
-                playlist.musics.forEach { music ->
-                    if (!File(music.path).exists()) {
-                        playlist.musics.remove(music)
-                        DB.getPlaylistDao().update(playlist)
-                    }
-                }
-            }
-        }
-        fragment_playlists_itemsview_playlists.items = playlists
-    }
-
-    override fun needToReload() {
-        loadPlayLists()
-    }
 
     inner class PlaylistHelper: CollectionsView.Helper() {
         override fun onBindItem(itemView: View, items: MutableList<*>, position: Int) {
@@ -64,7 +47,7 @@ class PlaylistsFragment: AbsFragment(), Listener {
             val playlist = items[position]
             if (playlist is Playlist) {
                 if (playlist.musics.isNotEmpty()) {
-                    showFragment(MusicsFragment.getInstance(playlist.name, playlist.musics, this@PlaylistsFragment))
+                    showFragment(MusicsFragment.getInstance(playlist.name, playlist.musics))
                 }
             }
         }
@@ -96,16 +79,12 @@ class PlaylistsFragment: AbsFragment(), Listener {
                                                 playlist.name = input.text
                                                 DB.getPlaylistDao().update(playlist)
                                                 dismiss()
-                                                loadPlayLists()
                                             }
                                         }
                                     }
                                 }.show()
                             }
-                            R.id.item_delete -> {
-                                DB.getPlaylistDao().delete(playlist)
-                                loadPlayLists()
-                            }
+                            R.id.item_delete -> DB.getPlaylistDao().delete(playlist)
                         }
                         return@setOnMenuItemClickListener true
                     }

@@ -1,5 +1,6 @@
 package bzh.zelyon.music.db
 
+import androidx.lifecycle.LiveData
 import androidx.room.*
 import bzh.zelyon.music.db.model.Playlist
 
@@ -16,5 +17,8 @@ interface PlaylistDao {
     fun update(playlist: Playlist)
 
     @Query("SELECT * FROM playlist ORDER BY name")
-    fun getAll(): List<Playlist>
+    fun getAll(): LiveData<List<Playlist>>
+
+    @Query("SELECT * FROM playlist WHERE musics != '[]' ")
+    fun getNotEmpty(): LiveData<List<Playlist>>
 }

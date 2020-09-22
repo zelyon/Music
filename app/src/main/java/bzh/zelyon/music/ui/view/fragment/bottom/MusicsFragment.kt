@@ -11,7 +11,6 @@ import bzh.zelyon.lib.ui.component.CollectionsView
 import bzh.zelyon.lib.ui.view.fragment.AbsToolBarBottomSheetFragment
 import bzh.zelyon.music.R
 import bzh.zelyon.music.db.model.Music
-import bzh.zelyon.music.ui.Listener
 import bzh.zelyon.music.ui.view.fragment.edit.EditMusicFragment
 import bzh.zelyon.music.util.MusicPlayer
 import kotlinx.android.synthetic.main.fragment_musics.*
@@ -21,12 +20,10 @@ import java.io.File
 class MusicsFragment private constructor(): AbsToolBarBottomSheetFragment() {
 
     lateinit var musics: List<Music>
-    private var listener: Listener? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         musics = (arguments?.getSerializable(ARG_MUSICS) as List<*>).map { it as Music }
-        listener = arguments?.getSerializable(ARG_LISTENER) as? Listener
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -76,17 +73,14 @@ class MusicsFragment private constructor(): AbsToolBarBottomSheetFragment() {
                             R.id.item_play -> MusicPlayer.playMusics(listOf(music))
                             R.id.item_add -> MusicPlayer.addMusics(listOf(music))
                             R.id.item_edit -> showFragment(EditMusicFragment.getInstance(music, artwork), transitionView = itemView.item_music_imageview_artwork)
-                            R.id.item_delete -> {
-                                AlertDialog.Builder(absActivity)
-                                    .setTitle(R.string.item_popup_delete_title)
-                                    .setMessage(getString(R.string.item_popup_delete_message, music.title))
-                                    .setPositiveButton(R.string.item_popup_delete_positive) { _, _ ->
-                                        File(music.path).delete()
-                                        listener?.needToReload()
-                                    }
-                                    .show()
-                            }
-                            R.id.item_playlists -> showFragment(MusicPlaylistsFragment.getInstance(music, listener))
+                            R.id.item_delete -> AlertDialog.Builder(absActivity)
+                                .setTitle(R.string.item_popup_delete_title)
+                                .setMessage(getString(R.string.item_popup_delete_message, music.title))
+                                .setPositiveButton(R.string.item_popup_delete_positive) { _, _ ->
+                                    File(music.path).delete()
+                                }
+                                .show()
+                            R.id.item_playlists -> showFragment(MusicPlaylistsFragment.getInstance(music))
                         }
                         true
                     }
@@ -99,13 +93,11 @@ class MusicsFragment private constructor(): AbsToolBarBottomSheetFragment() {
 
         const val ARG_TITLE = "ARG_TITLE"
         const val ARG_MUSICS = "ARG_MUSICS"
-        const val ARG_LISTENER = "ARG_LISTENER"
 
-        fun getInstance(title: String, musics: List<Music>, listener: Listener?) = MusicsFragment().apply {
+        fun getInstance(title: String, musics: List<Music>) = MusicsFragment().apply {
             arguments = Bundle().apply {
                 putString(ARG_TITLE, title)
                 putSerializable(ARG_MUSICS, ArrayList(musics))
-                putSerializable(ARG_LISTENER, listener)
             }
         }
     }

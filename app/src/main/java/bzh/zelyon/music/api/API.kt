@@ -15,7 +15,7 @@ import retrofit2.http.Query
 interface API {
 
     companion object {
-        val API = Retrofit.Builder()
+        val instance: API = Retrofit.Builder()
             .baseUrl(BuildConfig.LAST_FM_API_URL)
             .addConverterFactory(GsonConverterFactory.create(GsonBuilder().create()))
             .client(OkHttpClient.Builder().build())

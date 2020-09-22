@@ -18,7 +18,7 @@ import bzh.zelyon.lib.extension.setImage
 import bzh.zelyon.lib.ui.component.InputView
 import bzh.zelyon.lib.ui.view.fragment.AbsToolBarFragment
 import bzh.zelyon.music.R
-import bzh.zelyon.music.api.APIViewModel
+import bzh.zelyon.music.ui.view.viewmodel.APIViewModel
 import bzh.zelyon.music.db.model.AbsModel
 import kotlinx.android.synthetic.main.fragment_edit.*
 import org.jaudiotagger.tag.images.Artwork

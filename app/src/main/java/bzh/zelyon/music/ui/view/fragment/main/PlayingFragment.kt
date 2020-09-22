@@ -141,7 +141,7 @@ class PlayingFragment: AbsToolBarFragment() {
                     setOnMenuItemClickListener {
                         when (it.itemId) {
                             R.id.item_edit -> showFragment(EditMusicFragment.getInstance(music, artwork), transitionView = itemView.item_music_imageview_artwork)
-                            R.id.item_playlists -> showFragment(MusicPlaylistsFragment.getInstance(music, null))
+                            R.id.item_playlists -> showFragment(MusicPlaylistsFragment.getInstance(music))
                         }
                         true
                     }
