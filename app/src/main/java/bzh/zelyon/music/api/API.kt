@@ -15,20 +15,55 @@ import retrofit2.http.Query
 interface API {
 
     companion object {
-        val instance: API = Retrofit.Builder()
+        private val instance: API = Retrofit.Builder()
             .baseUrl(BuildConfig.LAST_FM_API_URL)
             .addConverterFactory(GsonConverterFactory.create(GsonBuilder().create()))
             .client(OkHttpClient.Builder().build())
             .build()
             .create(API::class.java)
+
+        fun getArtist(artist: String) = instance.getArtist(
+            artist,
+            "fr",
+            "json",
+            BuildConfig.LAST_FM_API_KEY)
+
+        fun getAlbum(artist: String, album: String) = instance.getAlbum(
+            artist,
+            album,
+            "fr",
+            "json",
+            BuildConfig.LAST_FM_API_KEY)
+
+        fun getMusic(artist: String, title: String) = instance.getMusic(
+            artist,
+            title,
+            "fr",
+            "json",
+            BuildConfig.LAST_FM_API_KEY
+        )
     }
 
-    @GET("?method=artist.getInfo&lang=fr&format=json&api_key=${BuildConfig.LAST_FM_API_KEY}")
-    fun getArtist(@Query("artist") artist: String): Call<ArtistResponse>
+    @GET("?method=artist.getInfo")
+    fun getArtist(
+        @Query("artist") artist: String,
+        @Query("lang") lang: String,
+        @Query("format") format: String,
+        @Query("api_key") api_key: String): Call<ArtistResponse>
 
-    @GET("?method=album.getInfo&lang=fr&format=json&api_key=${BuildConfig.LAST_FM_API_KEY}")
-    fun getAlbum(@Query("artist") artist: String, @Query("album") album: String): Call<AlbumResponse>
+    @GET("?method=album.getInfo")
+    fun getAlbum(
+        @Query("artist") artist: String,
+        @Query("album") album: String,
+        @Query("lang") lang: String,
+        @Query("format") format: String,
+        @Query("api_key") api_key: String): Call<AlbumResponse>
 
-    @GET("?method=track.getInfo&lang=fr&format=json&api_key=${BuildConfig.LAST_FM_API_KEY}")
-    fun getMusic(@Query("artist") artist: String, @Query("track") album: String): Call<MusicResponse>
+    @GET("?method=track.getInfo")
+    fun getMusic(
+        @Query("artist") artist: String,
+        @Query("track") track: String,
+        @Query("lang") lang: String,
+        @Query("format") format: String,
+        @Query("api_key") api_key: String): Call<MusicResponse>
 }

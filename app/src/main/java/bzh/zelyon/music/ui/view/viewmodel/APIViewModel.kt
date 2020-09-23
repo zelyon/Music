@@ -12,7 +12,7 @@ class APIViewModel: ViewModel() {
 
     fun getArtist(artistName: String): MutableLiveData<ArtistResponse> {
         val mutableLiveData = MutableLiveData<ArtistResponse>()
-        API.instance.getArtist(artistName).enqueue(object : CallBack<ArtistResponse> {
+        API.getArtist(artistName).enqueue(object : CallBack<ArtistResponse> {
             override fun onSuccess(response: ArtistResponse) {
                 mutableLiveData.value = response
             }
@@ -22,7 +22,7 @@ class APIViewModel: ViewModel() {
 
     fun getAlbum(artistName: String, albumName: String): MutableLiveData<AlbumResponse> {
         val mutableLiveData = MutableLiveData<AlbumResponse>()
-        API.instance.getAlbum(artistName, albumName).enqueue(object : CallBack<AlbumResponse> {
+        API.getAlbum(artistName, albumName).enqueue(object : CallBack<AlbumResponse> {
             override fun onSuccess(response: AlbumResponse) {
                 mutableLiveData.value = response
             }
@@ -32,7 +32,7 @@ class APIViewModel: ViewModel() {
 
     fun getMusic(artistName: String, title: String): MutableLiveData<MusicResponse> {
         val mutableLiveData = MutableLiveData<MusicResponse>()
-        API.instance.getMusic(artistName, title).enqueue(object : CallBack<MusicResponse> {
+        API.getMusic(artistName, title).enqueue(object : CallBack<MusicResponse> {
             override fun onSuccess(response: MusicResponse) {
                 mutableLiveData.value = response
             }
