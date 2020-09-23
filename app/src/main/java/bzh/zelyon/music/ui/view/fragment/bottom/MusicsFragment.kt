@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.PopupMenu
+import androidx.lifecycle.ViewModelProvider
 import bzh.zelyon.lib.extension.drawableResToDrawable
 import bzh.zelyon.lib.extension.setImage
 import bzh.zelyon.lib.ui.component.CollectionsView
@@ -12,6 +13,7 @@ import bzh.zelyon.lib.ui.view.fragment.AbsToolBarBottomSheetFragment
 import bzh.zelyon.music.R
 import bzh.zelyon.music.db.model.Music
 import bzh.zelyon.music.ui.view.fragment.edit.EditMusicFragment
+import bzh.zelyon.music.ui.view.viewmodel.MusicViewModel
 import bzh.zelyon.music.util.MusicPlayer
 import kotlinx.android.synthetic.main.fragment_musics.*
 import kotlinx.android.synthetic.main.item_music.view.*
@@ -78,6 +80,7 @@ class MusicsFragment private constructor(): AbsToolBarBottomSheetFragment() {
                                 .setMessage(getString(R.string.item_popup_delete_message, music.title))
                                 .setPositiveButton(R.string.item_popup_delete_positive) { _, _ ->
                                     File(music.path).delete()
+                                    ViewModelProvider(absActivity).get(MusicViewModel::class.java).needReloadLibrary.postValue(true)
                                 }
                                 .show()
                             R.id.item_playlists -> showFragment(MusicPlaylistsFragment.getInstance(music))

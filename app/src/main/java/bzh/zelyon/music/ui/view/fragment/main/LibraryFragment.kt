@@ -8,6 +8,7 @@ import androidx.appcompat.widget.PopupMenu
 import androidx.appcompat.widget.SearchView
 import androidx.core.view.marginBottom
 import androidx.core.view.marginTop
+import androidx.lifecycle.ViewModelProvider
 import bzh.zelyon.lib.extension.drawableResToDrawable
 import bzh.zelyon.lib.extension.setImage
 import bzh.zelyon.lib.extension.showSnackbar
@@ -17,6 +18,7 @@ import bzh.zelyon.music.R
 import bzh.zelyon.music.db.model.Artist
 import bzh.zelyon.music.ui.view.fragment.bottom.MusicsFragment
 import bzh.zelyon.music.ui.view.fragment.edit.EditArtistFragment
+import bzh.zelyon.music.ui.view.viewmodel.MusicViewModel
 import bzh.zelyon.music.util.MusicContent
 import bzh.zelyon.music.util.MusicPlayer
 import com.google.android.material.snackbar.Snackbar
@@ -35,6 +37,10 @@ class LibraryFragment: AbsToolBarFragment(), SearchView.OnQueryTextListener {
         fragment_library_itemsview_artists.helper = ArtistHelper()
 
         loadMusics()
+
+        ViewModelProvider(absActivity).get(MusicViewModel::class.java).needReloadLibrary.observe(absActivity) {
+            loadMusics()
+        }
     }
 
     override fun getIdLayout() = R.layout.fragment_library
