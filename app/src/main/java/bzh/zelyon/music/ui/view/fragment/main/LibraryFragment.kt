@@ -72,8 +72,8 @@ class LibraryFragment: AbsToolBarFragment(), SearchView.OnQueryTextListener {
             } else {
                 absActivity.showSnackbar(
                     getString(R.string.fragment_library_snackbar_permission_needed),
-                    duration =  Snackbar.LENGTH_INDEFINITE,
-                    actionMessage =    getString(R.string.fragment_library_snackbar_permission_grant)) {
+                    duration = Snackbar.LENGTH_INDEFINITE,
+                    actionMessage = getString(R.string.fragment_library_snackbar_permission_grant)) {
                     loadMusics()
                 }
             }
@@ -137,7 +137,7 @@ class LibraryFragment: AbsToolBarFragment(), SearchView.OnQueryTextListener {
                         translationY(when(neededAnimState) {
                             AnimSate.SHOW -> 0
                             AnimSate.FOLLOW_OFFSET -> -itemsViewOffset
-                            else -> -toolbarHeight
+                            AnimSate.HIDE -> -toolbarHeight
                         }.toFloat())
                         withStartAction { animState = neededAnimState }
                         withEndAction {

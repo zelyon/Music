@@ -104,7 +104,7 @@ class MusicPlaylistsFragment private constructor(): AbsToolBarBottomSheetFragmen
                                         setPositiveButton(R.string.popup_ok, null)
                                     }.create().apply {
                                         setOnShowListener {
-                                            getButton(DialogInterface.BUTTON_POSITIVE).setOnClickListener {
+                                            getButton(BUTTON_POSITIVE).setOnClickListener {
                                                 if (input.checkValidity()) {
                                                     playlist.name = input.text
                                                     DB.getPlaylistDao().update(playlist)

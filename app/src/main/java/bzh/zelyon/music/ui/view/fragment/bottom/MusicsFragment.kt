@@ -11,6 +11,7 @@ import bzh.zelyon.lib.extension.setImage
 import bzh.zelyon.lib.ui.component.CollectionsView
 import bzh.zelyon.lib.ui.view.fragment.AbsToolBarBottomSheetFragment
 import bzh.zelyon.music.R
+import bzh.zelyon.music.db.DB
 import bzh.zelyon.music.db.model.Music
 import bzh.zelyon.music.ui.view.fragment.edit.EditMusicFragment
 import bzh.zelyon.music.ui.view.viewmodel.MusicViewModel
@@ -39,7 +40,7 @@ class MusicsFragment private constructor(): AbsToolBarBottomSheetFragment() {
 
     override fun getLayoutId() = R.layout.fragment_musics
 
-    override fun getTitleToolBar() = arguments?.getString(ARG_TITLE).toString()
+    override fun getTitleToolBar() = arguments?.getString(ARG_TITLE).orEmpty()
 
     inner class MusicHelper: CollectionsView.Helper() {
         override fun onBindItem(itemView: View, items: MutableList<*>, position: Int) {
@@ -69,9 +70,9 @@ class MusicsFragment private constructor(): AbsToolBarBottomSheetFragment() {
                 PopupMenu(absActivity, itemView.item_music_imagebutton).apply {
                     menuInflater.inflate(R.menu.item, menu)
                     menu.findItem(R.id.item_add).isVisible = MusicPlayer.playingMusic != null
-                    setOnMenuItemClickListener {
+                    setOnMenuItemClickListener { menuItem ->
                         back()
-                        when (it.itemId) {
+                        when (menuItem.itemId) {
                             R.id.item_play -> MusicPlayer.playMusics(listOf(music))
                             R.id.item_add -> MusicPlayer.addMusics(listOf(music))
                             R.id.item_edit -> showFragment(EditMusicFragment.getInstance(music, artwork), transitionView = itemView.item_music_imageview_artwork)
@@ -80,7 +81,15 @@ class MusicsFragment private constructor(): AbsToolBarBottomSheetFragment() {
                                 .setMessage(getString(R.string.item_popup_delete_message, music.title))
                                 .setPositiveButton(R.string.item_popup_delete_positive) { _, _ ->
                                     File(music.path).delete()
-                                    ViewModelProvider(absActivity).get(MusicViewModel::class.java).needReloadLibrary.postValue(true)
+                                    ViewModelProvider(absActivity).get(MusicViewModel::class.java).needReloadLibrary.postValue(null)
+                                    DB.getPlaylistDao().getAll().forEach { playlist ->
+                                        playlist.musics.forEach {
+                                            if (it.path == music.path) {
+                                                playlist.musics.remove(it)
+                                                DB.getPlaylistDao().update(playlist)
+                                            }
+                                        }
+                                    }
                                 }
                                 .show()
                             R.id.item_playlists -> showFragment(MusicPlaylistsFragment.getInstance(music))

@@ -17,8 +17,11 @@ interface PlaylistDao {
     fun update(playlist: Playlist)
 
     @Query("SELECT * FROM playlist ORDER BY name")
-    fun getAll(): LiveData<List<Playlist>>
+    fun getAll(): List<Playlist>
+
+    @Query("SELECT * FROM playlist ORDER BY name")
+    fun getAllLiveData(): LiveData<List<Playlist>>
 
     @Query("SELECT * FROM playlist WHERE musics != '[]' ")
-    fun getNotEmpty(): LiveData<List<Playlist>>
+    fun getNotEmptyLiveData(): LiveData<List<Playlist>>
 }

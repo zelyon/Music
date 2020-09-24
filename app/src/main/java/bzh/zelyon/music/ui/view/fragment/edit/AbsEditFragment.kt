@@ -38,7 +38,7 @@ abstract class AbsEditFragment<T: AbsModel>: AbsToolBarFragment() {
             field = value
             menu?.findItem(R.id.fragment_edit_info)?.isVisible = !value.isNullOrBlank()
         }
-    private val inputviews = mutableListOf<InputView>()
+    private val inputViews = mutableListOf<InputView>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -72,7 +72,7 @@ abstract class AbsEditFragment<T: AbsModel>: AbsToolBarFragment() {
                 .setMessage(infosFromLastFM)
                 .setPositiveButton(getString(R.string.popup_ok)) { _, _ -> }
                 .show()
-            R.id.fragment_edit_save -> if (inputviews.all { it.checkValidity() }) onSave()
+            R.id.fragment_edit_save -> if (inputViews.all { it.checkValidity() }) onSave()
             R.id.fragment_edit_imageview_artwork -> onClickArtwork()
         }
     }
@@ -117,7 +117,7 @@ abstract class AbsEditFragment<T: AbsModel>: AbsToolBarFragment() {
 
     private fun getInputViews(view: View) {
         if (view is InputView) {
-            inputviews.add(view)
+            inputViews.add(view)
         } else if (view is ViewGroup) {
             view.children.forEach { getInputViews(it) }
         }

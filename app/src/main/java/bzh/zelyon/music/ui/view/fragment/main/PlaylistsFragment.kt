@@ -46,9 +46,7 @@ class PlaylistsFragment: AbsFragment() {
         override fun onItemClick(itemView: View, items: MutableList<*>, position: Int) {
             val playlist = items[position]
             if (playlist is Playlist) {
-                if (playlist.musics.isNotEmpty()) {
-                    showFragment(MusicsFragment.getInstance(playlist.name, playlist.musics))
-                }
+                showFragment(MusicsFragment.getInstance(playlist.name, playlist.musics))
             }
         }
         override fun onItemLongClick(itemView: View, items: MutableList<*>, position: Int) {

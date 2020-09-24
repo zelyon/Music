@@ -107,8 +107,8 @@ class MainActivity : AbsActivity() {
     override fun handleIntent(intent: Intent) {
         super.handleIntent(intent)
         intent.data?.let { uri ->
-            MusicContent.getMusicFromUri(this, uri)?.let { music ->
-                MusicPlayer.playMusics(listOf(music))
+            MusicContent.getMusicsFromUri(this, uri)?.let { musics ->
+                MusicPlayer.playMusics(musics)
             }
         }
     }

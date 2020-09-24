@@ -5,5 +5,5 @@ import androidx.lifecycle.ViewModel
 
 class MusicViewModel: ViewModel() {
 
-    var needReloadLibrary = MutableLiveData<Boolean>()
+    val needReloadLibrary = MutableLiveData<Any?>()
 }

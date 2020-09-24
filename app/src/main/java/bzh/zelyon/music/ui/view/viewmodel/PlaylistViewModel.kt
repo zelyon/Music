@@ -5,7 +5,7 @@ import bzh.zelyon.music.db.DB
 
 class PlaylistViewModel: ViewModel() {
 
-    val playlists = DB.getPlaylistDao().getAll()
+    val playlists = DB.getPlaylistDao().getAllLiveData()
 
-    val playlistsNotEmpty = DB.getPlaylistDao().getNotEmpty()
+    val playlistsNotEmpty = DB.getPlaylistDao().getNotEmptyLiveData()
 }

@@ -68,7 +68,7 @@ object MusicContent {
         return artists.values.toList()
     }
 
-    fun getMusicFromUri(context: Context, uri: Uri): Music? {
+    fun getMusicsFromUri(context: Context, uri: Uri): List<Music>? {
         var path = uri.path
         if (uri.scheme == ContentResolver.SCHEME_CONTENT) {
             val projection = arrayOf(MediaStore.Images.Media.DATA)
@@ -79,6 +79,6 @@ object MusicContent {
                 it.close()
             }
         }
-        return path?.let { getMusics(context, MediaStore.Audio.AudioColumns.DATA + " = ? ", it).firstOrNull() }
+        return path?.let { getMusics(context, MediaStore.Audio.AudioColumns.DATA + " = ? ", it) }
     }
 }
