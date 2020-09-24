@@ -29,7 +29,6 @@ class MainActivity : AbsActivity() {
     private val playlistsFragment = PlaylistsFragment()
     private val playingFragment = PlayingFragment()
 
-    private val playingFragmentIsVisible get() = getCurrentFragment() is PlayingFragment
     private var fabState: FABState? = null
 
     private enum class FABState { ANIM_PLAY, ANIM_PAUSE, ICON_PLAY, ICON_PAUSE }
@@ -43,7 +42,7 @@ class MainActivity : AbsActivity() {
         startService(Intent(this, MusicService::class.java))
 
         activity_main_fab.setOnClickListener {
-            if (playingFragmentIsVisible) {
+            if (getCurrentFragment() is PlayingFragment) {
                 MusicPlayer.pauseOrPlay()
             } else {
                 showFragment(playingFragment)
@@ -68,7 +67,7 @@ class MainActivity : AbsActivity() {
             runOnUiThread {
 
                 activity_main_bottomnavigationview.animate()
-                    .translationY(if (playingFragmentIsVisible) activity_main_bottomnavigationview.height.toFloat() else 0F)
+                    .translationY(if (getCurrentFragment() in listOf(libraryFragment, playlistsFragment)) 0F else activity_main_bottomnavigationview.height.toFloat() )
                     .setDuration(DURATION)
                     .start()
 
@@ -77,10 +76,10 @@ class MainActivity : AbsActivity() {
                     activity_main_fab.show()
 
                     when {
-                        playingFragmentIsVisible && MusicPlayer.isPlaying -> FABState.ICON_PLAY
-                        playingFragmentIsVisible && !MusicPlayer.isPlaying -> FABState.ICON_PAUSE
-                        !playingFragmentIsVisible && MusicPlayer.isPlaying -> FABState.ANIM_PLAY
-                        !playingFragmentIsVisible && !MusicPlayer.isPlaying -> FABState.ANIM_PAUSE
+                        getCurrentFragment() is PlayingFragment && MusicPlayer.isPlaying -> FABState.ICON_PLAY
+                        getCurrentFragment() is PlayingFragment && !MusicPlayer.isPlaying -> FABState.ICON_PAUSE
+                        getCurrentFragment() !is PlayingFragment && MusicPlayer.isPlaying -> FABState.ANIM_PLAY
+                        getCurrentFragment() !is PlayingFragment && !MusicPlayer.isPlaying -> FABState.ANIM_PAUSE
                         else -> null
                     }?.let {
                         if (it != fabState) {
