@@ -8,7 +8,7 @@ import bzh.zelyon.music.api.model.AlbumResponse
 import bzh.zelyon.music.api.model.ArtistResponse
 import bzh.zelyon.music.api.model.MusicResponse
 
-class APIViewModel: ViewModel() {
+class EditViewModel: ViewModel() {
 
     fun getArtist(artistName: String): MutableLiveData<ArtistResponse> {
         val mutableLiveData = MutableLiveData<ArtistResponse>()

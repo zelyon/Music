@@ -18,7 +18,7 @@ import bzh.zelyon.lib.extension.setImage
 import bzh.zelyon.lib.ui.component.InputView
 import bzh.zelyon.lib.ui.view.fragment.AbsToolBarFragment
 import bzh.zelyon.music.R
-import bzh.zelyon.music.ui.view.viewmodel.APIViewModel
+import bzh.zelyon.music.ui.view.viewmodel.EditViewModel
 import bzh.zelyon.music.db.model.AbsModel
 import kotlinx.android.synthetic.main.fragment_edit.*
 import org.jaudiotagger.tag.images.Artwork
@@ -27,7 +27,7 @@ import java.io.File
 
 abstract class AbsEditFragment<T: AbsModel>: AbsToolBarFragment() {
 
-    lateinit var apiViewModel: APIViewModel
+    lateinit var editViewModel: EditViewModel
     lateinit var absModel: T
     private var currentArtwork: Drawable? = null
     protected var newArtwork: Artwork? = null
@@ -46,7 +46,7 @@ abstract class AbsEditFragment<T: AbsModel>: AbsToolBarFragment() {
         currentArtwork = (arguments?.getParcelable(ARG_ARTORK) as? Bitmap)?.let {
             BitmapDrawable(absActivity.resources, it)
         } ?: absActivity.drawableResToDrawable(absModel.getPlaceholderId())
-        apiViewModel = ViewModelProvider(this).get(APIViewModel::class.java)
+        editViewModel = ViewModelProvider(this).get(EditViewModel::class.java)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

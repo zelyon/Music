@@ -3,7 +3,7 @@ package bzh.zelyon.music.ui.view.viewmodel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 
-class MusicViewModel: ViewModel() {
+class LibraryViewModel: ViewModel() {
 
     val needReloadLibrary = MutableLiveData<Any?>()
 }

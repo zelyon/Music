@@ -3,6 +3,7 @@ package bzh.zelyon.music.ui.view.activity
 import android.content.Intent
 import android.os.Bundle
 import android.view.WindowManager
+import androidx.lifecycle.ViewModelProvider
 import androidx.vectordrawable.graphics.drawable.AnimatedVectorDrawableCompat
 import bzh.zelyon.lib.extension.fullBack
 import bzh.zelyon.lib.extension.getCurrentFragment
@@ -13,11 +14,11 @@ import bzh.zelyon.music.db.DB
 import bzh.zelyon.music.ui.view.fragment.main.LibraryFragment
 import bzh.zelyon.music.ui.view.fragment.main.PlayingFragment
 import bzh.zelyon.music.ui.view.fragment.main.PlaylistsFragment
+import bzh.zelyon.music.ui.view.viewmodel.MainViewModel
 import bzh.zelyon.music.util.MusicContent
 import bzh.zelyon.music.util.MusicPlayer
 import bzh.zelyon.music.util.MusicService
 import kotlinx.android.synthetic.main.activity_main.*
-import kotlin.concurrent.fixedRateTimer
 
 class MainActivity : AbsActivity() {
 
@@ -29,10 +30,6 @@ class MainActivity : AbsActivity() {
     private val playlistsFragment = PlaylistsFragment()
     private val playingFragment = PlayingFragment()
 
-    private var fabState: FABState? = null
-
-    private enum class FABState { ANIM_PLAY, ANIM_PAUSE, ICON_PLAY, ICON_PAUSE }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -40,6 +37,14 @@ class MainActivity : AbsActivity() {
 
         DB.init(this)
         startService(Intent(this, MusicService::class.java))
+
+        val mainViewModel= ViewModelProvider(this).get(MainViewModel::class.java)
+
+        MusicPlayer.mainViewModel = mainViewModel
+
+        supportFragmentManager.addOnBackStackChangedListener {
+            mainViewModel.currentFragment.value = getCurrentFragment()
+        }
 
         activity_main_fab.setOnClickListener {
             if (getCurrentFragment() is PlayingFragment) {
@@ -63,42 +68,27 @@ class MainActivity : AbsActivity() {
 
         activity_main_bottomnavigationview.selectedItemId = R.id.activity_main_library
 
-        fixedRateTimer(period = DURATION) {
-            runOnUiThread {
+        mainViewModel.currentFragment.observe(this) {
+            activity_main_bottomnavigationview.animate()
+                .translationY(if (it in listOf(libraryFragment, playlistsFragment)) 0F else activity_main_bottomnavigationview.height.toFloat() )
+                .setDuration(DURATION)
+                .start()
+        }
 
-                activity_main_bottomnavigationview.animate()
-                    .translationY(if (getCurrentFragment() in listOf(libraryFragment, playlistsFragment)) 0F else activity_main_bottomnavigationview.height.toFloat() )
-                    .setDuration(DURATION)
-                    .start()
-
-                if (MusicPlayer.playingMusic != null) {
-
-                    activity_main_fab.show()
-
-                    when {
-                        getCurrentFragment() is PlayingFragment && MusicPlayer.isPlaying -> FABState.ICON_PLAY
-                        getCurrentFragment() is PlayingFragment && !MusicPlayer.isPlaying -> FABState.ICON_PAUSE
-                        getCurrentFragment() !is PlayingFragment && MusicPlayer.isPlaying -> FABState.ANIM_PLAY
-                        getCurrentFragment() !is PlayingFragment && !MusicPlayer.isPlaying -> FABState.ANIM_PAUSE
-                        else -> null
-                    }?.let {
-                        if (it != fabState) {
-                            val anim = AnimatedVectorDrawableCompat.create(
-                                baseContext, when (it) {
-                                    FABState.ICON_PLAY -> R.drawable.anim_play_to_pause
-                                    FABState.ICON_PAUSE -> R.drawable.anim_pause_to_play
-                                    FABState.ANIM_PLAY -> R.drawable.anim_playing
-                                    FABState.ANIM_PAUSE -> R.drawable.anim_pause
-                                }
-                            )
-                            activity_main_fab.setImageDrawable(anim)
-                            anim?.start()
-                            fabState = it
-                        }
-                    }
-                } else {
-                    activity_main_fab.hide()
-                }
+        mainViewModel.fabState.observe(this) {
+            if (it == MainViewModel.FABState.HIDE) {
+                activity_main_fab.hide()
+            } else {
+                activity_main_fab.show()
+                val anim = AnimatedVectorDrawableCompat.create(this, when (it) {
+                    MainViewModel.FABState.ANIM_PLAY -> R.drawable.anim_playing
+                    MainViewModel.FABState.ANIM_PAUSE -> R.drawable.anim_pause
+                    MainViewModel.FABState.ICON_PLAY -> R.drawable.anim_play_to_pause
+                    MainViewModel.FABState.ICON_PAUSE -> R.drawable.anim_pause_to_play
+                    else -> R.drawable.anim_playing
+                })
+                activity_main_fab.setImageDrawable(anim)
+                anim?.start()
             }
         }
     }

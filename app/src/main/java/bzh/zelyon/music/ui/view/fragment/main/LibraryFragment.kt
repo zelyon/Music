@@ -18,7 +18,7 @@ import bzh.zelyon.music.R
 import bzh.zelyon.music.db.model.Artist
 import bzh.zelyon.music.ui.view.fragment.bottom.MusicsFragment
 import bzh.zelyon.music.ui.view.fragment.edit.EditArtistFragment
-import bzh.zelyon.music.ui.view.viewmodel.MusicViewModel
+import bzh.zelyon.music.ui.view.viewmodel.LibraryViewModel
 import bzh.zelyon.music.util.MusicContent
 import bzh.zelyon.music.util.MusicPlayer
 import com.google.android.material.snackbar.Snackbar
@@ -38,7 +38,7 @@ class LibraryFragment: AbsToolBarFragment(), SearchView.OnQueryTextListener {
 
         loadMusics()
 
-        ViewModelProvider(absActivity).get(MusicViewModel::class.java).needReloadLibrary.observe(absActivity) {
+        ViewModelProvider(absActivity).get(LibraryViewModel::class.java).needReloadLibrary.observe(absActivity) {
             loadMusics()
         }
     }

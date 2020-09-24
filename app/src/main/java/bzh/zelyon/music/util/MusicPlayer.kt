@@ -2,12 +2,14 @@ package bzh.zelyon.music.util
 
 import android.media.MediaPlayer
 import bzh.zelyon.music.db.model.Music
+import bzh.zelyon.music.ui.view.viewmodel.MainViewModel
 import java.io.File
 import kotlin.random.Random
 import kotlin.random.nextInt
 
 object MusicPlayer: MediaPlayer() {
 
+    var mainViewModel: MainViewModel? = null
     private var lastCurrentPosition = 0
     val playingMusic get() = if (playingPosition in musics.indices && File(musics[playingPosition].path).exists()) musics[playingPosition] else null
     var playingPositions = mutableListOf<Int>()
@@ -28,12 +30,13 @@ object MusicPlayer: MediaPlayer() {
     }
 
     fun run() {
-        playingMusic?.let {
+        val isPlaying = playingMusic?.let {
             reset()
             setDataSource(it.path)
             setOnCompletionListener { next(true) }
             prepare()
             start()
+            true
         } ?: run {
             musics.clear()
             playingPosition = -1
@@ -41,16 +44,21 @@ object MusicPlayer: MediaPlayer() {
             setOnCompletionListener {}
             stop()
             reset()
+            false
         }
+        mainViewModel?.isPlaying?.value = isPlaying
+        mainViewModel?.hasPlayingList?.value = isPlaying
     }
 
     fun pauseOrPlay() {
-        if (isPlaying) {
+        mainViewModel?.isPlaying?.value = if (isPlaying) {
             lastCurrentPosition = currentPosition
             pause()
+            false
         } else {
             seekTo(lastCurrentPosition)
             start()
+            true
         }
     }
 
