@@ -22,13 +22,11 @@ import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AbsActivity() {
 
-    companion object {
-        const val DURATION = 400L
-    }
-
     private val libraryFragment = LibraryFragment()
     private val playlistsFragment = PlaylistsFragment()
     private val playingFragment = PlayingFragment()
+
+    private var currentFABState: MainViewModel.FABState? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -71,24 +69,27 @@ class MainActivity : AbsActivity() {
         mainViewModel.currentFragment.observe(this) {
             activity_main_bottomnavigationview.animate()
                 .translationY(if (it in listOf(libraryFragment, playlistsFragment)) 0F else activity_main_bottomnavigationview.height.toFloat() )
-                .setDuration(DURATION)
+                .setDuration(400)
                 .start()
         }
 
         mainViewModel.fabState.observe(this) {
-            if (it == MainViewModel.FABState.HIDE) {
-                activity_main_fab.hide()
-            } else {
-                activity_main_fab.show()
-                val anim = AnimatedVectorDrawableCompat.create(this, when (it) {
-                    MainViewModel.FABState.ANIM_PLAY -> R.drawable.anim_playing
-                    MainViewModel.FABState.ANIM_PAUSE -> R.drawable.anim_pause
-                    MainViewModel.FABState.ICON_PLAY -> R.drawable.anim_play_to_pause
-                    MainViewModel.FABState.ICON_PAUSE -> R.drawable.anim_pause_to_play
-                    else -> R.drawable.anim_playing
-                })
-                activity_main_fab.setImageDrawable(anim)
-                anim?.start()
+            if (currentFABState != it) {
+                currentFABState = it
+                if (currentFABState == MainViewModel.FABState.HIDE) {
+                    activity_main_fab.hide()
+                } else {
+                    activity_main_fab.show()
+                    val anim = AnimatedVectorDrawableCompat.create(this, when (currentFABState) {
+                        MainViewModel.FABState.ANIM_PLAY -> R.drawable.anim_playing
+                        MainViewModel.FABState.ANIM_PAUSE -> R.drawable.anim_pause
+                        MainViewModel.FABState.ICON_PLAY -> R.drawable.anim_play_to_pause
+                        MainViewModel.FABState.ICON_PAUSE -> R.drawable.anim_pause_to_play
+                        else -> R.drawable.anim_playing
+                    })
+                    activity_main_fab.setImageDrawable(anim)
+                    anim?.start()
+                }
             }
         }
     }

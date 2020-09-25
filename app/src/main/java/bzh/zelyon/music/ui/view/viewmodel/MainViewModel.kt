@@ -30,23 +30,14 @@ class MainViewModel: ViewModel() {
         }
     }
 
-    private fun combineLiveDatas(currentFragment: MutableLiveData<AbsFragment?>, isPlaying: MutableLiveData<Boolean>, hasPlayingList: MutableLiveData<Boolean>) : FABState {
-        return if (hasPlayingList.value == true) {
+    private fun combineLiveDatas(currentFragment: MutableLiveData<AbsFragment?>, isPlaying: MutableLiveData<Boolean>, hasPlayingList: MutableLiveData<Boolean>) =
+        if (hasPlayingList.value == true) {
             if (currentFragment.value is PlayingFragment) {
-                if (isPlaying.value == true) {
-                    FABState.ICON_PLAY
-                } else {
-                    FABState.ICON_PAUSE
-                }
+                if (isPlaying.value == true) FABState.ICON_PLAY else FABState.ICON_PAUSE
             } else {
-                if (isPlaying.value == true) {
-                    FABState.ANIM_PLAY
-                } else {
-                    FABState.ANIM_PAUSE
-                }
+                if (isPlaying.value == true) FABState.ANIM_PLAY else FABState.ANIM_PAUSE
             }
         } else {
             FABState.HIDE
         }
-    }
 }
