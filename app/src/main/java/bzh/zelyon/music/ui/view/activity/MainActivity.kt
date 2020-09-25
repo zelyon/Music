@@ -80,15 +80,17 @@ class MainActivity : AbsActivity() {
                     activity_main_fab.hide()
                 } else {
                     activity_main_fab.show()
-                    val anim = AnimatedVectorDrawableCompat.create(this, when (currentFABState) {
+                    when (currentFABState) {
                         MainViewModel.FABState.ANIM_PLAY -> R.drawable.anim_playing
                         MainViewModel.FABState.ANIM_PAUSE -> R.drawable.anim_pause
                         MainViewModel.FABState.ICON_PLAY -> R.drawable.anim_play_to_pause
                         MainViewModel.FABState.ICON_PAUSE -> R.drawable.anim_pause_to_play
-                        else -> R.drawable.anim_playing
-                    })
-                    activity_main_fab.setImageDrawable(anim)
-                    anim?.start()
+                        else -> null
+                    }?.let { resId ->
+                        val anim = AnimatedVectorDrawableCompat.create(this, resId)
+                        activity_main_fab.setImageDrawable(anim)
+                        anim?.start()
+                    }
                 }
             }
         }

@@ -84,14 +84,14 @@ class PlayingFragment: AbsToolBarFragment() {
 
     override fun getIdToolbar() = R.id.fragment_playing_toolbar
 
-    override fun getTitleToolBar() = MusicPlayer.playingMusic?.getInfos(
+    override fun getTitleToolBar() = playingMusic?.getInfos(
         title = true,
         artist = false,
         album = false,
         duration = false
     ).orEmpty()
 
-    override fun getSubTitleToolBar() = MusicPlayer.playingMusic?.getInfos(
+    override fun getSubTitleToolBar() = playingMusic?.getInfos(
         title = false,
         artist = true,
         album = true,
@@ -126,7 +126,6 @@ class PlayingFragment: AbsToolBarFragment() {
             val music = items[position]
             if (music is Music) {
                 MusicPlayer.jumpTo(position)
-                fragment_playing_itemsview_musics.refresh()
             }
         }
         override fun onItemLongClick(itemView: View, items: MutableList<*>, position: Int) {
