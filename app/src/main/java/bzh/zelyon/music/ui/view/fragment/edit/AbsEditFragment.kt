@@ -9,17 +9,17 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.appcompat.app.AlertDialog
 import androidx.core.view.children
 import androidx.lifecycle.ViewModelProvider
 import bzh.zelyon.lib.extension.drawableResToDrawable
 import bzh.zelyon.lib.extension.getLocalFileFromGalleryUri
 import bzh.zelyon.lib.extension.setImage
 import bzh.zelyon.lib.ui.component.InputView
+import bzh.zelyon.lib.ui.component.Popup
 import bzh.zelyon.lib.ui.view.fragment.AbsToolBarFragment
 import bzh.zelyon.music.R
-import bzh.zelyon.music.ui.view.viewmodel.EditViewModel
 import bzh.zelyon.music.db.model.AbsModel
+import bzh.zelyon.music.ui.view.viewmodel.EditViewModel
 import kotlinx.android.synthetic.main.fragment_edit.*
 import org.jaudiotagger.tag.images.Artwork
 import org.jaudiotagger.tag.images.ArtworkFactory
@@ -68,10 +68,7 @@ abstract class AbsEditFragment<T: AbsModel>: AbsToolBarFragment() {
     override fun onIdClick(id: Int) {
         super.onIdClick(id)
         when (id) {
-            R.id.fragment_edit_info -> AlertDialog.Builder(absActivity)
-                .setMessage(infosFromLastFM)
-                .setPositiveButton(getString(R.string.popup_ok)) { _, _ -> }
-                .show()
+            R.id.fragment_edit_info -> Popup(absActivity, message = infosFromLastFM).showBottom()
             R.id.fragment_edit_save -> if (inputViews.all { it.checkValidity() }) onSave()
             R.id.fragment_edit_imageview_artwork -> onClickArtwork()
         }

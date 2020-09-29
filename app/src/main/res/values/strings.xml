@@ -41,16 +41,16 @@
         <item quantity="one">%d chanson</item>
         <item quantity="other">%d chansons</item>
     </plurals>
-    <string name="item_popup_delete_title">Supprimer</string>
-    <string name="item_popup_delete_message">Voulez-vous vraiment supprimer le fichier musique %s ?</string>
-    <string name="item_popup_delete_positive">Oui</string>
-    <string name="item_menu_play">Lecture</string>
-    <string name="item_menu_add">Lire à la suite</string>
-    <string name="item_menu_edit">Éditer</string>
-    <string name="item_menu_delete">Supprimer</string>
-    <string name="item_menu_playlists">Playlist : ajouter / supprimer</string>
 
     <!-- Popup -->
+    <string name="popup_delete_title">Supprimer</string>
+    <string name="popup_delete_message">Voulez-vous vraiment supprimer le fichier musique %s ?</string>
+    <string name="popup_delete_positive">Oui</string>
     <string name="popup_ok">OK</string>
+    <string name="popup_play">Lecture</string>
+    <string name="popup_add">Lire à la suite</string>
+    <string name="popup_edit">Éditer</string>
+    <string name="popup_delete">Supprimer</string>
+    <string name="popup_playlists">Playlist : ajouter / supprimer</string>
 
 </resources>

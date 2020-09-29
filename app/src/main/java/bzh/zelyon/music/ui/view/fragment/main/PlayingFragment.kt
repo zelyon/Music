@@ -5,13 +5,13 @@ import android.graphics.drawable.BitmapDrawable
 import android.os.Bundle
 import android.view.View
 import android.widget.SeekBar
-import androidx.appcompat.widget.PopupMenu
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
 import bzh.zelyon.lib.extension.drawableResToDrawable
 import bzh.zelyon.lib.extension.millisecondsToDuration
 import bzh.zelyon.lib.extension.setImage
 import bzh.zelyon.lib.ui.component.CollectionsView
+import bzh.zelyon.lib.ui.component.Popup
 import bzh.zelyon.lib.ui.view.fragment.AbsToolBarFragment
 import bzh.zelyon.music.R
 import bzh.zelyon.music.db.model.Music
@@ -46,8 +46,8 @@ class PlayingFragment: AbsToolBarFragment() {
                     fragment_playing_textview_current.text = MusicPlayer.currentPosition.millisecondsToDuration()
                     fragment_playing_seekbar_current.max = MusicPlayer.duration
                     fragment_playing_seekbar_current.progress = MusicPlayer.currentPosition
-                    fragment_playing_imagebutton_previous.isVisible = MusicPlayer.playingPositions.size > 1
-                    fragment_playing_imagebutton_next.isVisible = MusicPlayer.isShuffle || MusicPlayer.playingPosition < MusicPlayer.musics.size - 1
+                    fragment_playing_imagebutton_previous.isVisible = MusicPlayer.playingPositions.size > 1 && !MusicPlayer.isRepeat
+                    fragment_playing_imagebutton_next.isVisible = (MusicPlayer.playingPosition < MusicPlayer.musics.size - 1 || MusicPlayer.isShuffle) && !MusicPlayer.isRepeat
                     fragment_playing_imagebutton_repeat.alpha = if (MusicPlayer.isRepeat) 1F else 0.5F
                     fragment_playing_imagebutton_shuffle.alpha = if (MusicPlayer.isShuffle) 1F else 0.5F
                     if (playingMusic != MusicPlayer.playingMusic) {
@@ -132,19 +132,14 @@ class PlayingFragment: AbsToolBarFragment() {
             val music = items[position]
             if (music is Music) {
                 val artwork = (itemView.item_music_imageview_artwork.drawable as? BitmapDrawable)?.bitmap
-                PopupMenu(absActivity, itemView).apply {
-                    menuInflater.inflate(R.menu.item, menu)
-                    menu.findItem(R.id.item_play).isVisible = false
-                    menu.findItem(R.id.item_add).isVisible = false
-                    menu.findItem(R.id.item_delete).isVisible = false
-                    setOnMenuItemClickListener {
-                        when (it.itemId) {
-                            R.id.item_edit -> showFragment(EditMusicFragment.getInstance(music, artwork), transitionView = itemView.item_music_imageview_artwork)
-                            R.id.item_playlists -> showFragment(MusicPlaylistsFragment.getInstance(music))
-                        }
-                        true
-                    }
-                }.show()
+                val choices = mutableListOf<Popup.Choice>()
+                choices.add(Popup.Choice(getString(R.string.popup_edit)) {
+                    showFragment(EditMusicFragment.getInstance(music, artwork), transitionView = itemView.item_music_imageview_artwork)
+                })
+                choices.add(Popup.Choice(getString(R.string.popup_playlists)) {
+                    showFragment(MusicPlaylistsFragment.getInstance(music))
+                })
+                Popup(absActivity, choices = choices).showBottom()
             }
         }
         override fun getDragView(itemView: View, items: MutableList<*>, position: Int): View? = itemView.item_music_imagebutton

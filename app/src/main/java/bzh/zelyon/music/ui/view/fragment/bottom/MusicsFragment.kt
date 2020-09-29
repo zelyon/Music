@@ -3,12 +3,11 @@ package bzh.zelyon.music.ui.view.fragment.bottom
 import android.graphics.drawable.BitmapDrawable
 import android.os.Bundle
 import android.view.View
-import androidx.appcompat.app.AlertDialog
-import androidx.appcompat.widget.PopupMenu
 import androidx.lifecycle.ViewModelProvider
 import bzh.zelyon.lib.extension.drawableResToDrawable
 import bzh.zelyon.lib.extension.setImage
 import bzh.zelyon.lib.ui.component.CollectionsView
+import bzh.zelyon.lib.ui.component.Popup
 import bzh.zelyon.lib.ui.view.fragment.AbsToolBarBottomSheetFragment
 import bzh.zelyon.music.R
 import bzh.zelyon.music.db.DB
@@ -67,36 +66,41 @@ class MusicsFragment private constructor(): AbsToolBarBottomSheetFragment() {
             val music = items[position]
             if (music is Music) {
                 val artwork = (itemView.item_music_imageview_artwork.drawable as? BitmapDrawable)?.bitmap
-                PopupMenu(absActivity, itemView.item_music_imagebutton).apply {
-                    menuInflater.inflate(R.menu.item, menu)
-                    menu.findItem(R.id.item_add).isVisible = MusicPlayer.playingMusic != null
-                    setOnMenuItemClickListener { menuItem ->
-                        back()
-                        when (menuItem.itemId) {
-                            R.id.item_play -> MusicPlayer.playMusics(listOf(music))
-                            R.id.item_add -> MusicPlayer.addMusics(listOf(music))
-                            R.id.item_edit -> showFragment(EditMusicFragment.getInstance(music, artwork), transitionView = itemView.item_music_imageview_artwork)
-                            R.id.item_delete -> AlertDialog.Builder(absActivity)
-                                .setTitle(R.string.item_popup_delete_title)
-                                .setMessage(getString(R.string.item_popup_delete_message, music.title))
-                                .setPositiveButton(R.string.item_popup_delete_positive) { _, _ ->
-                                    File(music.path).delete()
-                                    ViewModelProvider(absActivity).get(LibraryViewModel::class.java).needReloadLibrary.postValue(null)
-                                    DB.getPlaylistDao().getAll().forEach { playlist ->
-                                        playlist.musics.forEach {
-                                            if (it.path == music.path) {
-                                                playlist.musics.remove(it)
-                                                DB.getPlaylistDao().update(playlist)
-                                            }
-                                        }
+
+                val choices = mutableListOf<Popup.Choice>()
+                choices.add(Popup.Choice(getString(R.string.popup_play)) {
+                    MusicPlayer.playMusics(listOf(music))
+                })
+                if (MusicPlayer.playingMusic != null) {
+                    choices.add(Popup.Choice(getString(R.string.popup_add)) {
+                        MusicPlayer.addMusics(listOf(music))
+                    })
+                }
+                choices.add(Popup.Choice(getString(R.string.popup_edit)) {
+                    showFragment(EditMusicFragment.getInstance(music, artwork), transitionView = itemView.item_music_imageview_artwork)
+                })
+                choices.add(Popup.Choice(getString(R.string.popup_delete)) {
+                    Popup(absActivity,
+                        title = getString(R.string.popup_delete_title),
+                        message = getString(R.string.popup_delete_message, music.title),
+                        positiveText = getString(R.string.popup_delete_positive),
+                        positiveClick = {
+                            File(music.path).delete()
+                            ViewModelProvider(absActivity).get(LibraryViewModel::class.java).needReloadLibrary.postValue(null)
+                            DB.getPlaylistDao().getAll().forEach { playlist ->
+                                playlist.musics.forEach {
+                                    if (it.path == music.path) {
+                                        playlist.musics.remove(it)
+                                        DB.getPlaylistDao().update(playlist)
                                     }
                                 }
-                                .show()
-                            R.id.item_playlists -> showFragment(MusicPlaylistsFragment.getInstance(music))
-                        }
-                        true
-                    }
-                }.show()
+                            }
+                        }).show()
+                })
+                choices.add(Popup.Choice(getString(R.string.popup_playlists)) {
+                    showFragment(MusicPlaylistsFragment.getInstance(music))
+                })
+                Popup(absActivity, choices = choices).showBottom()
             }
         }
     }

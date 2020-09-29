@@ -4,7 +4,6 @@ import android.Manifest
 import android.graphics.drawable.BitmapDrawable
 import android.os.Bundle
 import android.view.View
-import androidx.appcompat.widget.PopupMenu
 import androidx.appcompat.widget.SearchView
 import androidx.core.view.marginBottom
 import androidx.core.view.marginTop
@@ -13,6 +12,7 @@ import bzh.zelyon.lib.extension.drawableResToDrawable
 import bzh.zelyon.lib.extension.setImage
 import bzh.zelyon.lib.extension.showSnackbar
 import bzh.zelyon.lib.ui.component.CollectionsView
+import bzh.zelyon.lib.ui.component.Popup
 import bzh.zelyon.lib.ui.view.fragment.AbsToolBarFragment
 import bzh.zelyon.music.R
 import bzh.zelyon.music.db.model.Artist
@@ -104,20 +104,19 @@ class LibraryFragment: AbsToolBarFragment(), SearchView.OnQueryTextListener {
             val artist = items[position]
             if (artist is Artist) {
                 val artwork = (itemView.item_artist_imageview_artwork.drawable as? BitmapDrawable)?.bitmap
-                PopupMenu(absActivity, itemView.item_artist_button_more).apply {
-                    menuInflater.inflate(R.menu.item, menu)
-                    menu.findItem(R.id.item_add).isVisible = MusicPlayer.playingMusic != null
-                    menu.findItem(R.id.item_delete).isVisible = false
-                    menu.findItem(R.id.item_playlists).isVisible = false
-                    setOnMenuItemClickListener {
-                        when (it.itemId) {
-                            R.id.item_play -> MusicPlayer.playMusics(artist.musics)
-                            R.id.item_add -> MusicPlayer.addMusics(artist.musics)
-                            R.id.item_edit -> showFragment(EditArtistFragment.getInstance(artist, artwork), transitionView = itemView.item_artist_imageview_artwork)
-                        }
-                        return@setOnMenuItemClickListener true
-                    }
-                }.show()
+                val choices = mutableListOf<Popup.Choice>()
+                choices.add(Popup.Choice(getString(R.string.popup_play)) {
+                    MusicPlayer.playMusics(artist.musics)
+                })
+                if (MusicPlayer.playingMusic != null) {
+                    choices.add(Popup.Choice(getString(R.string.popup_add)) {
+                        MusicPlayer.addMusics(artist.musics)
+                    })
+                }
+                choices.add(Popup.Choice(getString(R.string.popup_edit)) {
+                    showFragment(EditArtistFragment.getInstance(artist, artwork), transitionView = itemView.item_artist_imageview_artwork)
+                })
+                Popup(absActivity, choices = choices).showBottom()
             }
         }
         override fun getIndexScroll(items: MutableList<*>, position: Int) = (items[position] as Artist).name.first().toUpperCase().toString()

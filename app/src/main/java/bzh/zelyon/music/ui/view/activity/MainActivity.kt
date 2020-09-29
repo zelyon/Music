@@ -45,7 +45,7 @@ class MainActivity : AbsActivity() {
         }
 
         activity_main_fab.setOnClickListener {
-            if (getCurrentFragment() is PlayingFragment) {
+            if (getCurrentFragment() == playingFragment) {
                 MusicPlayer.pauseOrPlay()
             } else {
                 showFragment(playingFragment)

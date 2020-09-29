@@ -33,7 +33,7 @@ object MusicPlayer: MediaPlayer() {
         val isPlaying = playingMusic?.let {
             reset()
             setDataSource(it.path)
-            setOnCompletionListener { next(true) }
+            setOnCompletionListener { next() }
             prepare()
             start()
             true
@@ -79,12 +79,11 @@ object MusicPlayer: MediaPlayer() {
         run()
     }
 
-    fun next(auto: Boolean = false) {
-        when {
-            isShuffle -> playingPosition = Random.nextInt(musics.indices)
-            isRepeat && auto -> {}
-            isRepeat && !auto -> playingPosition++
-            else -> playingPosition++
+    fun next() {
+        playingPosition = when {
+            isRepeat -> playingPosition
+            isShuffle -> Random.nextInt(musics.indices)
+            else -> playingPosition+1
         }
         playingPositions.add(playingPosition)
         run()
