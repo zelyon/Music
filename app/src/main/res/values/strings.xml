@@ -14,8 +14,6 @@
 
     <!-- Playlists Fragment -->
     <string name="fragment_playlists_no_playlist">Aucune playlist trouvé</string>
-    <string name="fragment_playlists_rename">Renommer</string>
-    <string name="fragment_playlists_name">Nom</string>
 
     <!-- Edit Fragment -->
     <string name="fragment_edit_snackbar_failed">Modification impossible</string>
@@ -43,10 +41,11 @@
     </plurals>
 
     <!-- Popup -->
-    <string name="popup_delete_title">Supprimer</string>
-    <string name="popup_delete_message">Voulez-vous vraiment supprimer le fichier musique %s ?</string>
-    <string name="popup_delete_positive">Oui</string>
+    <string name="popup_yes">Oui</string>
     <string name="popup_ok">OK</string>
+    <string name="popup_delete_message">Voulez-vous vraiment supprimer le fichier musique %s ?</string>
+    <string name="popup_name">Nom</string>
+    <string name="popup_rename">Renommer</string>
     <string name="popup_play">Lecture</string>
     <string name="popup_add">Lire à la suite</string>
     <string name="popup_edit">Éditer</string>

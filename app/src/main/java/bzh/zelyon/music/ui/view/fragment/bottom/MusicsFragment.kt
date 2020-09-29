@@ -66,25 +66,28 @@ class MusicsFragment private constructor(): AbsToolBarBottomSheetFragment() {
             val music = items[position]
             if (music is Music) {
                 val artwork = (itemView.item_music_imageview_artwork.drawable as? BitmapDrawable)?.bitmap
-
                 val choices = mutableListOf<Popup.Choice>()
                 choices.add(Popup.Choice(getString(R.string.popup_play)) {
+                    back()
                     MusicPlayer.playMusics(listOf(music))
                 })
                 if (MusicPlayer.playingMusic != null) {
                     choices.add(Popup.Choice(getString(R.string.popup_add)) {
+                        back()
                         MusicPlayer.addMusics(listOf(music))
                     })
                 }
                 choices.add(Popup.Choice(getString(R.string.popup_edit)) {
                     showFragment(EditMusicFragment.getInstance(music, artwork), transitionView = itemView.item_music_imageview_artwork)
+                    back()
                 })
                 choices.add(Popup.Choice(getString(R.string.popup_delete)) {
                     Popup(absActivity,
-                        title = getString(R.string.popup_delete_title),
+                        title = getString(R.string.popup_delete),
                         message = getString(R.string.popup_delete_message, music.title),
-                        positiveText = getString(R.string.popup_delete_positive),
+                        positiveText = getString(R.string.popup_yes),
                         positiveClick = {
+                            back()
                             File(music.path).delete()
                             ViewModelProvider(absActivity).get(LibraryViewModel::class.java).needReloadLibrary.postValue(null)
                             DB.getPlaylistDao().getAll().forEach { playlist ->

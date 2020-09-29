@@ -59,14 +59,14 @@ class PlaylistsFragment: AbsFragment() {
                         MusicPlayer.addMusics(playlist.musics)
                     })
                 }
-                choices.add(Popup.Choice(getString(R.string.popup_edit)) {
+                choices.add(Popup.Choice(getString(R.string.popup_rename)) {
                     val input = InputView(absActivity).apply {
                         type = InputView.Type.TEXT
-                        label = getString(R.string.fragment_playlists_name)
+                        label = getString(R.string.popup_name)
                         mandatory = true
                     }
                     Popup(absActivity,
-                        title = getString(R.string.fragment_playlists_rename),
+                        title = getString(R.string.popup_rename),
                         customView = input,
                         positiveText = getString(R.string.popup_ok),
                         positiveDismiss = false,
