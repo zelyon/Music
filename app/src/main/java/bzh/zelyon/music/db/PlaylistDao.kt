@@ -22,6 +22,6 @@ interface PlaylistDao {
     @Query("SELECT * FROM playlist ORDER BY name")
     fun getAllLiveData(): LiveData<List<Playlist>>
 
-    @Query("SELECT * FROM playlist WHERE musics != '[]' ")
+    @Query("SELECT * FROM playlist WHERE musics != '[]' ORDER BY name")
     fun getNotEmptyLiveData(): LiveData<List<Playlist>>
 }

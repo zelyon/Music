@@ -78,7 +78,6 @@ class PlaylistsFragment: AbsFragment() {
                             }
                         }).show()
                 })
-
                 choices.add(Popup.Choice(getString(R.string.popup_delete)) {
                     DB.getPlaylistDao().delete(playlist)
                 })

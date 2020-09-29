@@ -69,6 +69,7 @@ class MusicPlaylistsFragment private constructor(): AbsToolBarBottomSheetFragmen
             val playlist = items[position]
             if (playlist is Playlist) {
                 itemView.item_music_playlist_textview_name.text = playlist.name
+                itemView.item_music_playlist_checkbox.setOnCheckedChangeListener(null)
                 itemView.item_music_playlist_checkbox.isChecked = playlist.musics.any { it.id == music.id }
                 itemView.item_music_playlist_checkbox.setOnCheckedChangeListener { _, isChecked ->
                     if (isChecked) {
