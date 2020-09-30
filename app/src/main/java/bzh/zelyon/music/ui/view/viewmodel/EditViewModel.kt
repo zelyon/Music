@@ -10,9 +10,9 @@ import bzh.zelyon.music.api.model.MusicResponse
 
 class EditViewModel: ViewModel() {
 
-    fun getArtist(artistName: String): MutableLiveData<ArtistResponse> {
+    fun getArtist(artistName: String, french: Boolean = true): MutableLiveData<ArtistResponse> {
         val mutableLiveData = MutableLiveData<ArtistResponse>()
-        API.getArtist(artistName).enqueue(object : CallBack<ArtistResponse> {
+        API.getArtist(artistName, french).enqueue(object : CallBack<ArtistResponse> {
             override fun onSuccess(response: ArtistResponse) {
                 mutableLiveData.value = response
             }
@@ -20,9 +20,9 @@ class EditViewModel: ViewModel() {
         return mutableLiveData
     }
 
-    fun getAlbum(artistName: String, albumName: String): MutableLiveData<AlbumResponse> {
+    fun getAlbum(artistName: String, albumName: String, french: Boolean = true): MutableLiveData<AlbumResponse> {
         val mutableLiveData = MutableLiveData<AlbumResponse>()
-        API.getAlbum(artistName, albumName).enqueue(object : CallBack<AlbumResponse> {
+        API.getAlbum(artistName, albumName, french).enqueue(object : CallBack<AlbumResponse> {
             override fun onSuccess(response: AlbumResponse) {
                 mutableLiveData.value = response
             }
@@ -30,9 +30,9 @@ class EditViewModel: ViewModel() {
         return mutableLiveData
     }
 
-    fun getMusic(artistName: String, title: String): MutableLiveData<MusicResponse> {
+    fun getMusic(artistName: String, title: String, french: Boolean = true): MutableLiveData<MusicResponse> {
         val mutableLiveData = MutableLiveData<MusicResponse>()
-        API.getMusic(artistName, title).enqueue(object : CallBack<MusicResponse> {
+        API.getMusic(artistName, title, french).enqueue(object : CallBack<MusicResponse> {
             override fun onSuccess(response: MusicResponse) {
                 mutableLiveData.value = response
             }

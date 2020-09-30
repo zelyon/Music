@@ -36,8 +36,8 @@ class PlayingFragment: AbsToolBarFragment() {
             override fun onStartTrackingTouch(seekBar: SeekBar) {}
             override fun onStopTrackingTouch(seekBar: SeekBar) = MusicPlayer.goTo(seekBar.progress)
         })
-        fragment_playing_itemsview_musics.helper = MusicHelper()
-        fragment_playing_itemsview_musics.items = MusicPlayer.musics
+        fragment_playing_collectionview_musics.helper = MusicHelper()
+        fragment_playing_collectionview_musics.items = MusicPlayer.musics
 
         fixedRateTimer(period = 400) {
             safeRun {
@@ -52,9 +52,9 @@ class PlayingFragment: AbsToolBarFragment() {
                     fragment_playing_imagebutton_shuffle.alpha = if (MusicPlayer.isShuffle) 1F else 0.5F
                     if (playingMusic != MusicPlayer.playingMusic) {
                         playingMusic = MusicPlayer.playingMusic
-                        fragment_playing_itemsview_musics.refresh()
+                        fragment_playing_collectionview_musics.refresh()
                         updateToolBar()
-                        val itemsManager = fragment_playing_itemsview_musics.layoutManager as LinearLayoutManager
+                        val itemsManager = fragment_playing_collectionview_musics.layoutManager as LinearLayoutManager
                         val firstPositionVisible = itemsManager.findFirstVisibleItemPosition()
                         val lastPositionVisible = itemsManager.findLastVisibleItemPosition()
                         when {
@@ -62,7 +62,7 @@ class PlayingFragment: AbsToolBarFragment() {
                             MusicPlayer.playingPosition > lastPositionVisible -> MusicPlayer.playingPosition + (lastPositionVisible - firstPositionVisible)/2
                             else -> null
                         }?.let {
-                            fragment_playing_itemsview_musics.smoothScrollToPosition(it)
+                            fragment_playing_collectionview_musics.smoothScrollToPosition(it)
                         }
                     }
                 } ?: back()

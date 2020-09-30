@@ -6,7 +6,7 @@
         android:fitsSystemWindows="true">
 
     <bzh.zelyon.lib.ui.component.CollectionsView
-        android:id="@+id/fragment_library_itemsview_artists"
+        android:id="@+id/fragment_library_collectionview_artists"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:nb_colums="2"

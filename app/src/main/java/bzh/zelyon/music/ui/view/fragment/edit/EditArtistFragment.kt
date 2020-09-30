@@ -29,8 +29,13 @@ class EditArtistFragment private constructor(): AbsEditFragment<Artist>() {
             paths.add(music.path)
         }
 
-        editViewModel.getArtist(absModel.name).observe(absActivity, {
-            infosFromLastFM = it?.artist?.bio?.content.orEmpty()
+        editViewModel.getArtist(absModel.name).observe(absActivity, { artistResponseFr ->
+            infosFromLastFM = artistResponseFr?.artist?.bio?.content.orEmpty()
+            if (infosFromLastFM.isNullOrBlank()) {
+                editViewModel.getArtist(absModel.name, false).observe(viewLifecycleOwner, { musicResponseEn ->
+                    infosFromLastFM = musicResponseEn?.artist?.bio?.content.orEmpty()
+                })
+            }
         })
     }
 

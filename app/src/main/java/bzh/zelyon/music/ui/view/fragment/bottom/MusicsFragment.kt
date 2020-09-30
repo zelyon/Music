@@ -31,8 +31,8 @@ class MusicsFragment private constructor(): AbsToolBarBottomSheetFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        fragment_musics_itemsview_musics.helper = MusicHelper()
-        fragment_musics_itemsview_musics.items = musics.toMutableList()
+        fragment_musics_collectionview_musics.helper = MusicHelper()
+        fragment_musics_collectionview_musics.items = musics.toMutableList()
     }
 
     override fun getIdToolbar() = R.id.fragment_musics_toolbar

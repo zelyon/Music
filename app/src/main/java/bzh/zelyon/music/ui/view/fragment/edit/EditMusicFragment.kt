@@ -60,9 +60,14 @@ class EditMusicFragment private constructor(): AbsEditFragment<Music>() {
         fragment_edit_music_inputview_genre.text = tag?.getFirst(FieldKey.GENRE) ?: ""
         fragment_edit_music_inputview_genre.choices = genres.map { InputView.Choice(it, it, tag?.getFirst(FieldKey.GENRE) ?: "" == it) }.toMutableList()
 
-        editViewModel.getMusic(absModel.artistName, absModel.title).observe(absActivity, {
-            infosFromLastFM = it?.track?.wiki?.content.orEmpty()
-            imageUrlFromLastFM = it?.track?.album?.image?.get(3)?.text
+        editViewModel.getMusic(absModel.artistName, absModel.title).observe(viewLifecycleOwner, { musicResponseFr  ->
+            infosFromLastFM = musicResponseFr?.track?.wiki?.content.orEmpty()
+            imageUrlFromLastFM = musicResponseFr?.track?.album?.image?.get(3)?.text
+            if (infosFromLastFM.isNullOrBlank()) {
+                editViewModel.getMusic(absModel.artistName, absModel.title, false).observe(viewLifecycleOwner, { musicResponseEn ->
+                    infosFromLastFM = musicResponseEn?.track?.wiki?.content.orEmpty()
+                })
+            }
         })
     }
 

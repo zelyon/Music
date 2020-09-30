@@ -23,10 +23,10 @@ class PlaylistsFragment: AbsFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        fragment_playlists_itemsview_playlists.helper = PlaylistHelper()
+        fragment_playlists_collectionview_playlists.helper = PlaylistHelper()
 
         playlistViewModel.playlistsNotEmpty.observe(viewLifecycleOwner) {
-            fragment_playlists_itemsview_playlists.items = it.toMutableList()
+            fragment_playlists_collectionview_playlists.items = it.toMutableList()
         }
     }
 

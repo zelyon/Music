@@ -22,23 +22,23 @@ interface API {
             .build()
             .create(API::class.java)
 
-        fun getArtist(artist: String) = instance.getArtist(
+        fun getArtist(artist: String, french: Boolean = true) = instance.getArtist(
             artist,
-            "fr",
+            if (french) "fr" else "en",
             "json",
             BuildConfig.LAST_FM_API_KEY)
 
-        fun getAlbum(artist: String, album: String) = instance.getAlbum(
+        fun getAlbum(artist: String, album: String, french: Boolean = true) = instance.getAlbum(
             artist,
             album,
-            "fr",
+            if (french) "fr" else "en",
             "json",
             BuildConfig.LAST_FM_API_KEY)
 
-        fun getMusic(artist: String, title: String) = instance.getMusic(
+        fun getMusic(artist: String, title: String, french: Boolean = true) = instance.getMusic(
             artist,
             title,
-            "fr",
+            if (french) "fr" else "en",
             "json",
             BuildConfig.LAST_FM_API_KEY
         )

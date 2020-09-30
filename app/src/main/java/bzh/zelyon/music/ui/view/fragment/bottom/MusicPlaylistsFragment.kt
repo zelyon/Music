@@ -29,10 +29,10 @@ class MusicPlaylistsFragment private constructor(): AbsToolBarBottomSheetFragmen
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        fragment_musicplaylists_itemsview_playlists.helper = PlaylistHelper()
+        fragment_musicplaylists_collectionview_playlists.helper = PlaylistHelper()
 
         playlistViewModel.playlists.observe(viewLifecycleOwner) {
-            fragment_musicplaylists_itemsview_playlists.items = it.toMutableList()
+            fragment_musicplaylists_collectionview_playlists.items = it.toMutableList()
         }
     }
 

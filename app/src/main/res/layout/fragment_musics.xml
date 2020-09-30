@@ -17,7 +17,7 @@
         android:layout_height="wrap_content">
 
         <bzh.zelyon.lib.ui.component.CollectionsView
-            android:id="@+id/fragment_musics_itemsview_musics"
+            android:id="@+id/fragment_musics_collectionview_musics"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:id_layout_item="@layout/item_music"/>

@@ -34,7 +34,7 @@ class LibraryFragment: AbsToolBarFragment(), SearchView.OnQueryTextListener {
 
         fragment_library_searchview.setOnQueryTextListener(this)
 
-        fragment_library_itemsview_artists.helper = ArtistHelper()
+        fragment_library_collectionview_artists.helper = ArtistHelper()
 
         loadMusics()
 
@@ -68,7 +68,7 @@ class LibraryFragment: AbsToolBarFragment(), SearchView.OnQueryTextListener {
             Manifest.permission.READ_EXTERNAL_STORAGE,
             Manifest.permission.WRITE_EXTERNAL_STORAGE) {
             if (it) {
-                fragment_library_itemsview_artists.items = MusicContent.getMusicsBySearch(absActivity, currentSearch).toMutableList()
+                fragment_library_collectionview_artists.items = MusicContent.getMusicsBySearch(absActivity, currentSearch).toMutableList()
             } else {
                 absActivity.showSnackbar(
                     getString(R.string.fragment_library_snackbar_permission_needed),
@@ -123,10 +123,10 @@ class LibraryFragment: AbsToolBarFragment(), SearchView.OnQueryTextListener {
         override fun onScroll(goUp: Boolean) {
             safeRun {
                 val toolbarHeight = fragment_library_cardview_toolbar.height + fragment_library_cardview_toolbar.marginTop + fragment_library_cardview_toolbar.marginBottom
-                val itemsViewOffset = fragment_library_itemsview_artists.computeVerticalScrollOffset()
+                val collectionViewOffset = fragment_library_collectionview_artists.computeVerticalScrollOffset()
                 val neededAnimState = when {
                     goUp -> AnimSate.SHOW
-                    itemsViewOffset < toolbarHeight -> AnimSate.FOLLOW_OFFSET
+                    collectionViewOffset < toolbarHeight -> AnimSate.FOLLOW_OFFSET
                     else -> AnimSate.HIDE
                 }
                 if (animState != neededAnimState) {
@@ -135,7 +135,7 @@ class LibraryFragment: AbsToolBarFragment(), SearchView.OnQueryTextListener {
                     fragment_library_cardview_toolbar.animate().apply {
                         translationY(when(neededAnimState) {
                             AnimSate.SHOW -> 0
-                            AnimSate.FOLLOW_OFFSET -> -itemsViewOffset
+                            AnimSate.FOLLOW_OFFSET -> -collectionViewOffset
                             AnimSate.HIDE -> -toolbarHeight
                         }.toFloat())
                         withStartAction { animState = neededAnimState }
