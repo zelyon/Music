@@ -17,15 +17,14 @@
         app:id_layout_empty="@layout/item_artist_empty"
         app:fast_scroll_enable="true"
         app:thumb_width="6dp"
-        app:thumb_margin_top="104dp"
+        app:thumb_margin_top="80dp"
         app:thumb_margin_bottom="80dp"/>
 
     <com.google.android.material.card.MaterialCardView
         android:id="@+id/fragment_library_cardview_toolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="40dp"
-        android:layout_marginHorizontal="16dp"
+        android:layout_margin="16dp"
         app:cardElevation="4dp"
         app:cardCornerRadius="8dp">
 
