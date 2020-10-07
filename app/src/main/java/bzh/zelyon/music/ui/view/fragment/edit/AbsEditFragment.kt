@@ -13,6 +13,7 @@ import androidx.core.view.children
 import androidx.lifecycle.ViewModelProvider
 import bzh.zelyon.lib.extension.drawableResToDrawable
 import bzh.zelyon.lib.extension.getLocalFileFromGalleryUri
+import bzh.zelyon.lib.extension.getStatusBarHeight
 import bzh.zelyon.lib.extension.setImage
 import bzh.zelyon.lib.ui.component.InputView
 import bzh.zelyon.lib.ui.component.Popup
@@ -51,6 +52,7 @@ abstract class AbsEditFragment<T: AbsModel>: AbsToolBarFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        fragment_edit_toolbar.setPadding(0, absActivity.getStatusBarHeight(), 0, 0)
         fragment_edit_imageview_artwork.transitionName = absModel.getTransitionName()
         fragment_edit_imageview_artwork.setImage(absModel, currentArtwork)
         LayoutInflater.from(absActivity).inflate(getFormLayoutId(), fragment_edit_layout_form, true)

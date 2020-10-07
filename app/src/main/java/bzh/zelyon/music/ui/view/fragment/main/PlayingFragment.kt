@@ -7,9 +7,7 @@ import android.view.View
 import android.widget.SeekBar
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
-import bzh.zelyon.lib.extension.drawableResToDrawable
-import bzh.zelyon.lib.extension.millisecondsToDuration
-import bzh.zelyon.lib.extension.setImage
+import bzh.zelyon.lib.extension.*
 import bzh.zelyon.lib.ui.component.CollectionsView
 import bzh.zelyon.lib.ui.component.Popup
 import bzh.zelyon.lib.ui.view.fragment.AbsToolBarFragment
@@ -30,6 +28,8 @@ class PlayingFragment: AbsToolBarFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        fragment_playing_toolbar.setPadding(0, absActivity.getStatusBarHeight(), 0, 0)
 
         fragment_playing_seekbar_current.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
             override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {}

@@ -16,7 +16,7 @@ import org.jaudiotagger.audio.AudioFileIO
 import org.jaudiotagger.tag.FieldKey
 import java.io.File
 
-class EditArtistFragment private constructor(): AbsEditFragment<Artist>() {
+class EditArtistFragment: AbsEditFragment<Artist>() {
 
     private var paths = mutableListOf<String>()
 
@@ -67,10 +67,9 @@ class EditArtistFragment private constructor(): AbsEditFragment<Artist>() {
                 newArtwork?.let { artwork ->
                     tag?.setField(artwork)
                 }
+                audioFile?.commit()
             } catch (e: Exception) {
                 absActivity.showSnackbar(getString(R.string.fragment_edit_snackbar_failed))
-            } finally {
-                audioFile?.commit()
             }
         }
         MediaScannerConnection.scanFile(absActivity, paths.toTypedArray(), null) { _, _ -> back() }

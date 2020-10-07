@@ -9,12 +9,12 @@
         android:layout_height="wrap_content"
         app:layout_scrollFlags="scroll|enterAlways|snap">
 
-        <androidx.appcompat.widget.Toolbar
+        <com.google.android.material.appbar.MaterialToolbar
             android:id="@+id/fragment_playing_toolbar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:theme="@style/ThemeOverlay.MaterialComponents.Dark.ActionBar"
             app:layout_scrollFlags="scroll|enterAlways|snap"
+            android:theme="@style/ThemeOverlay.MaterialComponents.Dark.ActionBar"
             app:popupTheme="@style/ThemeOverlay.MaterialComponents.Dark.ActionBar" />
 
     </com.google.android.material.appbar.AppBarLayout>

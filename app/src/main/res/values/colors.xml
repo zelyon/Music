@@ -1,8 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="colorPrimary">#009688</color>
-    <color name="colorSecondary">#64FFDA</color>
-    <color name="colorLauncher">#26A69A</color>
-    <color name="colorIconAndText">@android:color/black</color>
-    <color name="colorGradientControler">@android:color/white</color>
+    <color name="colorPrimaryDark">#00695C</color>
+    <color name="colorPrimaryVariant">#00695C</color>
+    <color name="colorOnPrimary">#FFFFFF</color>
+
+    <color name="colorSecondary">#00BFA5</color>
+    <color name="colorSecondaryVariant">#00BFA5</color>
+    <color name="colorOnSecondary">#FFFFFF</color>
 </resources>

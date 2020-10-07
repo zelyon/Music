@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.provider.MediaStore
 import android.view.LayoutInflater
 import android.view.View
+import androidx.core.database.getStringOrNull
 import androidx.core.view.isVisible
 import bzh.zelyon.lib.extension.showSnackbar
 import bzh.zelyon.lib.ui.component.InputView
@@ -21,7 +22,7 @@ import org.jaudiotagger.tag.FieldKey
 import org.jaudiotagger.tag.Tag
 import java.io.File
 
-class EditMusicFragment private constructor(): AbsEditFragment<Music>() {
+class EditMusicFragment: AbsEditFragment<Music>() {
 
     private var audioFile: AudioFile? = null
     private var tag: Tag? = null
@@ -45,7 +46,9 @@ class EditMusicFragment private constructor(): AbsEditFragment<Music>() {
         }
         absActivity.contentResolver.query(MediaStore.Audio.Genres.EXTERNAL_CONTENT_URI, null, null, null, null)?.use {
             while (it.moveToNext()) {
-                genres.add(it.getString(it.getColumnIndex(MediaStore.Audio.Genres.NAME)))
+                it.getStringOrNull(it.getColumnIndex(MediaStore.Audio.Genres.NAME))?.let {
+                    genres.add(it)
+                }
             }
             it.close()
         }
@@ -105,10 +108,10 @@ class EditMusicFragment private constructor(): AbsEditFragment<Music>() {
             newArtwork?.let { artwork ->
                 tag?.setField(artwork)
             }
+            audioFile?.commit()
         } catch (e: Exception) {
             absActivity.showSnackbar(getString(R.string.fragment_edit_snackbar_failed))
         } finally {
-            audioFile?.commit()
             MediaScannerConnection.scanFile(absActivity, arrayOf(absModel.path), null) { _, _ -> back() }
         }
     }

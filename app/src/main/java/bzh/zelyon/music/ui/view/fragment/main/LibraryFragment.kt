@@ -5,12 +5,11 @@ import android.graphics.drawable.BitmapDrawable
 import android.os.Bundle
 import android.view.View
 import androidx.appcompat.widget.SearchView
+import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.view.marginBottom
 import androidx.core.view.marginTop
 import androidx.lifecycle.ViewModelProvider
-import bzh.zelyon.lib.extension.drawableResToDrawable
-import bzh.zelyon.lib.extension.setImage
-import bzh.zelyon.lib.extension.showSnackbar
+import bzh.zelyon.lib.extension.*
 import bzh.zelyon.lib.ui.component.CollectionsView
 import bzh.zelyon.lib.ui.component.Popup
 import bzh.zelyon.lib.ui.view.fragment.AbsToolBarFragment
@@ -32,9 +31,13 @@ class LibraryFragment: AbsToolBarFragment(), SearchView.OnQueryTextListener {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        (fragment_library_cardview_toolbar.layoutParams as CoordinatorLayout.LayoutParams).topMargin += absActivity.getStatusBarHeight()
+
         fragment_library_searchview.setOnQueryTextListener(this)
 
         fragment_library_collectionview_artists.helper = ArtistHelper()
+        fragment_library_collectionview_artists.headerHeight = absActivity.dpToPx(80) + absActivity.getStatusBarHeight()
+        fragment_library_collectionview_artists.thumbMarginTop = absActivity.dpToPx(80) + absActivity.getStatusBarHeight()
 
         loadMusics()
 

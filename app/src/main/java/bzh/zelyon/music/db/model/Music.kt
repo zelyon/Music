@@ -40,7 +40,7 @@ data class Music(
 
     override fun getDeclaration() = title
 
-    override fun getPlaceholderId() = R.drawable.ic_music
+    override fun getPlaceholderId() = R.drawable.ic_music_white
 
     override fun getTransitionName() = id.toString()
 
