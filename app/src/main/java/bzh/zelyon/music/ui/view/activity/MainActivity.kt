@@ -42,11 +42,11 @@ class MainActivity : AbsActivity() {
         mainViewModel.currentFragment.observe(this) {
             updateNavigationBar(it)
         }
-
         mainViewModel.fabState.observe(this) {
             updateFABState(it)
         }
         MusicPlayer.mainViewModel = mainViewModel
+
         supportFragmentManager.addOnBackStackChangedListener {
             mainViewModel.currentFragment.value = getCurrentFragment()
         }
@@ -72,10 +72,24 @@ class MainActivity : AbsActivity() {
         }
 
         activity_main_bottomnavigationview.selectedItemId = R.id.activity_main_library
+
+        intent?.let {
+            manageIntent(it)
+        }
     }
 
-    override fun handleIntent(intent: Intent) {
-        super.handleIntent(intent)
+    override fun onNewIntent(intent: Intent?) {
+        super.onNewIntent(intent)
+        intent?.let {
+            manageIntent(it)
+        }
+    }
+
+    override fun getLayoutId() = R.layout.activity_main
+
+    override fun getFragmentContainerId() = R.id.activity_main_container
+
+    private fun manageIntent(intent: Intent) {
         if (intent.getBooleanExtra(SHORTCUT_SHUFFLE, false)) {
             MusicPlayer.playMusics(MusicContent.getMusics(this).shuffled())
         } else {
@@ -86,10 +100,6 @@ class MainActivity : AbsActivity() {
             }
         }
     }
-
-    override fun getLayoutId() = R.layout.activity_main
-
-    override fun getFragmentContainerId() = R.id.activity_main_container
 
     private fun updateNavigationBar(fragment: AbsFragment?) {
         activity_main_bottomnavigationview.animate()

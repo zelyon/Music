@@ -11,5 +11,5 @@ class MusicsConverter {
     fun fromMusicList(musics: List<Music>?): String = Gson().toJson(musics)
 
     @TypeConverter
-    fun toMusicList(musicListString: String?): List<Music> = Gson().fromJson<List<Music>>(musicListString, object : TypeToken<List<Music?>?>() {}.type)
+    fun toMusicList(musicListString: String?): List<Music> = Gson().fromJson(musicListString, object : TypeToken<List<Music?>?>() {}.type)
 }
