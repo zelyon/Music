@@ -6,7 +6,6 @@
     android:fitsSystemWindows="true"
     app:nb_colums="2"
     app:id_layout_item="@layout/item_playlist"
-    app:id_layout_header="@layout/item_playlist_header"
     app:id_layout_empty="@layout/item_playlist_empty"
     app:space_divider="8dp"
     app:fast_scroll_enable="true"/>
