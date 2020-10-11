@@ -33,8 +33,6 @@ class LibraryFragment: AbsToolBarFragment(), SearchView.OnQueryTextListener {
 
         (fragment_library_cardview_toolbar.layoutParams as CoordinatorLayout.LayoutParams).topMargin += absActivity.getStatusBarHeight()
 
-        fragment_library_searchview.setOnQueryTextListener(this)
-
         fragment_library_collectionview_artists.helper = ArtistHelper()
         fragment_library_collectionview_artists.headerHeight = absActivity.dpToPx(80) + absActivity.getStatusBarHeight()
         fragment_library_collectionview_artists.thumbMarginTop = absActivity.dpToPx(80) + absActivity.getStatusBarHeight()
@@ -44,6 +42,12 @@ class LibraryFragment: AbsToolBarFragment(), SearchView.OnQueryTextListener {
         ViewModelProvider(absActivity).get(LibraryViewModel::class.java).needReloadLibrary.observe(absActivity) {
             loadMusics()
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        fragment_library_searchview.setOnQueryTextListener(this)
     }
 
     override fun getIdLayout() = R.layout.fragment_library
