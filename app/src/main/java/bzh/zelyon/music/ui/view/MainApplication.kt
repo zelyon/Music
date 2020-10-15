@@ -9,7 +9,6 @@ import bzh.zelyon.lib.extension.isMarshmallow
 import bzh.zelyon.music.R
 import bzh.zelyon.music.db.DB
 import bzh.zelyon.music.ui.view.activity.MainActivity
-import bzh.zelyon.music.util.MusicService
 
 class MainApplication: MultiDexApplication() {
 
@@ -17,8 +16,6 @@ class MainApplication: MultiDexApplication() {
         super.onCreate()
 
         DB.init(this)
-
-        startService(Intent(this, MusicService::class.java))
 
         if (isMarshmallow()) {
             ShortcutManagerCompat.removeAllDynamicShortcuts(this)

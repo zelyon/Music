@@ -9,6 +9,7 @@ import kotlin.random.nextInt
 
 object MusicPlayer: MediaPlayer() {
 
+    var musicService: MusicService? = null
     var mainViewModel: MainViewModel? = null
     private var lastCurrentPosition = 0
     val playingMusic get() = if (playingPosition in musics.indices && File(musics[playingPosition].path).exists()) musics[playingPosition] else null
@@ -17,6 +18,11 @@ object MusicPlayer: MediaPlayer() {
     var playingPosition = -1
     var isShuffle = false
     var isRepeat = false
+
+    override fun stop() {
+        super.stop()
+        musicService?.updateMetaDatasAndNotifs(true)
+    }
 
     fun playMusics(musics: List<Music>) {
         this.musics = musics.toMutableList()
@@ -27,6 +33,7 @@ object MusicPlayer: MediaPlayer() {
 
     fun addMusics(musics: List<Music>) {
         this.musics.addAll(musics)
+        musicService?.updateMetaDatasAndNotifs()
     }
 
     fun run() {
@@ -48,9 +55,10 @@ object MusicPlayer: MediaPlayer() {
         }
         mainViewModel?.isPlaying?.value = isPlaying
         mainViewModel?.hasPlayingList?.value = isPlaying
+        musicService?.updateMetaDatasAndNotifs()
     }
 
-    fun pauseOrPlay() {
+    fun playOrPause() {
         mainViewModel?.isPlaying?.value = if (isPlaying) {
             lastCurrentPosition = currentPosition
             pause()
@@ -60,11 +68,13 @@ object MusicPlayer: MediaPlayer() {
             start()
             true
         }
+        musicService?.updateMetaDatasAndNotifs()
     }
 
     fun goTo(current: Int) {
         lastCurrentPosition = current
         seekTo(current)
+        musicService?.updateMetaDatasAndNotifs()
     }
 
     fun jumpTo(position: Int) {
@@ -74,7 +84,9 @@ object MusicPlayer: MediaPlayer() {
     }
 
     fun previous() {
-        playingPositions = playingPositions.dropLast(1).toMutableList()
+        if (playingPositions.size > 1) {
+            playingPositions = playingPositions.dropLast(1).toMutableList()
+        }
         playingPosition = playingPositions.last()
         run()
     }

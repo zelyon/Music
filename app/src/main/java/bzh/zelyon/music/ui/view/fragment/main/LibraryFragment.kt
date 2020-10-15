@@ -94,7 +94,7 @@ class LibraryFragment: AbsToolBarFragment(), SearchView.OnQueryTextListener {
         override fun onBindItem(itemView: View, items: MutableList<*>, position: Int) {
             val artist = items[position]
             if (artist is Artist) {
-                itemView.item_artist_imageview_artwork.setImage(artist, absActivity.drawableResToDrawable(R.drawable.ic_artist))
+                itemView.item_artist_imageview_artwork.setImage(artist, absActivity.drawableResToDrawable(R.drawable.ic_artist_item))
                 itemView.item_artist_imageview_artwork.transitionName = artist.getTransitionName()
                 itemView.item_artist_textview_name.text = artist.name
                 itemView.item_artist_textview_nbmusic.text = resources.getQuantityString(R.plurals.item_music_nb, artist.musics.size, artist.musics.size)

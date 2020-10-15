@@ -40,6 +40,11 @@
         <item quantity="other">%d chansons</item>
     </plurals>
 
+    <!-- Notif -->
+    <string name="notif_next">Suivant</string>
+    <string name="notif_previous">Suivant</string>
+    <string name="notif_play_pause">Lecture / Pause</string>
+
     <!-- Popup -->
     <string name="popup_yes">Oui</string>
     <string name="popup_ok">OK</string>

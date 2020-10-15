@@ -1,7 +1,11 @@
 package bzh.zelyon.music.ui.view.activity
 
+import android.content.ComponentName
+import android.content.Context
 import android.content.Intent
+import android.content.ServiceConnection
 import android.os.Bundle
+import android.os.IBinder
 import androidx.core.view.ViewCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.vectordrawable.graphics.drawable.AnimatedVectorDrawableCompat
@@ -17,6 +21,7 @@ import bzh.zelyon.music.ui.view.fragment.main.PlaylistsFragment
 import bzh.zelyon.music.ui.view.viewmodel.MainViewModel
 import bzh.zelyon.music.util.MusicContent
 import bzh.zelyon.music.util.MusicPlayer
+import bzh.zelyon.music.util.MusicService
 import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AbsActivity() {
@@ -31,8 +36,15 @@ class MainActivity : AbsActivity() {
 
     private var currentFABState: MainViewModel.FABState? = null
 
+    private val serviceConnection = object : ServiceConnection {
+        override fun onServiceConnected(name: ComponentName?, service: IBinder?) {}
+        override fun onServiceDisconnected(name: ComponentName?) {}
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        bindService(Intent(this, MusicService::class.java), serviceConnection, Context.BIND_AUTO_CREATE)
 
         ViewCompat.setOnApplyWindowInsetsListener(activity_main_root) { _, insets ->
             insets.consumeSystemWindowInsets()
@@ -53,7 +65,7 @@ class MainActivity : AbsActivity() {
 
         activity_main_fab.setOnClickListener {
             if (getCurrentFragment() == playingFragment) {
-                MusicPlayer.pauseOrPlay()
+                MusicPlayer.playOrPause()
             } else {
                 showFragment(playingFragment)
             }
@@ -76,6 +88,11 @@ class MainActivity : AbsActivity() {
         intent?.let {
             manageIntent(it)
         }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        unbindService(serviceConnection)
     }
 
     override fun onNewIntent(intent: Intent?) {

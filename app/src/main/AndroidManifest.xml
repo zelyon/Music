@@ -7,6 +7,8 @@
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
     <uses-permission android:name="com.android.launcher.permission.INSTALL_SHORTCUT" />
     <uses-permission android:name="android.permission.CALL_PHONE"/>
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
+    <uses-permission android:name="android.permission.BROADCAST_STICKY"/>
 
     <application
         android:name=".ui.view.MainApplication"
@@ -44,12 +46,7 @@
 
         <service
             android:name=".util.MusicService"
-            android:enabled="true"
-            android:exported="true">
-            <intent-filter>
-                <action android:name="android.intent.action.MEDIA_BUTTON" />
-            </intent-filter>
-        </service>
+            android:enabled="true"/>
 
         <receiver android:name=".util.MusicReceiver">
             <intent-filter>
