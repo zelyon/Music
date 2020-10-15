@@ -13,15 +13,27 @@ object MusicPlayer: MediaPlayer() {
     var mainViewModel: MainViewModel? = null
     private var lastCurrentPosition = 0
     val playingMusic get() = if (playingPosition in musics.indices && File(musics[playingPosition].path).exists()) musics[playingPosition] else null
+    val hasPrevious get() = playingPositions.size > 1 && !isRepeat
+    val hasNext get() = (playingPosition < musics.size - 1 || isShuffle) && !isRepeat
     var playingPositions = mutableListOf<Int>()
     var musics = mutableListOf<Music>()
     var playingPosition = -1
     var isShuffle = false
     var isRepeat = false
 
+    override fun start() {
+        super.start()
+        musicService?.updateBroadcastMetadatasNotifs()
+    }
+
+    override fun pause() {
+        super.pause()
+        musicService?.updateBroadcastMetadatasNotifs()
+    }
+
     override fun stop() {
         super.stop()
-        musicService?.updateMetaDatasAndNotifs(true)
+        musicService?.updateBroadcastMetadatasNotifs(true)
     }
 
     fun playMusics(musics: List<Music>) {
@@ -33,7 +45,7 @@ object MusicPlayer: MediaPlayer() {
 
     fun addMusics(musics: List<Music>) {
         this.musics.addAll(musics)
-        musicService?.updateMetaDatasAndNotifs()
+        musicService?.updateBroadcastMetadatasNotifs()
     }
 
     fun run() {
@@ -55,7 +67,6 @@ object MusicPlayer: MediaPlayer() {
         }
         mainViewModel?.isPlaying?.value = isPlaying
         mainViewModel?.hasPlayingList?.value = isPlaying
-        musicService?.updateMetaDatasAndNotifs()
     }
 
     fun playOrPause() {
@@ -68,13 +79,12 @@ object MusicPlayer: MediaPlayer() {
             start()
             true
         }
-        musicService?.updateMetaDatasAndNotifs()
     }
 
     fun goTo(current: Int) {
         lastCurrentPosition = current
         seekTo(current)
-        musicService?.updateMetaDatasAndNotifs()
+        musicService?.updateBroadcastMetadatasNotifs()
     }
 
     fun jumpTo(position: Int) {
@@ -95,6 +105,7 @@ object MusicPlayer: MediaPlayer() {
         playingPosition = when {
             isRepeat -> playingPosition
             isShuffle -> Random.nextInt(musics.indices)
+            playingPosition == musics.size - 1 -> playingPosition
             else -> playingPosition+1
         }
         playingPositions.add(playingPosition)

@@ -46,8 +46,8 @@ class PlayingFragment: AbsToolBarFragment() {
                     fragment_playing_textview_current.text = MusicPlayer.currentPosition.millisecondsToDuration()
                     fragment_playing_seekbar_current.max = MusicPlayer.duration
                     fragment_playing_seekbar_current.progress = MusicPlayer.currentPosition
-                    fragment_playing_imagebutton_previous.isVisible = MusicPlayer.playingPositions.size > 1 && !MusicPlayer.isRepeat
-                    fragment_playing_imagebutton_next.isVisible = (MusicPlayer.playingPosition < MusicPlayer.musics.size - 1 || MusicPlayer.isShuffle) && !MusicPlayer.isRepeat
+                    fragment_playing_imagebutton_previous.isVisible = MusicPlayer.hasPrevious
+                    fragment_playing_imagebutton_next.isVisible = MusicPlayer.hasNext
                     fragment_playing_imagebutton_repeat.alpha = if (MusicPlayer.isRepeat) 1F else 0.5F
                     fragment_playing_imagebutton_shuffle.alpha = if (MusicPlayer.isShuffle) 1F else 0.5F
                     if (playingMusic != MusicPlayer.playingMusic) {

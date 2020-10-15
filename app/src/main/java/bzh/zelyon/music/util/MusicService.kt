@@ -95,7 +95,7 @@ class MusicService: Service() {
 
     override fun onBind(intent: Intent) = MusicBinder()
 
-    fun updateMetaDatasAndNotifs(delete: Boolean = false) {
+    fun updateBroadcastMetadatasNotifs(delete: Boolean = false) {
         if (delete) {
             notificationManager?.cancel(NOTIFICATION_ID)
             stopForeground(true)
@@ -104,12 +104,13 @@ class MusicService: Service() {
                 putExtra(AudioEffect.EXTRA_PACKAGE_NAME, packageName)
             })
             stopSelf()
+        } else {
+            sendBroadcast(Intent(AudioEffect.ACTION_OPEN_AUDIO_EFFECT_CONTROL_SESSION).apply {
+                putExtra(AudioEffect.EXTRA_AUDIO_SESSION, MusicPlayer.audioSessionId)
+                putExtra(AudioEffect.EXTRA_PACKAGE_NAME, packageName)
+                putExtra(AudioEffect.EXTRA_CONTENT_TYPE, AudioEffect.CONTENT_TYPE_MUSIC)
+            })
         }
-        sendBroadcast(Intent(AudioEffect.ACTION_OPEN_AUDIO_EFFECT_CONTROL_SESSION).apply {
-            putExtra(AudioEffect.EXTRA_AUDIO_SESSION, MusicPlayer.audioSessionId)
-            putExtra(AudioEffect.EXTRA_PACKAGE_NAME, packageName)
-            putExtra(AudioEffect.EXTRA_CONTENT_TYPE, AudioEffect.CONTENT_TYPE_MUSIC)
-        })
         mediaSession?.setPlaybackState(
             PlaybackStateCompat.Builder()
                 .setActions(
