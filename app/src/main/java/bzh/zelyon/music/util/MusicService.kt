@@ -104,85 +104,91 @@ class MusicService: Service() {
                 putExtra(AudioEffect.EXTRA_PACKAGE_NAME, packageName)
             })
             stopSelf()
+            mediaSession?.setMetadata(null)
         } else {
             sendBroadcast(Intent(AudioEffect.ACTION_OPEN_AUDIO_EFFECT_CONTROL_SESSION).apply {
                 putExtra(AudioEffect.EXTRA_AUDIO_SESSION, MusicPlayer.audioSessionId)
                 putExtra(AudioEffect.EXTRA_PACKAGE_NAME, packageName)
                 putExtra(AudioEffect.EXTRA_CONTENT_TYPE, AudioEffect.CONTENT_TYPE_MUSIC)
             })
+
+            mediaSession?.setPlaybackState(
+                PlaybackStateCompat.Builder()
+                    .setActions(
+                        PlaybackStateCompat.ACTION_PLAY or
+                                PlaybackStateCompat.ACTION_PAUSE or
+                                PlaybackStateCompat.ACTION_PLAY_PAUSE or
+                                PlaybackStateCompat.ACTION_SKIP_TO_NEXT or
+                                PlaybackStateCompat.ACTION_SKIP_TO_PREVIOUS or
+                                PlaybackStateCompat.ACTION_STOP or
+                                PlaybackStateCompat.ACTION_SEEK_TO)
+                    .setState(if (MusicPlayer.isPlaying) PlaybackStateCompat.STATE_PLAYING else PlaybackStateCompat.STATE_PAUSED, MusicPlayer.currentPosition.toLong(), 1f)
+                    .build())
+
+            MusicPlayer.playingMusic?.let { music ->
+                if (isNougat()) {
+                    Glide.with(this)
+                        .asBitmap()
+                        .load(music)
+                        .into(object : CustomTarget<Bitmap>(){
+                            override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
+                                showNotif(resource)
+                            }
+                            override fun onLoadStarted(placeholder: Drawable?) {
+                                showNotif(BitmapFactory.decodeResource(resources, R.drawable.ic_music_notif))
+                            }
+                            override fun onLoadCleared(placeholder: Drawable?) {}
+                            private fun showNotif(bitmap: Bitmap) {
+                                val notification = NotificationCompat.Builder(this@MusicService, NOTIFICATION_CHANNEL_ID)
+                                    .setSmallIcon(R.drawable.ic_launcher_foreground)
+                                    .setSubText(music.albumName)
+                                    .setLargeIcon(bitmap)
+                                    .setContentIntent(PendingIntent.getActivity(this@MusicService, 0, Intent(this@MusicService, MainActivity::class.java).apply {
+                                        flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
+                                    }, 0))
+                                    .setDeleteIntent(PendingIntent.getService(this@MusicService, 0, Intent(KeyEvent.KEYCODE_MEDIA_CLOSE.toString()).apply {
+                                        component = ComponentName(this@MusicService, MusicService::class.java)
+                                    }, 0))
+                                    .setContentTitle(music.title)
+                                    .setContentText(music.artistName)
+                                    .setOngoing(MusicPlayer.isPlaying)
+                                    .setShowWhen(false)
+                                    .addAction(NotificationCompat.Action(R.drawable.ic_previous_notif, getString(R.string.notif_previous), createPendindIntent(KeyEvent.KEYCODE_MEDIA_PREVIOUS.toString())))
+                                    .addAction(NotificationCompat.Action(if (MusicPlayer.isPlaying) R.drawable.ic_pause_notif else R.drawable.ic_play_notif, getString(R.string.notif_play_pause), createPendindIntent(KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE.toString())))
+                                    .addAction(NotificationCompat.Action(R.drawable.ic_next_notif, getString(R.string.notif_next), createPendindIntent(KeyEvent.KEYCODE_MEDIA_NEXT.toString())))
+                                    .setStyle(androidx.media.app.NotificationCompat.MediaStyle()
+                                        .setMediaSession(mediaSession?.sessionToken)
+                                        .setShowActionsInCompactView(0, 1, 2)
+                                    )
+                                    .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
+                                    .build()
+
+                                val newNotifMode = if (MusicPlayer.isPlaying) NotifMode.FOREGROUND else NotifMode.BACKGROUND
+                                if (notifMode != newNotifMode && newNotifMode == NotifMode.BACKGROUND) {
+                                    stopForeground(false)
+                                }
+                                if (newNotifMode == NotifMode.FOREGROUND) {
+                                    startForeground(NOTIFICATION_ID, notification)
+                                } else if (newNotifMode == NotifMode.BACKGROUND) {
+                                    notificationManager?.notify(NOTIFICATION_ID, notification)
+                                }
+                                notifMode = newNotifMode
+                            }
+                        })
+                }
+                mediaSession?.setMetadata(
+                    MediaMetadataCompat.Builder()
+                        .putString(MediaMetadataCompat.METADATA_KEY_ARTIST, music.artistName)
+                        .putString(MediaMetadataCompat.METADATA_KEY_ALBUM_ARTIST, music.artistName)
+                        .putString(MediaMetadataCompat.METADATA_KEY_ALBUM, music.albumName)
+                        .putString(MediaMetadataCompat.METADATA_KEY_TITLE, music.title)
+                        .putLong(MediaMetadataCompat.METADATA_KEY_DURATION, music.duration.toLong())
+                        .putLong(MediaMetadataCompat.METADATA_KEY_TRACK_NUMBER, MusicPlayer.playingPosition + 1.toLong())
+                        .putLong(MediaMetadataCompat.METADATA_KEY_YEAR, music.year.toLong())
+                        .putBitmap(MediaMetadataCompat.METADATA_KEY_ALBUM_ART, null)
+                        .putLong(MediaMetadataCompat.METADATA_KEY_NUM_TRACKS, MusicPlayer.musics.size.toLong()).build())
+            } ?: mediaSession?.setMetadata(null)
         }
-        mediaSession?.setPlaybackState(
-            PlaybackStateCompat.Builder()
-                .setActions(
-                    PlaybackStateCompat.ACTION_PLAY or
-                            PlaybackStateCompat.ACTION_PAUSE or
-                            PlaybackStateCompat.ACTION_PLAY_PAUSE or
-                            PlaybackStateCompat.ACTION_SKIP_TO_NEXT or
-                            PlaybackStateCompat.ACTION_SKIP_TO_PREVIOUS or
-                            PlaybackStateCompat.ACTION_STOP or
-                            PlaybackStateCompat.ACTION_SEEK_TO)
-                .setState(if (MusicPlayer.isPlaying) PlaybackStateCompat.STATE_PLAYING else PlaybackStateCompat.STATE_PAUSED, MusicPlayer.currentPosition.toLong(), 1f)
-                .build())
-
-        MusicPlayer.playingMusic?.let { music ->
-            if (isNougat()) {
-                Glide.with(this)
-                    .asBitmap()
-                    .load(music)
-                    .into(object : CustomTarget<Bitmap>(){
-                        override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
-                            showNotif(resource)
-                        }
-                        override fun onLoadStarted(placeholder: Drawable?) {
-                            showNotif(BitmapFactory.decodeResource(resources, R.drawable.ic_music_notif))
-                        }
-                        override fun onLoadCleared(placeholder: Drawable?) {}
-                        private fun showNotif(bitmap: Bitmap) {
-                            val builder = NotificationCompat.Builder(this@MusicService, NOTIFICATION_CHANNEL_ID)
-                                .setSmallIcon(R.drawable.ic_launcher_foreground)
-                                .setSubText(music.albumName)
-                                .setLargeIcon(bitmap)
-                                .setContentIntent(PendingIntent.getActivity(this@MusicService, 0, Intent(this@MusicService, MainActivity::class.java).apply {
-                                    flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
-                                }, 0))
-                                .setDeleteIntent(PendingIntent.getService(this@MusicService, 0, Intent(KeyEvent.KEYCODE_MEDIA_CLOSE.toString()).apply {
-                                    component = ComponentName(this@MusicService, MusicService::class.java)
-                                }, 0))
-                                .setContentTitle(music.title)
-                                .setContentText(music.artistName)
-                                .setOngoing(MusicPlayer.isPlaying)
-                                .setShowWhen(false)
-                                .addAction(NotificationCompat.Action(R.drawable.ic_previous_notif, getString(R.string.notif_previous), createPendindIntent(KeyEvent.KEYCODE_MEDIA_PREVIOUS.toString())))
-                                .addAction(NotificationCompat.Action(if (MusicPlayer.isPlaying) R.drawable.ic_pause_notif else R.drawable.ic_play_notif, getString(R.string.notif_play_pause), createPendindIntent(KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE.toString())))
-                                .addAction(NotificationCompat.Action(R.drawable.ic_next_notif, getString(R.string.notif_next), createPendindIntent(KeyEvent.KEYCODE_MEDIA_NEXT.toString())))
-                                .setStyle(androidx.media.app.NotificationCompat.MediaStyle().setMediaSession(mediaSession?.sessionToken).setShowActionsInCompactView(0, 1, 2))
-                                .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
-
-                            val newNotifMode = if (MusicPlayer.isPlaying) NotifMode.FOREGROUND else NotifMode.BACKGROUND
-                            if (notifMode != newNotifMode && newNotifMode == NotifMode.BACKGROUND) {
-                                stopForeground(false)
-                            }
-                            if (newNotifMode == NotifMode.FOREGROUND) {
-                                startForeground(NOTIFICATION_ID, builder.build())
-                            } else if (newNotifMode == NotifMode.BACKGROUND) {
-                                notificationManager?.notify(NOTIFICATION_ID, builder.build())
-                            }
-                            notifMode = newNotifMode
-                        }
-                    })
-            }
-            mediaSession?.setMetadata(
-                MediaMetadataCompat.Builder()
-                    .putString(MediaMetadataCompat.METADATA_KEY_ARTIST, music.artistName)
-                    .putString(MediaMetadataCompat.METADATA_KEY_ALBUM_ARTIST, music.artistName)
-                    .putString(MediaMetadataCompat.METADATA_KEY_ALBUM, music.albumName)
-                    .putString(MediaMetadataCompat.METADATA_KEY_TITLE, music.title)
-                    .putLong(MediaMetadataCompat.METADATA_KEY_DURATION, music.duration.toLong())
-                    .putLong(MediaMetadataCompat.METADATA_KEY_TRACK_NUMBER, MusicPlayer.playingPosition + 1.toLong())
-                    .putLong(MediaMetadataCompat.METADATA_KEY_YEAR, music.year.toLong())
-                    .putBitmap(MediaMetadataCompat.METADATA_KEY_ALBUM_ART, null)
-                    .putLong(MediaMetadataCompat.METADATA_KEY_NUM_TRACKS, MusicPlayer.musics.size.toLong()).build())
-        } ?: mediaSession?.setMetadata(null)
     }
 
     private fun createPendindIntent(action: String) = PendingIntent.getService(this, 0, Intent(action).apply {
