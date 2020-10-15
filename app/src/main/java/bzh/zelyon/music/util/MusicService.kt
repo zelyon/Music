@@ -19,7 +19,6 @@ import android.support.v4.media.session.PlaybackStateCompat
 import android.view.KeyEvent
 import androidx.core.app.NotificationCompat
 import bzh.zelyon.lib.extension.isNougat
-import bzh.zelyon.lib.extension.isOreo
 import bzh.zelyon.music.R
 import bzh.zelyon.music.ui.view.activity.MainActivity
 import com.bumptech.glide.Glide

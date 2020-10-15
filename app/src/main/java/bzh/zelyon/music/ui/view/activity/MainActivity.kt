@@ -37,14 +37,20 @@ class MainActivity : AbsActivity() {
     private var currentFABState: MainViewModel.FABState? = null
 
     private val serviceConnection = object : ServiceConnection {
-        override fun onServiceConnected(name: ComponentName?, service: IBinder?) {}
+        override fun onServiceConnected(name: ComponentName?, service: IBinder?) {
+            if (service is MusicService.MusicBinder) {
+                service.service.updateMetaDatasAndNotifs(false)
+            }
+        }
         override fun onServiceDisconnected(name: ComponentName?) {}
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        bindService(Intent(this, MusicService::class.java), serviceConnection, Context.BIND_AUTO_CREATE)
+        val musicServiceIntent = Intent(this, MusicService::class.java)
+        startService(musicServiceIntent)
+        bindService(musicServiceIntent, serviceConnection, Context.BIND_AUTO_CREATE)
 
         ViewCompat.setOnApplyWindowInsetsListener(activity_main_root) { _, insets ->
             insets.consumeSystemWindowInsets()
