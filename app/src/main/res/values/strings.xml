@@ -46,9 +46,11 @@
     <string name="notif_play_pause">Lecture / Pause</string>
 
     <!-- Popup -->
+    <string name="popup_permission_title">Autoriser l\'accès aux fichiers</string>
+    <string name="popup_permission_message">Afin de supprimer un fichier, nous avons besoin de votre autorisation</string>
+    <string name="popup_delete_message">Voulez-vous vraiment supprimer le fichier musique %s ?</string>
     <string name="popup_yes">Oui</string>
     <string name="popup_ok">OK</string>
-    <string name="popup_delete_message">Voulez-vous vraiment supprimer le fichier musique %s ?</string>
     <string name="popup_name">Nom</string>
     <string name="popup_rename">Renommer</string>
     <string name="popup_play">Lecture</string>
