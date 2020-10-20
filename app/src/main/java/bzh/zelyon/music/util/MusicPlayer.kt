@@ -70,7 +70,7 @@ object MusicPlayer: MediaPlayer() {
     }
 
     fun playOrPause() {
-        mainViewModel?.isPlaying?.value = if (isPlaying) {
+        val isPlaying = if (isPlaying) {
             lastCurrentPosition = currentPosition
             pause()
             false
@@ -79,6 +79,7 @@ object MusicPlayer: MediaPlayer() {
             start()
             true
         }
+        mainViewModel?.isPlaying?.value = isPlaying
     }
 
     fun goTo(current: Int) {
