@@ -44,6 +44,11 @@
             </intent-filter>
         </activity>
 
+        <activity
+            android:name=".ui.view.activity.ShortcutActivity"
+            android:launchMode="singleInstance"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar"/>
+
         <service
             android:name=".util.MusicService"
             android:enabled="true"/>

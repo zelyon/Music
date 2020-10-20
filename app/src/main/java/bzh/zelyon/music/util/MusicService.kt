@@ -21,6 +21,7 @@ import androidx.core.app.NotificationCompat
 import bzh.zelyon.lib.extension.isNougat
 import bzh.zelyon.music.R
 import bzh.zelyon.music.ui.view.activity.MainActivity
+import bzh.zelyon.music.ui.view.activity.ShortcutActivity
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
@@ -76,11 +77,15 @@ class MusicService: Service() {
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        when(intent?.action?.toInt()) {
-            KeyEvent.KEYCODE_MEDIA_STOP, KeyEvent.KEYCODE_MEDIA_CLOSE -> MusicPlayer.stop()
-            KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE, KeyEvent.KEYCODE_MEDIA_PLAY, KeyEvent.KEYCODE_MEDIA_PAUSE -> MusicPlayer.playOrPause()
-            KeyEvent.KEYCODE_MEDIA_PREVIOUS -> MusicPlayer.previous()
-            KeyEvent.KEYCODE_MEDIA_NEXT -> MusicPlayer.next()
+        if (intent?.action == ShortcutActivity.SHORTCUT_SHUFFLE) {
+            MusicPlayer.playMusics(MusicContent.getMusics(this).shuffled())
+        } else {
+            when(intent?.action?.toInt()) {
+                KeyEvent.KEYCODE_MEDIA_STOP, KeyEvent.KEYCODE_MEDIA_CLOSE -> MusicPlayer.stop()
+                KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE, KeyEvent.KEYCODE_MEDIA_PLAY, KeyEvent.KEYCODE_MEDIA_PAUSE -> MusicPlayer.playOrPause()
+                KeyEvent.KEYCODE_MEDIA_PREVIOUS -> MusicPlayer.previous()
+                KeyEvent.KEYCODE_MEDIA_NEXT -> MusicPlayer.next()
+            }
         }
         return START_NOT_STICKY
     }

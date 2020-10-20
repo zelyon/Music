@@ -26,10 +26,6 @@ import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AbsActivity() {
 
-    companion object {
-        const val SHORTCUT_SHUFFLE = "SHORTCUT_SHUFFLE"
-    }
-
     private val libraryFragment = LibraryFragment()
     private val playlistsFragment = PlaylistsFragment()
     private val playingFragment = PlayingFragment()
@@ -113,13 +109,9 @@ class MainActivity : AbsActivity() {
     override fun getFragmentContainerId() = R.id.activity_main_container
 
     private fun manageIntent(intent: Intent) {
-        if (intent.getBooleanExtra(SHORTCUT_SHUFFLE, false)) {
-            MusicPlayer.playMusics(MusicContent.getMusics(this).shuffled())
-        } else {
-            intent.data?.let { uri ->
-                MusicContent.getMusicsFromUri(this, uri)?.let { musics ->
-                    MusicPlayer.playMusics(musics)
-                }
+        intent.data?.let { uri ->
+            MusicContent.getMusicsFromUri(this, uri)?.let { musics ->
+                MusicPlayer.playMusics(musics)
             }
         }
     }
