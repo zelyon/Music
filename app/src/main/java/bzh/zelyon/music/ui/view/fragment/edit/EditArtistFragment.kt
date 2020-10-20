@@ -55,26 +55,25 @@ class EditArtistFragment: AbsEditFragment<Artist>() {
         }.show()
     }
 
-    override fun onSave() {
+    override fun onSave() = try {
         paths.forEach {
             val audioFile = AudioFileIO.read(File(it))
             val tag = audioFile?.tagOrCreateAndSetDefault
-            try {
-                tag?.setField(FieldKey.ARTIST, fragment_edit_artist_inputview_name.text)
-                if (deleteCurrentArtwork) {
-                    tag?.deleteArtworkField()
-                }
-                newArtwork?.let { artwork ->
-                    tag?.setField(artwork)
-                }
-                audioFile?.commit()
-            } catch (e: Exception) {
-                absActivity.showSnackbar(getString(R.string.fragment_edit_snackbar_failed))
+            tag?.setField(FieldKey.ARTIST, fragment_edit_artist_inputview_name.text)
+            if (deleteCurrentArtwork) {
+                tag?.deleteArtworkField()
             }
+            newArtwork?.let { artwork ->
+                tag?.setField(artwork)
+            }
+            audioFile?.commit()
         }
         MediaScannerConnection.scanFile(absActivity, paths.toTypedArray(), null) { _, _ -> back() }
+        true
+    } catch (e: Exception) {
+        absActivity.showSnackbar(getString(R.string.fragment_edit_snackbar_failed))
+        false
     }
-
     companion object {
 
         fun getInstance(artist: Artist, artwork: Bitmap?) = EditArtistFragment().apply {

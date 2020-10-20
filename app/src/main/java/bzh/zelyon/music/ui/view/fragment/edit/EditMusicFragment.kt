@@ -94,26 +94,25 @@ class EditMusicFragment: AbsEditFragment<Music>() {
         }.show()
     }
 
-    override fun onSave() {
-        try {
-            tag?.setField(FieldKey.TITLE, fragment_edit_music_inputview_title.text)
-            tag?.setField(FieldKey.ARTIST, fragment_edit_music_inputview_artist.selectedChoice?.value.toString())
-            tag?.setField(FieldKey.ALBUM, fragment_edit_music_inputview_album.selectedChoice?.value.toString())
-            tag?.setField(FieldKey.TRACK, fragment_edit_music_inputview_track.number.toString())
-            tag?.setField(FieldKey.YEAR, fragment_edit_music_inputview_year.number.toString())
-            tag?.setField(FieldKey.GENRE, fragment_edit_music_inputview_genre.selectedChoice?.value.toString())
-            if (deleteCurrentArtwork) {
-                tag?.deleteArtworkField()
-            }
-            newArtwork?.let { artwork ->
-                tag?.setField(artwork)
-            }
-            audioFile?.commit()
-        } catch (e: Exception) {
-            absActivity.showSnackbar(getString(R.string.fragment_edit_snackbar_failed))
-        } finally {
-            MediaScannerConnection.scanFile(absActivity, arrayOf(absModel.path), null) { _, _ -> back() }
+    override fun onSave() = try {
+        tag?.setField(FieldKey.TITLE, fragment_edit_music_inputview_title.text)
+        tag?.setField(FieldKey.ARTIST, fragment_edit_music_inputview_artist.selectedChoice?.value.toString())
+        tag?.setField(FieldKey.ALBUM, fragment_edit_music_inputview_album.selectedChoice?.value.toString())
+        tag?.setField(FieldKey.TRACK, fragment_edit_music_inputview_track.number.toString())
+        tag?.setField(FieldKey.YEAR, fragment_edit_music_inputview_year.number.toString())
+        tag?.setField(FieldKey.GENRE, fragment_edit_music_inputview_genre.selectedChoice?.value.toString())
+        if (deleteCurrentArtwork) {
+            tag?.deleteArtworkField()
         }
+        newArtwork?.let { artwork ->
+            tag?.setField(artwork)
+        }
+        audioFile?.commit()
+        MediaScannerConnection.scanFile(absActivity, arrayOf(absModel.path), null) { _, _ -> back() }
+        true
+    } catch (e: Exception) {
+        absActivity.showSnackbar(getString(R.string.fragment_edit_snackbar_failed))
+        false
     }
 
     override fun getFormLayoutId() = R.layout.fragment_edit_music

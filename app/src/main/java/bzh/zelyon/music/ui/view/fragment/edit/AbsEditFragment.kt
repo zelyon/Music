@@ -5,7 +5,9 @@ import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
+import android.net.Uri
 import android.os.Bundle
+import android.provider.Settings
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -18,6 +20,7 @@ import bzh.zelyon.lib.extension.setImage
 import bzh.zelyon.lib.ui.component.InputView
 import bzh.zelyon.lib.ui.component.Popup
 import bzh.zelyon.lib.ui.view.fragment.AbsToolBarFragment
+import bzh.zelyon.music.BuildConfig
 import bzh.zelyon.music.R
 import bzh.zelyon.music.db.model.AbsModel
 import bzh.zelyon.music.ui.view.viewmodel.EditViewModel
@@ -71,7 +74,20 @@ abstract class AbsEditFragment<T: AbsModel>: AbsToolBarFragment() {
         super.onIdClick(id)
         when (id) {
             R.id.fragment_edit_info -> Popup(absActivity, message = infosFromLastFM).showBottom()
-            R.id.fragment_edit_save -> if (inputViews.all { it.checkValidity() }) onSave()
+            R.id.fragment_edit_save -> {
+                if (inputViews.all { it.checkValidity() }) {
+                    if (!onSave()) {
+                        Popup(absActivity,
+                            title = getString(R.string.popup_permission_title),
+                            message = getString(R.string.popup_permission_message),
+                            positiveText = getString(R.string.popup_ok),
+                            positiveClick = {
+                                startActivity(Intent(Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION, Uri.parse("package:" + BuildConfig.APPLICATION_ID)))
+                            })
+                            .show()
+                    }
+                }
+            }
             R.id.fragment_edit_imageview_artwork -> onClickArtwork()
         }
     }
@@ -80,7 +96,7 @@ abstract class AbsEditFragment<T: AbsModel>: AbsToolBarFragment() {
 
     abstract fun onClickArtwork()
 
-    abstract fun onSave()
+    abstract fun onSave(): Boolean
 
     fun getImageOnDevice() {
         absActivity.ifPermissions(Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE) {
