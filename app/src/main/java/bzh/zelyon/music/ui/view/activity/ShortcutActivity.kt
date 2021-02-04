@@ -8,12 +8,14 @@ import bzh.zelyon.music.util.MusicService
 class ShortcutActivity : AppCompatActivity() {
 
     companion object {
+        const val SHORTCUT = "SHORTCUT"
         const val SHORTCUT_SHUFFLE = "SHORTCUT_SHUFFLE"
+        const val SHORTCUT_LAST = "SHORTCUT_LAST"
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        startService(Intent(this, MusicService::class.java).setAction(SHORTCUT_SHUFFLE))
+        startService(Intent(this, MusicService::class.java).setAction(intent.getStringExtra(SHORTCUT)))
         finish()
     }
 }

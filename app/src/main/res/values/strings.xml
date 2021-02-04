@@ -1,5 +1,9 @@
 <resources>
 
+    <!-- Shortcut -->
+    <string name="shortcut_shuffle">Lecture aléatoire</string>
+    <string name="shortcut_last">Dernière lecture </string>
+
     <!-- Main Activity -->
     <string name="app_name">Music</string>
     <string name="activity_main_menu_library">Bibliothèque</string>

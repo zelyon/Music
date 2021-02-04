@@ -1,6 +1,7 @@
 package bzh.zelyon.music.util
 
 import android.media.MediaPlayer
+import bzh.zelyon.music.db.DB
 import bzh.zelyon.music.db.model.Music
 import bzh.zelyon.music.ui.view.viewmodel.MainViewModel
 import java.io.File
@@ -41,11 +42,14 @@ object MusicPlayer: MediaPlayer() {
         playingPosition = 0
         playingPositions.add(playingPosition)
         run()
+        DB.getMusicDao().deleteAll()
+        DB.getMusicDao().insert(musics)
     }
 
     fun addMusics(musics: List<Music>) {
         this.musics.addAll(musics)
         musicService?.updateBroadcastMetadatasNotifs()
+        DB.getMusicDao().insert(musics)
     }
 
     fun run() {

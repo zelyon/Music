@@ -4,6 +4,8 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import bzh.zelyon.music.db.dao.MusicDao
+import bzh.zelyon.music.db.dao.PlaylistDao
 import bzh.zelyon.music.db.model.Music
 import bzh.zelyon.music.db.model.Playlist
 
@@ -19,7 +21,9 @@ abstract class DB: RoomDatabase() {
         }
 
         fun getPlaylistDao() = db.getPlaylistDao()
+        fun getMusicDao() = db.getMusicDao()
     }
 
     abstract fun getPlaylistDao(): PlaylistDao
+    abstract fun getMusicDao(): MusicDao
 }

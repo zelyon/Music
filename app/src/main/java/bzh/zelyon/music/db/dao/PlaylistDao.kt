@@ -1,4 +1,4 @@
-package bzh.zelyon.music.db
+package bzh.zelyon.music.db.dao
 
 import androidx.lifecycle.LiveData
 import androidx.room.*

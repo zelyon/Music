@@ -20,6 +20,7 @@ import android.view.KeyEvent
 import androidx.core.app.NotificationCompat
 import bzh.zelyon.lib.extension.isNougat
 import bzh.zelyon.music.R
+import bzh.zelyon.music.db.DB
 import bzh.zelyon.music.ui.view.activity.MainActivity
 import bzh.zelyon.music.ui.view.activity.ShortcutActivity
 import com.bumptech.glide.Glide
@@ -28,7 +29,7 @@ import com.bumptech.glide.request.transition.Transition
 
 class MusicService: Service() {
 
-    private var notifMode = NotifMode.BACKGROUND
+    private var notifInBackground = true
     private var notificationManager: NotificationManager? = null
     private var mediaSession: MediaSessionCompat? = null
 
@@ -66,10 +67,11 @@ class MusicService: Service() {
             notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 val notificationChannel = notificationManager?.getNotificationChannel(NOTIFICATION_CHANNEL_ID) ?: NotificationChannel(NOTIFICATION_CHANNEL_ID, getString(R.string.app_name), NotificationManager.IMPORTANCE_LOW)
-                notificationChannel.description = getString(R.string.app_name)
-                notificationChannel.enableLights(false)
-                notificationChannel.enableVibration(false)
-                notificationManager?.createNotificationChannel(notificationChannel)
+                notificationManager?.createNotificationChannel(notificationChannel.apply {
+                    description = getString(R.string.app_name)
+                    enableLights(false)
+                    enableVibration(false)
+                })
             }
         }
         mediaSession?.isActive = true
@@ -77,10 +79,10 @@ class MusicService: Service() {
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        if (intent?.action == ShortcutActivity.SHORTCUT_SHUFFLE) {
-            MusicPlayer.playMusics(MusicContent.getMusics(this).shuffled())
-        } else {
-            when(intent?.action?.toInt()) {
+        when (intent?.action) {
+            ShortcutActivity.SHORTCUT_SHUFFLE -> MusicPlayer.playMusics(MusicContent.getMusics(this).shuffled())
+            ShortcutActivity.SHORTCUT_LAST -> MusicPlayer.playMusics(DB.getMusicDao().getAll())
+            else -> when(intent?.action?.toInt()) {
                 KeyEvent.KEYCODE_MEDIA_STOP, KeyEvent.KEYCODE_MEDIA_CLOSE -> MusicPlayer.stop()
                 KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE, KeyEvent.KEYCODE_MEDIA_PLAY, KeyEvent.KEYCODE_MEDIA_PAUSE -> MusicPlayer.playOrPause()
                 KeyEvent.KEYCODE_MEDIA_PREVIOUS -> MusicPlayer.previous()
@@ -168,16 +170,16 @@ class MusicService: Service() {
                                     .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
                                     .build()
 
-                                val newNotifMode = if (MusicPlayer.isPlaying) NotifMode.FOREGROUND else NotifMode.BACKGROUND
-                                if (notifMode != newNotifMode && newNotifMode == NotifMode.BACKGROUND) {
+                                val newNotifInBackground = !MusicPlayer.isPlaying
+                                if (notifInBackground != newNotifInBackground && newNotifInBackground) {
                                     stopForeground(false)
                                 }
-                                if (newNotifMode == NotifMode.FOREGROUND) {
-                                    startForeground(NOTIFICATION_ID, notification)
-                                } else if (newNotifMode == NotifMode.BACKGROUND) {
+                                if (newNotifInBackground) {
                                     notificationManager?.notify(NOTIFICATION_ID, notification)
+                                } else {
+                                    startForeground(NOTIFICATION_ID, notification)
                                 }
-                                notifMode = newNotifMode
+                                notifInBackground = newNotifInBackground
                             }
                         })
                 }
@@ -204,10 +206,8 @@ class MusicService: Service() {
         val service: MusicService get() = this@MusicService
     }
 
-    enum class NotifMode {FOREGROUND, BACKGROUND}
-
     companion object {
-        private const val NOTIFICATION_ID = 1
+        private const val NOTIFICATION_ID = 42
         private const val NOTIFICATION_CHANNEL_ID = "music_notification"
     }
 }
