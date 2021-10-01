@@ -111,7 +111,7 @@ object MusicPlayer: MediaPlayer() {
             isRepeat -> playingPosition
             isShuffle -> Random.nextInt(musics.indices)
             playingPosition == musics.size - 1 -> playingPosition
-            else -> playingPosition+1
+            else -> playingPosition + 1
         }
         playingPositions.add(playingPosition)
         run()

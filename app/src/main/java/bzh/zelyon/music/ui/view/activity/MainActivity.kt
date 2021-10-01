@@ -52,7 +52,7 @@ class MainActivity : AbsActivity() {
             insets.consumeSystemWindowInsets()
         }
 
-        val mainViewModel= ViewModelProvider(this).get(MainViewModel::class.java)
+        val mainViewModel = ViewModelProvider(this).get(MainViewModel::class.java)
         mainViewModel.currentFragment.observe(this) {
             updateNavigationBar(it)
         }

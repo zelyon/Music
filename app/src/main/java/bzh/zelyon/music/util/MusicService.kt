@@ -41,9 +41,7 @@ class MusicService: Service() {
         super.onCreate()
         MusicPlayer.musicService = this
         val mediaButtonReceiverComponentName = ComponentName(applicationContext, MusicReceiver::class.java)
-        val mediaButtonReceiverPendingIntent = PendingIntent.getBroadcast(applicationContext, 0, Intent(Intent.ACTION_MEDIA_BUTTON).apply {
-            component = mediaButtonReceiverComponentName
-        }, 0)
+        val mediaButtonReceiverPendingIntent = PendingIntent.getBroadcast(applicationContext, 0, Intent(Intent.ACTION_MEDIA_BUTTON).setComponent(mediaButtonReceiverComponentName), 0)
         mediaSession = MediaSessionCompat(this, "Music", mediaButtonReceiverComponentName, mediaButtonReceiverPendingIntent)
         mediaSession?.setCallback(object : MediaSessionCompat.Callback() {
             override fun onPlay() {
@@ -125,8 +123,7 @@ class MusicService: Service() {
 
             mediaSession?.setPlaybackState(
                 PlaybackStateCompat.Builder()
-                    .setActions(
-                        PlaybackStateCompat.ACTION_PLAY or
+                    .setActions(PlaybackStateCompat.ACTION_PLAY or
                                 PlaybackStateCompat.ACTION_PAUSE or
                                 PlaybackStateCompat.ACTION_PLAY_PAUSE or
                                 PlaybackStateCompat.ACTION_SKIP_TO_NEXT or
