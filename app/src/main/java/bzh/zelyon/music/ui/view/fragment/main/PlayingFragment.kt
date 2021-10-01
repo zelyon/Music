@@ -108,7 +108,7 @@ class PlayingFragment: AbsToolBarFragment() {
                 itemView.item_music_imageview_artwork.alpha = alpha
                 itemView.item_music_textview_title.alpha = alpha
                 itemView.item_music_textview_infos.alpha = alpha
-                itemView.item_music_imageview_artwork.setImage(music, absActivity.drawableResToDrawable(R.drawable.ic_music_item))
+                itemView.item_music_imageview_artwork.setImage(music, absActivity.drawableResToDrawable(R.drawable.ic_item_music))
                 itemView.item_music_imageview_artwork.transitionName = music.id.toString()
                 itemView.item_music_textview_title.text = music.title
                 itemView.item_music_textview_title.typeface = typeface
@@ -119,7 +119,7 @@ class PlayingFragment: AbsToolBarFragment() {
                     duration = true
                 )
                 itemView.item_music_textview_infos.typeface = typeface
-                itemView.item_music_imagebutton.setImageResource(R.drawable.ic_drag)
+                itemView.item_music_imagebutton.setImageResource(R.drawable.ic_item_drag)
             }
         }
         override fun onItemClick(itemView: View, items: MutableList<*>, position: Int) {

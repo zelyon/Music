@@ -22,7 +22,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:scaleType="centerCrop"
-                    app:srcCompat="@drawable/ic_artist_item" />
+                    app:srcCompat="@drawable/ic_item_artist" />
         </bzh.zelyon.lib.ui.component.SquareView>
 
         <androidx.appcompat.widget.AppCompatImageButton
@@ -35,7 +35,7 @@
                 android:background="?attr/selectableItemBackgroundBorderless"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/item_artist_squareview"
-                app:srcCompat="@drawable/ic_more" />
+                app:srcCompat="@drawable/ic_item_more" />
 
         <TextView
                 android:id="@+id/item_artist_textview_name"

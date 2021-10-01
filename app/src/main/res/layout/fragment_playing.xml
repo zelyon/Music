@@ -35,7 +35,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
-        android:background="@drawable/gradient_controler">
+        android:background="@drawable/gradient_control">
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/fragment_playing_textview_current"
@@ -77,7 +77,7 @@
             app:layout_constraintBottom_toBottomOf="@+id/fragment_playing_fab_invisible"
             app:layout_constraintEnd_toStartOf="@+id/fragment_playing_fab_invisible"
             app:layout_constraintTop_toTopOf="@+id/fragment_playing_fab_invisible"
-            app:srcCompat="@drawable/ic_previous" />
+            app:srcCompat="@drawable/ic_control_previous" />
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/fragment_playing_fab_invisible"
@@ -100,7 +100,7 @@
             app:layout_constraintBottom_toBottomOf="@+id/fragment_playing_fab_invisible"
             app:layout_constraintStart_toEndOf="@+id/fragment_playing_fab_invisible"
             app:layout_constraintTop_toTopOf="@+id/fragment_playing_fab_invisible"
-            app:srcCompat="@drawable/ic_next" />
+            app:srcCompat="@drawable/ic_control_next" />
 
         <androidx.appcompat.widget.AppCompatImageButton
             android:id="@+id/fragment_playing_imagebutton_shuffle"
@@ -112,7 +112,7 @@
             app:layout_constraintBottom_toBottomOf="@+id/fragment_playing_imagebutton_next"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@+id/fragment_playing_imagebutton_next"
-            app:srcCompat="@drawable/ic_shuffle" />
+            app:srcCompat="@drawable/ic_control_shuffle" />
 
         <androidx.appcompat.widget.AppCompatImageButton
             android:id="@+id/fragment_playing_imagebutton_repeat"
@@ -124,7 +124,7 @@
             app:layout_constraintBottom_toBottomOf="@+id/fragment_playing_imagebutton_previous"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="@+id/fragment_playing_imagebutton_previous"
-            app:srcCompat="@drawable/ic_repeat" />
+            app:srcCompat="@drawable/ic_control_repeat" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

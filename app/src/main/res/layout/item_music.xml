@@ -22,7 +22,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:scaleType="centerCrop"
-            app:srcCompat="@drawable/ic_music_item" />
+            app:srcCompat="@drawable/ic_item_music" />
     </com.google.android.material.card.MaterialCardView>
 
     <androidx.appcompat.widget.AppCompatImageButton
@@ -34,7 +34,7 @@
         android:layout_marginBottom="8dp"
         android:alpha="0.5"
         android:background="?attr/selectableItemBackgroundBorderless"
-        android:src="@drawable/ic_more"
+        android:src="@drawable/ic_item_more"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />

@@ -5,12 +5,12 @@
     <item
         android:id="@+id/activity_main_library"
         android:title="@string/activity_main_menu_library"
-        android:icon="@drawable/ic_library"
+        android:icon="@drawable/ic_menu_tab_library"
         app:showAsAction="always"/>
 
     <item
         android:id="@+id/activity_main_playlists"
         android:title="@string/activity_main_menu_playlists"
-        android:icon="@drawable/ic_playlist"
+        android:icon="@drawable/ic_menu_tab_playlist"
         app:showAsAction="ifRoom"/>
 </menu>

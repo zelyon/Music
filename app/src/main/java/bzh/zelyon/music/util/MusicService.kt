@@ -9,7 +9,9 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.graphics.Canvas
 import android.graphics.drawable.Drawable
+import android.graphics.drawable.VectorDrawable
 import android.media.audiofx.AudioEffect
 import android.os.Binder
 import android.os.Build
@@ -18,6 +20,7 @@ import android.support.v4.media.session.MediaSessionCompat
 import android.support.v4.media.session.PlaybackStateCompat
 import android.view.KeyEvent
 import androidx.core.app.NotificationCompat
+import androidx.core.content.ContextCompat
 import bzh.zelyon.lib.extension.isNougat
 import bzh.zelyon.music.R
 import bzh.zelyon.music.db.DB
@@ -26,6 +29,7 @@ import bzh.zelyon.music.ui.view.activity.ShortcutActivity
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
+
 
 class MusicService: Service() {
 
@@ -142,7 +146,12 @@ class MusicService: Service() {
                                 showNotif(resource)
                             }
                             override fun onLoadStarted(placeholder: Drawable?) {
-                                showNotif(BitmapFactory.decodeResource(resources, R.drawable.ic_music_notif))
+                                val drawable = ContextCompat.getDrawable(this@MusicService, R.drawable.ic_notif_music) as VectorDrawable
+                                val bitmap = Bitmap.createBitmap(drawable.intrinsicWidth, drawable.intrinsicHeight, Bitmap.Config.ARGB_8888)
+                                val canvas = Canvas(bitmap)
+                                drawable.setBounds(0, 0, canvas.width, canvas.height)
+                                drawable.draw(canvas)
+                                showNotif(bitmap)
                             }
                             override fun onLoadCleared(placeholder: Drawable?) {}
                             private fun showNotif(bitmap: Bitmap) {
@@ -160,9 +169,9 @@ class MusicService: Service() {
                                     .setContentText(music.artistName)
                                     .setOngoing(MusicPlayer.isPlaying)
                                     .setShowWhen(false)
-                                    .addAction(NotificationCompat.Action(R.drawable.ic_previous_notif, getString(R.string.notif_previous), createPendindIntent(KeyEvent.KEYCODE_MEDIA_PREVIOUS.toString())))
-                                    .addAction(NotificationCompat.Action(if (MusicPlayer.isPlaying) R.drawable.ic_pause_notif else R.drawable.ic_play_notif, getString(R.string.notif_play_pause), createPendindIntent(KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE.toString())))
-                                    .addAction(NotificationCompat.Action(R.drawable.ic_next_notif, getString(R.string.notif_next), createPendindIntent(KeyEvent.KEYCODE_MEDIA_NEXT.toString())))
+                                    .addAction(NotificationCompat.Action(R.drawable.ic_notif_previous, getString(R.string.notif_previous), createPendindIntent(KeyEvent.KEYCODE_MEDIA_PREVIOUS.toString())))
+                                    .addAction(NotificationCompat.Action(if (MusicPlayer.isPlaying) R.drawable.ic_notif_pause else R.drawable.ic_notif_play, getString(R.string.notif_play_pause), createPendindIntent(KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE.toString())))
+                                    .addAction(NotificationCompat.Action(R.drawable.ic_notif_next, getString(R.string.notif_next), createPendindIntent(KeyEvent.KEYCODE_MEDIA_NEXT.toString())))
                                     .setStyle(androidx.media.app.NotificationCompat.MediaStyle()
                                         .setMediaSession(mediaSession?.sessionToken)
                                         .setShowActionsInCompactView(0, 1, 2)

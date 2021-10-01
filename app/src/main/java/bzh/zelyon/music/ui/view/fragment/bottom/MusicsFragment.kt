@@ -49,7 +49,7 @@ class MusicsFragment private constructor(): AbsToolBarBottomSheetFragment() {
         override fun onBindItem(itemView: View, items: MutableList<*>, position: Int) {
             val music = items[position]
             if (music is Music) {
-                itemView.item_music_imageview_artwork.setImage(music, absActivity.drawableResToDrawable(R.drawable.ic_music_item))
+                itemView.item_music_imageview_artwork.setImage(music, absActivity.drawableResToDrawable(R.drawable.ic_item_music))
                 itemView.item_music_imageview_artwork.transitionName = music.getTransitionName()
                 itemView.item_music_textview_title.text = music.title
                 itemView.item_music_textview_infos.text = music.getInfos(
@@ -58,7 +58,7 @@ class MusicsFragment private constructor(): AbsToolBarBottomSheetFragment() {
                     album = true,
                     duration = true
                 )
-                itemView.item_music_imagebutton.setImageResource(R.drawable.ic_more)
+                itemView.item_music_imagebutton.setImageResource(R.drawable.ic_item_more)
                 itemView.item_music_imagebutton.setOnClickListener { onItemLongClick(itemView, items, position) }
             }
         }

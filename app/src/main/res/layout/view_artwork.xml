@@ -18,7 +18,7 @@
             <ImageView
                 android:layout_width="match_parent"
                 android:layout_height="48dp"
-                app:srcCompat="@drawable/ic_folder"/>
+                app:srcCompat="@drawable/ic_artwork_folder"/>
 
             <TextView
                 android:layout_width="match_parent"
@@ -43,7 +43,7 @@
             <ImageView
                 android:layout_width="match_parent"
                 android:layout_height="48dp"
-                app:srcCompat="@drawable/ic_download"/>
+                app:srcCompat="@drawable/ic_artwork_download"/>
 
             <TextView
                 android:layout_width="match_parent"
@@ -68,7 +68,7 @@
             <ImageView
                 android:layout_width="match_parent"
                 android:layout_height="48dp"
-                app:srcCompat="@drawable/ic_delete"/>
+                app:srcCompat="@drawable/ic_artwork_delete"/>
 
             <TextView
                 android:layout_width="match_parent"

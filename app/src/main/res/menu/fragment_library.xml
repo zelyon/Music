@@ -5,6 +5,6 @@
     <item
             android:id="@+id/fragment_library_shuffle"
             android:title="@string/fragment_library_menu_shuffle"
-            android:icon="@drawable/ic_shuffle"
+            android:icon="@drawable/ic_menu_shuffle"
             app:showAsAction="always"/>
 </menu>

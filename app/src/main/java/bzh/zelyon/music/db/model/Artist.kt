@@ -9,7 +9,7 @@ data class Artist(
 
     override fun getDeclaration() = name
 
-    override fun getPlaceholderId() = R.drawable.ic_artist_detail
+    override fun getPlaceholderId() = R.drawable.ic_detail_artist
 
     override fun getTransitionName() = id.toString()
 }
