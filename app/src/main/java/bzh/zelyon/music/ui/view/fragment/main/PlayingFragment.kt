@@ -7,10 +7,13 @@ import android.view.View
 import android.widget.SeekBar
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
-import bzh.zelyon.lib.extension.*
+import bzh.zelyon.lib.extension.drawableResToDrawable
+import bzh.zelyon.lib.extension.getStatusBarHeight
+import bzh.zelyon.lib.extension.millisecondsToDuration
+import bzh.zelyon.lib.extension.setImage
 import bzh.zelyon.lib.ui.component.CollectionsView
 import bzh.zelyon.lib.ui.component.Popup
-import bzh.zelyon.lib.ui.view.fragment.AbsToolBarFragment
+import bzh.zelyon.lib.ui.view.fragment.AbsFragment
 import bzh.zelyon.music.R
 import bzh.zelyon.music.db.model.Music
 import bzh.zelyon.music.ui.view.fragment.bottom.MusicPlaylistsFragment
@@ -22,20 +25,20 @@ import kotlin.concurrent.fixedRateTimer
 import kotlin.math.max
 import kotlin.math.min
 
-class PlayingFragment: AbsToolBarFragment() {
+class PlayingFragment: AbsFragment() {
 
     private var playingMusic: Music? = null
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        fragment_playing_toolbar.setPadding(0, absActivity.getStatusBarHeight(), 0, 0)
-
         fragment_playing_seekbar_current.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
             override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {}
             override fun onStartTrackingTouch(seekBar: SeekBar) {}
             override fun onStopTrackingTouch(seekBar: SeekBar) = MusicPlayer.goTo(seekBar.progress)
         })
+        fragment_playing_collectionview_musics.headerHeight = absActivity.getStatusBarHeight().toFloat()
+        fragment_playing_collectionview_musics.thumbMarginTop = absActivity.getStatusBarHeight().toFloat()
         fragment_playing_collectionview_musics.helper = MusicHelper()
         fragment_playing_collectionview_musics.items = MusicPlayer.musics
 
@@ -53,7 +56,6 @@ class PlayingFragment: AbsToolBarFragment() {
                     if (playingMusic != MusicPlayer.playingMusic) {
                         playingMusic = MusicPlayer.playingMusic
                         fragment_playing_collectionview_musics.refresh()
-                        updateToolBar()
                         val itemsManager = fragment_playing_collectionview_musics.layoutManager as LinearLayoutManager
                         val firstPositionVisible = itemsManager.findFirstVisibleItemPosition()
                         val lastPositionVisible = itemsManager.findLastVisibleItemPosition()
@@ -81,22 +83,6 @@ class PlayingFragment: AbsToolBarFragment() {
             R.id.fragment_playing_imagebutton_shuffle -> MusicPlayer.isShuffle = !MusicPlayer.isShuffle
         }
     }
-
-    override fun getIdToolbar() = R.id.fragment_playing_toolbar
-
-    override fun getTitleToolBar() = playingMusic?.getInfos(
-        title = true,
-        artist = false,
-        album = false,
-        duration = false
-    ).orEmpty()
-
-    override fun getSubTitleToolBar() = playingMusic?.getInfos(
-        title = false,
-        artist = true,
-        album = true,
-        duration = false
-    ).orEmpty()
 
     inner class MusicHelper: CollectionsView.Helper() {
         override fun onBindItem(itemView: View, items: MutableList<*>, position: Int) {
@@ -161,7 +147,6 @@ class PlayingFragment: AbsToolBarFragment() {
                 MusicPlayer.playingPosition--
             } else if (position == MusicPlayer.playingPosition) {
                 MusicPlayer.run()
-                updateToolBar()
             }
         }
     }

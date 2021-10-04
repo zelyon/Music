@@ -3,7 +3,6 @@ package bzh.zelyon.music.ui.view.fragment.main
 import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.viewModels
-import bzh.zelyon.lib.extension.dpToPx
 import bzh.zelyon.lib.extension.getStatusBarHeight
 import bzh.zelyon.lib.ui.component.CollectionsView
 import bzh.zelyon.lib.ui.component.InputView
@@ -15,7 +14,6 @@ import bzh.zelyon.music.db.model.Playlist
 import bzh.zelyon.music.ui.view.fragment.bottom.MusicsFragment
 import bzh.zelyon.music.ui.view.viewmodel.PlaylistViewModel
 import bzh.zelyon.music.util.MusicPlayer
-import kotlinx.android.synthetic.main.fragment_library.*
 import kotlinx.android.synthetic.main.fragment_playlists.*
 import kotlinx.android.synthetic.main.item_playlist.view.*
 

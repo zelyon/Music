@@ -53,25 +53,19 @@ class MainActivity : AbsActivity() {
         }
 
         val mainViewModel = ViewModelProvider(this).get(MainViewModel::class.java)
+        MusicPlayer.mainViewModel = mainViewModel
         mainViewModel.currentFragment.observe(this) {
             updateNavigationBar(it)
         }
         mainViewModel.fabState.observe(this) {
             updateFABState(it)
         }
-        MusicPlayer.mainViewModel = mainViewModel
-
         supportFragmentManager.addOnBackStackChangedListener {
             mainViewModel.currentFragment.value = getCurrentFragment()
         }
 
-        activity_main_fab.setOnClickListener {
-            if (getCurrentFragment() == playingFragment) {
-                MusicPlayer.playOrPause()
-            } else {
-                showFragment(playingFragment)
-            }
-        }
+        mainViewModel.isPlaying.value = MusicPlayer.isPlaying
+        mainViewModel.hasPlayingList.value = MusicPlayer.isPlaying
 
         activity_main_bottomnavigationview.setOnNavigationItemSelectedListener {
             fullBack()
@@ -86,6 +80,18 @@ class MainActivity : AbsActivity() {
         }
 
         activity_main_bottomnavigationview.selectedItemId = R.id.activity_main_library
+
+        activity_main_fab.setOnClickListener {
+            if (getCurrentFragment() == playingFragment) {
+                MusicPlayer.playOrPause()
+            } else {
+                supportFragmentManager.beginTransaction()
+                    .setCustomAnimations(R.anim.slide_in_bottom, R.anim.slide_out_top, R.anim.slide_in_top, R.anim.slide_out_bottom)
+                    .add(getFragmentContainerId(), playingFragment)
+                    .addToBackStack(playingFragment.javaClass.name)
+                    .commit()
+            }
+        }
 
         intent?.let {
             manageIntent(it)

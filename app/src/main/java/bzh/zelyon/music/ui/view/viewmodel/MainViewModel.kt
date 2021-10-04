@@ -20,24 +20,23 @@ class MainViewModel: ViewModel() {
 
     init {
         fabState.addSource(currentFragment) {
-            fabState.value = combineLiveDatas(currentFragment, isPlaying, hasPlayingList)
-        }
-        fabState.addSource(isPlaying) {
-            fabState.value = combineLiveDatas(currentFragment, isPlaying, hasPlayingList)
+            fabState.value = combineLiveDatas()
         }
         fabState.addSource(hasPlayingList) {
-            fabState.value = combineLiveDatas(currentFragment, isPlaying, hasPlayingList)
+            fabState.value = combineLiveDatas()
+        }
+        fabState.addSource(isPlaying) {
+            fabState.value = combineLiveDatas()
         }
     }
 
-    private fun combineLiveDatas(currentFragment: MutableLiveData<AbsFragment?>, isPlaying: MutableLiveData<Boolean>, hasPlayingList: MutableLiveData<Boolean>) =
-        if (hasPlayingList.value == true) {
-            if (currentFragment.value is PlayingFragment) {
-                if (isPlaying.value == true) FABState.ICON_PLAY else FABState.ICON_PAUSE
-            } else {
-                if (isPlaying.value == true) FABState.ANIM_PLAY else FABState.ANIM_PAUSE
-            }
+    private fun combineLiveDatas(): FABState = if (hasPlayingList.value == true) {
+        if (currentFragment.value is PlayingFragment) {
+            if (isPlaying.value == true) FABState.ICON_PLAY else FABState.ICON_PAUSE
         } else {
-            FABState.HIDE
+            if (isPlaying.value == true) FABState.ANIM_PLAY else FABState.ANIM_PAUSE
         }
+    } else {
+        FABState.HIDE
+    }
 }
