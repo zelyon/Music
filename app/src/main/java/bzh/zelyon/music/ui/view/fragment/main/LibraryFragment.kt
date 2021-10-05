@@ -75,7 +75,7 @@ class LibraryFragment: AbsToolBarFragment(), SearchView.OnQueryTextListener {
             Manifest.permission.READ_EXTERNAL_STORAGE,
             Manifest.permission.WRITE_EXTERNAL_STORAGE) {
             if (it) {
-                fragment_library_collectionview_artists.items = MusicContent.getMusicsBySearch(absActivity, currentSearch).toMutableList()
+                fragment_library_collectionview_artists?.items = MusicContent.getMusicsBySearch(absActivity, currentSearch).toMutableList()
             } else {
                 absActivity.showSnackbar(
                     getString(R.string.fragment_library_snackbar_permission_needed),
