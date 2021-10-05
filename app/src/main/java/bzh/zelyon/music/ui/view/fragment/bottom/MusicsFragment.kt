@@ -41,7 +41,7 @@ class MusicsFragment private constructor(): AbsToolBarBottomSheetFragment() {
 
     override fun getIdToolbar() = R.id.fragment_musics_toolbar
 
-    override fun getLayoutId() = R.layout.fragment_musics
+    override fun getIdLayout() = R.layout.fragment_musics
 
     override fun getTitleToolBar() = arguments?.getString(ARG_TITLE).orEmpty()
 
@@ -93,7 +93,7 @@ class MusicsFragment private constructor(): AbsToolBarBottomSheetFragment() {
                         positiveClick = {
                             if (File(music.path).delete()) {
                                 back()
-                                ViewModelProvider(absActivity).get(LibraryViewModel::class.java).needReloadLibrary.postValue(null)
+                                ViewModelProvider(absActivity).get(LibraryViewModel::class.java).needReload.postValue(null)
                                 DB.getPlaylistDao().getAll().forEach { playlist ->
                                     playlist.musics.forEach {
                                         if (it.path == music.path) {

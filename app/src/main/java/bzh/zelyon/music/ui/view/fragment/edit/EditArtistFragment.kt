@@ -39,7 +39,7 @@ class EditArtistFragment: AbsEditFragment<Artist>() {
         })
     }
 
-    override fun getFormLayoutId() = R.layout.fragment_edit_artist
+    override fun getIdFormLayout() = R.layout.fragment_edit_artist
 
     override fun onClickArtwork() {
         BottomSheetDialog(absActivity).apply {

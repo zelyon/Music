@@ -33,13 +33,13 @@ class LibraryFragment: AbsToolBarFragment(), SearchView.OnQueryTextListener {
 
         (fragment_library_cardview_toolbar.layoutParams as CoordinatorLayout.LayoutParams).topMargin += absActivity.getStatusBarHeight()
 
-        fragment_library_collectionview_artists.helper = ArtistHelper()
         fragment_library_collectionview_artists.headerHeight = absActivity.dpToPx(80) + absActivity.getStatusBarHeight()
         fragment_library_collectionview_artists.thumbMarginTop = absActivity.dpToPx(80) + absActivity.getStatusBarHeight()
+        fragment_library_collectionview_artists.helper = ArtistHelper()
 
         loadMusics()
 
-        ViewModelProvider(absActivity).get(LibraryViewModel::class.java).needReloadLibrary.observe(absActivity) {
+        ViewModelProvider(absActivity).get(LibraryViewModel::class.java).needReload.observe(absActivity) {
             loadMusics()
         }
     }

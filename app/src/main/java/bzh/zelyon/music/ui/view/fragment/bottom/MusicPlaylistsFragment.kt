@@ -36,7 +36,7 @@ class MusicPlaylistsFragment private constructor(): AbsToolBarBottomSheetFragmen
         }
     }
 
-    override fun getLayoutId() = R.layout.fragment_musicplaylists
+    override fun getIdLayout() = R.layout.fragment_musicplaylists
 
     override fun getIdToolbar() = R.id.fragment_musicplaylists_toolbar
 

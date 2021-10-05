@@ -58,7 +58,7 @@ abstract class AbsEditFragment<T: AbsModel>: AbsToolBarFragment() {
         fragment_edit_toolbar.setPadding(0, absActivity.getStatusBarHeight(), 0, 0)
         fragment_edit_imageview_artwork.transitionName = absModel.getTransitionName()
         fragment_edit_imageview_artwork.setImage(absModel, currentArtwork)
-        LayoutInflater.from(absActivity).inflate(getFormLayoutId(), fragment_edit_layout_form, true)
+        LayoutInflater.from(absActivity).inflate(getIdFormLayout(), fragment_edit_layout_form, true)
         getInputViews(view)
     }
 
@@ -92,7 +92,7 @@ abstract class AbsEditFragment<T: AbsModel>: AbsToolBarFragment() {
         }
     }
 
-    abstract fun getFormLayoutId(): Int
+    abstract fun getIdFormLayout(): Int
 
     abstract fun onClickArtwork()
 

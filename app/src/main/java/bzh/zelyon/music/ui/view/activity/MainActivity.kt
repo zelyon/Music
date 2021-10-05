@@ -85,16 +85,8 @@ class MainActivity : AbsActivity() {
             if (getCurrentFragment() == playingFragment) {
                 MusicPlayer.playOrPause()
             } else {
-                supportFragmentManager.beginTransaction()
-                    .setCustomAnimations(R.anim.slide_in_bottom, R.anim.slide_out_top, R.anim.slide_in_top, R.anim.slide_out_bottom)
-                    .add(getFragmentContainerId(), playingFragment)
-                    .addToBackStack(playingFragment.javaClass.name)
-                    .commit()
+                showFragment(playingFragment, replace = false, animFromBottom = true)
             }
-        }
-
-        intent?.let {
-            manageIntent(it)
         }
     }
 
@@ -103,18 +95,12 @@ class MainActivity : AbsActivity() {
         unbindService(serviceConnection)
     }
 
-    override fun onNewIntent(intent: Intent?) {
-        super.onNewIntent(intent)
-        intent?.let {
-            manageIntent(it)
-        }
-    }
-
     override fun getLayoutId() = R.layout.activity_main
 
     override fun getFragmentContainerId() = R.id.activity_main_container
 
-    private fun manageIntent(intent: Intent) {
+    override fun handleIntent(intent: Intent) {
+        super.handleIntent(intent)
         intent.data?.let { uri ->
             MusicContent.getMusicsFromUri(this, uri)?.let { musics ->
                 MusicPlayer.playMusics(musics)

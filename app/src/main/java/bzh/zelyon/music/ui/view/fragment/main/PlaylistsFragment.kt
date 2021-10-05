@@ -24,8 +24,8 @@ class PlaylistsFragment: AbsFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        fragment_playlists_collectionview_playlists.helper = PlaylistHelper()
         fragment_playlists_collectionview_playlists.headerHeight = absActivity.getStatusBarHeight().toFloat()
+        fragment_playlists_collectionview_playlists.helper = PlaylistHelper()
 
         playlistViewModel.playlistsNotEmpty.observe(viewLifecycleOwner) {
             fragment_playlists_collectionview_playlists.items = it.toMutableList()
@@ -66,6 +66,7 @@ class PlaylistsFragment: AbsFragment() {
                         type = InputView.Type.TEXT
                         label = getString(R.string.popup_name)
                         mandatory = true
+                        text = playlist.name
                     }
                     Popup(absActivity,
                         title = getString(R.string.popup_rename),

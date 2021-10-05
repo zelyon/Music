@@ -115,7 +115,7 @@ class EditMusicFragment: AbsEditFragment<Music>() {
         false
     }
 
-    override fun getFormLayoutId() = R.layout.fragment_edit_music
+    override fun getIdFormLayout() = R.layout.fragment_edit_music
 
     companion object {
 

@@ -11,11 +11,8 @@ class MainViewModel: ViewModel() {
     enum class FABState { ANIM_PLAY, ANIM_PAUSE, ICON_PLAY, ICON_PAUSE, HIDE }
 
     val currentFragment = MutableLiveData<AbsFragment?>(null)
-
     val isPlaying = MutableLiveData(false)
-
     val hasPlayingList = MutableLiveData(false)
-
     val fabState = MediatorLiveData<FABState>()
 
     init {
