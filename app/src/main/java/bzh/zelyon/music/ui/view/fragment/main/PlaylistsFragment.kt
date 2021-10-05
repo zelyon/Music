@@ -2,6 +2,7 @@ package bzh.zelyon.music.ui.view.fragment.main
 
 import android.os.Bundle
 import android.view.View
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import bzh.zelyon.lib.extension.getStatusBarHeight
 import bzh.zelyon.lib.ui.component.CollectionsView
@@ -19,7 +20,7 @@ import kotlinx.android.synthetic.main.item_playlist.view.*
 
 class PlaylistsFragment: AbsFragment() {
 
-    private val playlistViewModel: PlaylistViewModel by viewModels()
+    private val playlistViewModel: PlaylistViewModel by activityViewModels()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)

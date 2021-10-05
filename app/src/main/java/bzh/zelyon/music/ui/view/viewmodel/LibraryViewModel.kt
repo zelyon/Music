@@ -5,5 +5,5 @@ import androidx.lifecycle.ViewModel
 
 class LibraryViewModel: ViewModel() {
 
-    val needReload = MutableLiveData<Any?>()
+    val needReload = MutableLiveData<Boolean>()
 }

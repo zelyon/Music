@@ -6,7 +6,7 @@ import android.net.Uri
 import android.os.Bundle
 import android.provider.Settings
 import android.view.View
-import androidx.lifecycle.ViewModelProvider
+import androidx.fragment.app.activityViewModels
 import bzh.zelyon.lib.extension.drawableResToDrawable
 import bzh.zelyon.lib.extension.setImage
 import bzh.zelyon.lib.ui.component.CollectionsView
@@ -26,6 +26,8 @@ import java.io.File
 class MusicsFragment private constructor(): AbsToolBarBottomSheetFragment() {
 
     lateinit var musics: List<Music>
+
+    private val libraryViewModel: LibraryViewModel by activityViewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -93,7 +95,7 @@ class MusicsFragment private constructor(): AbsToolBarBottomSheetFragment() {
                         positiveClick = {
                             if (File(music.path).delete()) {
                                 back()
-                                ViewModelProvider(absActivity).get(LibraryViewModel::class.java).needReload.postValue(null)
+                                libraryViewModel.needReload.postValue(null)
                                 DB.getPlaylistDao().getAll().forEach { playlist ->
                                     playlist.musics.forEach {
                                         if (it.path == music.path) {

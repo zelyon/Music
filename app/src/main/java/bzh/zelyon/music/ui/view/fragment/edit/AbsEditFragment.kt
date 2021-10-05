@@ -12,6 +12,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.children
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModelProvider
 import bzh.zelyon.lib.extension.drawableResToDrawable
 import bzh.zelyon.lib.extension.getLocalFileFromGalleryUri
@@ -24,6 +25,7 @@ import bzh.zelyon.music.BuildConfig
 import bzh.zelyon.music.R
 import bzh.zelyon.music.db.model.AbsModel
 import bzh.zelyon.music.ui.view.viewmodel.EditViewModel
+import bzh.zelyon.music.ui.view.viewmodel.LibraryViewModel
 import kotlinx.android.synthetic.main.fragment_edit.*
 import org.jaudiotagger.tag.images.Artwork
 import org.jaudiotagger.tag.images.ArtworkFactory
@@ -31,7 +33,6 @@ import java.io.File
 
 abstract class AbsEditFragment<T: AbsModel>: AbsToolBarFragment() {
 
-    lateinit var editViewModel: EditViewModel
     lateinit var absModel: T
     private var currentArtwork: Drawable? = null
     protected var newArtwork: Artwork? = null
@@ -44,13 +45,14 @@ abstract class AbsEditFragment<T: AbsModel>: AbsToolBarFragment() {
         }
     private val inputViews = mutableListOf<InputView>()
 
+    val editViewModel: EditViewModel by activityViewModels()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         absModel = arguments?.getSerializable(ARG_ABS_MODEL) as T
         currentArtwork = (arguments?.getParcelable(ARG_ARTORK) as? Bitmap)?.let {
             BitmapDrawable(absActivity.resources, it)
         } ?: absActivity.drawableResToDrawable(absModel.getPlaceholderId())
-        editViewModel = ViewModelProvider(this).get(EditViewModel::class.java)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

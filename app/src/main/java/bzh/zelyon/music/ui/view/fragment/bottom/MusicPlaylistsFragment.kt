@@ -2,6 +2,7 @@ package bzh.zelyon.music.ui.view.fragment.bottom
 
 import android.os.Bundle
 import android.view.View
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import bzh.zelyon.lib.ui.component.CollectionsView
 import bzh.zelyon.lib.ui.component.InputView
@@ -19,7 +20,7 @@ class MusicPlaylistsFragment private constructor(): AbsToolBarBottomSheetFragmen
 
     lateinit var music: Music
 
-    private val playlistViewModel: PlaylistViewModel by viewModels()
+    private val playlistViewModel: PlaylistViewModel by activityViewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

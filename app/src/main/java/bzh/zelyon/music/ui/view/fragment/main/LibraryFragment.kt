@@ -8,7 +8,7 @@ import androidx.appcompat.widget.SearchView
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.view.marginBottom
 import androidx.core.view.marginTop
-import androidx.lifecycle.ViewModelProvider
+import androidx.fragment.app.activityViewModels
 import bzh.zelyon.lib.extension.*
 import bzh.zelyon.lib.ui.component.CollectionsView
 import bzh.zelyon.lib.ui.component.Popup
@@ -28,6 +28,8 @@ class LibraryFragment: AbsToolBarFragment(), SearchView.OnQueryTextListener {
 
     private var currentSearch = ""
 
+    private val libraryViewModel: LibraryViewModel by activityViewModels()
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -39,7 +41,7 @@ class LibraryFragment: AbsToolBarFragment(), SearchView.OnQueryTextListener {
 
         loadMusics()
 
-        ViewModelProvider(absActivity).get(LibraryViewModel::class.java).needReload.observe(absActivity) {
+        libraryViewModel.needReload.observe(absActivity) {
             loadMusics()
         }
     }
