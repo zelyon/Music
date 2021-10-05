@@ -6,8 +6,8 @@ import android.content.Intent
 import android.content.ServiceConnection
 import android.os.Bundle
 import android.os.IBinder
+import androidx.activity.viewModels
 import androidx.core.view.ViewCompat
-import androidx.lifecycle.ViewModelProvider
 import androidx.vectordrawable.graphics.drawable.AnimatedVectorDrawableCompat
 import bzh.zelyon.lib.extension.fullBack
 import bzh.zelyon.lib.extension.getCurrentFragment
@@ -32,6 +32,8 @@ class MainActivity : AbsActivity() {
 
     private var currentFABState: MainViewModel.FABState? = null
 
+    private val mainViewModel: MainViewModel by viewModels()
+
     private val serviceConnection = object : ServiceConnection {
         override fun onServiceConnected(name: ComponentName?, service: IBinder?) {
             if (service is MusicService.MusicBinder) {
@@ -52,7 +54,6 @@ class MainActivity : AbsActivity() {
             insets.consumeSystemWindowInsets()
         }
 
-        val mainViewModel = ViewModelProvider(this).get(MainViewModel::class.java)
         MusicPlayer.mainViewModel = mainViewModel
         mainViewModel.currentFragment.observe(this) {
             updateNavigationBar(it)
