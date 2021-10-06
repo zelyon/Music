@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.provider.Settings
 import android.view.View
 import androidx.fragment.app.activityViewModels
+import bzh.zelyon.lib.extension.dpToPx
 import bzh.zelyon.lib.extension.drawableResToDrawable
 import bzh.zelyon.lib.extension.setImage
 import bzh.zelyon.lib.ui.component.CollectionsView
@@ -51,7 +52,10 @@ class MusicsFragment private constructor(): AbsToolBarBottomSheetFragment() {
         override fun onBindItem(itemView: View, items: MutableList<*>, position: Int) {
             val music = items[position]
             if (music is Music) {
-                itemView.item_music_imageview_artwork.setImage(music, absActivity.drawableResToDrawable(R.drawable.ic_item_music))
+                itemView.item_music_imageview_artwork.setImage(
+                    music,
+                    absActivity.drawableResToDrawable(R.drawable.ic_item_music),
+                    resizeInPx = Pair(absActivity.dpToPx(48).toInt(), absActivity.dpToPx(48).toInt()))
                 itemView.item_music_imageview_artwork.transitionName = music.getTransitionName()
                 itemView.item_music_textview_title.text = music.title
                 itemView.item_music_textview_infos.text = music.getInfos(
