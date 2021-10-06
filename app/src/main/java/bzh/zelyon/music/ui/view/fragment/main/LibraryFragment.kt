@@ -12,7 +12,7 @@ import androidx.fragment.app.activityViewModels
 import bzh.zelyon.lib.extension.*
 import bzh.zelyon.lib.ui.component.CollectionsView
 import bzh.zelyon.lib.ui.component.Popup
-import bzh.zelyon.lib.ui.view.fragment.AbsToolBarFragment
+import bzh.zelyon.lib.ui.view.fragment.AbsFragment
 import bzh.zelyon.music.R
 import bzh.zelyon.music.db.model.Artist
 import bzh.zelyon.music.ui.view.fragment.bottom.MusicsFragment
@@ -24,7 +24,7 @@ import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.fragment_library.*
 import kotlinx.android.synthetic.main.item_artist.view.*
 
-class LibraryFragment: AbsToolBarFragment(), SearchView.OnQueryTextListener {
+class LibraryFragment: AbsFragment(), SearchView.OnQueryTextListener {
 
     private var currentSearch = ""
 
@@ -56,13 +56,9 @@ class LibraryFragment: AbsToolBarFragment(), SearchView.OnQueryTextListener {
 
     override fun onIdClick(id: Int) {
         when (id) {
-            R.id.fragment_library_shuffle -> MusicPlayer.playMusics(MusicContent.getMusics(absActivity).shuffled())
+            R.id.fragment_library_button_shuffle -> MusicPlayer.playMusics(MusicContent.getMusics(absActivity).shuffled())
         }
     }
-
-    override fun getIdToolbar() = R.id.fragment_library_toolbar
-
-    override fun getIdMenu() = R.menu.fragment_library
 
     override fun onQueryTextSubmit(query: String) = true
 
