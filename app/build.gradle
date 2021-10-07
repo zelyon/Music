@@ -50,8 +50,8 @@ dependencies {
 
     //Life cycle
     implementation "androidx.lifecycle:lifecycle-common:${lifecycle_version}"
-    implementation "androidx.lifecycle:lifecycle-runtime:${lifecycle_version}"
-    implementation "androidx.lifecycle:lifecycle-extensions:$lifecycle_version"
+    implementation "androidx.lifecycle:lifecycle-runtime-ktx:${lifecycle_version}"
+    implementation "androidx.lifecycle:lifecycle-extensions:2.2.0"
     implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:${lifecycle_version}"
     implementation "androidx.lifecycle:lifecycle-livedata-ktx:$lifecycle_version"
 
@@ -72,5 +72,5 @@ dependencies {
     implementation "com.github.bumptech.glide:glide:$glide_version"
     kapt "com.github.bumptech.glide:compiler:$glide_version"
 
-    implementation 'com.github.zelyon:LibCommon:1.0.15'
+    implementation 'com.github.zelyon:LibCommon:1.0.16'
 }

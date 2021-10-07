@@ -54,8 +54,13 @@ class PlayingFragment: AbsFragment() {
                     fragment_playing_imagebutton_repeat.alpha = if (MusicPlayer.isRepeat) 1F else 0.5F
                     fragment_playing_imagebutton_shuffle.alpha = if (MusicPlayer.isShuffle) 1F else 0.5F
                     if (playingMusic != MusicPlayer.playingMusic) {
+                        playingMusic?.let { music ->
+                            fragment_playing_collectionview_musics.refreshItem(music)
+                        }
+                        MusicPlayer.playingMusic?.let { music ->
+                            fragment_playing_collectionview_musics.refreshItem(music)
+                        }
                         playingMusic = MusicPlayer.playingMusic
-                        fragment_playing_collectionview_musics.refresh()
                         val itemsManager = fragment_playing_collectionview_musics.layoutManager as LinearLayoutManager
                         val firstPositionVisible = itemsManager.findFirstVisibleItemPosition()
                         val lastPositionVisible = itemsManager.findLastVisibleItemPosition()
