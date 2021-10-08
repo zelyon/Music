@@ -30,10 +30,10 @@ class EditArtistFragment: AbsEditFragment<Artist>() {
         }
 
         editViewModel.getArtist(absModel.name).observe(absActivity, { artistResponseFr ->
-            infosFromLastFM = artistResponseFr?.artist?.bio?.content.orEmpty()
-            if (infosFromLastFM.isNullOrBlank()) {
+            infoFromLastFM = artistResponseFr?.artist?.bio?.content.orEmpty()
+            if (infoFromLastFM.isNullOrBlank()) {
                 editViewModel.getArtist(absModel.name, false).observe(viewLifecycleOwner, { musicResponseEn ->
-                    infosFromLastFM = musicResponseEn?.artist?.bio?.content.orEmpty()
+                    infoFromLastFM = musicResponseEn?.artist?.bio?.content.orEmpty()
                 })
             }
         })
@@ -79,7 +79,7 @@ class EditArtistFragment: AbsEditFragment<Artist>() {
         fun getInstance(artist: Artist, artwork: Bitmap?) = EditArtistFragment().apply {
             arguments = Bundle().apply {
                 putSerializable(ARG_ABS_MODEL, artist)
-                putParcelable(ARG_ARTORK, artwork)
+                putParcelable(ARG_ARTWORK, artwork)
             }
         }
     }

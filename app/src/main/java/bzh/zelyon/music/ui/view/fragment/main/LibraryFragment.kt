@@ -71,6 +71,7 @@ class LibraryFragment: AbsFragment(), SearchView.OnQueryTextListener {
     private fun loadMusics() {
         absActivity.ifPermissions(
             Manifest.permission.READ_EXTERNAL_STORAGE,
+            Manifest.permission.MANAGE_EXTERNAL_STORAGE,
             Manifest.permission.WRITE_EXTERNAL_STORAGE) {
             if (it) {
                 fragment_library_collectionview_artists?.items = MusicContent.getMusicsBySearch(absActivity, currentSearch).toMutableList()
@@ -124,7 +125,7 @@ class LibraryFragment: AbsFragment(), SearchView.OnQueryTextListener {
                 Popup(absActivity, choices = choices).showBottom()
             }
         }
-        override fun getIndexScroll(items: MutableList<*>, position: Int) = (items[position] as Artist).name.first().toUpperCase().toString()
+        override fun getIndexScroll(items: MutableList<*>, position: Int) = (items[position] as Artist).name.first().toString().uppercase()
         override fun onScroll(goUp: Boolean) {
             safeRun {
                 val toolbarHeight = fragment_library_cardview_toolbar.height + fragment_library_cardview_toolbar.marginTop + fragment_library_cardview_toolbar.marginBottom

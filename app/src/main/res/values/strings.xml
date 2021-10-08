@@ -12,7 +12,6 @@
     <!-- Library Fragment -->
     <string name="fragment_library_search_musics">Rechercher une musique</string>
     <string name="fragment_library_no_musics">Aucune musique trouvé</string>
-    <string name="fragment_library_menu_shuffle">Lecture aléatoire</string>
     <string name="fragment_library_snackbar_permission_needed">Permission néccessaire</string>
     <string name="fragment_library_snackbar_permission_grant">Accorder</string>
 

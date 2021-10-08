@@ -13,11 +13,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.children
 import androidx.fragment.app.activityViewModels
-import androidx.lifecycle.ViewModelProvider
-import bzh.zelyon.lib.extension.drawableResToDrawable
-import bzh.zelyon.lib.extension.getLocalFileFromGalleryUri
-import bzh.zelyon.lib.extension.getStatusBarHeight
-import bzh.zelyon.lib.extension.setImage
+import bzh.zelyon.lib.extension.*
 import bzh.zelyon.lib.ui.component.InputView
 import bzh.zelyon.lib.ui.component.Popup
 import bzh.zelyon.lib.ui.view.fragment.AbsToolBarFragment
@@ -25,7 +21,6 @@ import bzh.zelyon.music.BuildConfig
 import bzh.zelyon.music.R
 import bzh.zelyon.music.db.model.AbsModel
 import bzh.zelyon.music.ui.view.viewmodel.EditViewModel
-import bzh.zelyon.music.ui.view.viewmodel.LibraryViewModel
 import kotlinx.android.synthetic.main.fragment_edit.*
 import org.jaudiotagger.tag.images.Artwork
 import org.jaudiotagger.tag.images.ArtworkFactory
@@ -38,7 +33,7 @@ abstract class AbsEditFragment<T: AbsModel>: AbsToolBarFragment() {
     protected var newArtwork: Artwork? = null
     protected var deleteCurrentArtwork = false
     protected var imageUrlFromLastFM: String? = null
-    protected var infosFromLastFM: String? = null
+    protected var infoFromLastFM: String? = null
         set(value) {
             field = value
             menu?.findItem(R.id.fragment_edit_info)?.isVisible = !value.isNullOrBlank()
@@ -50,7 +45,7 @@ abstract class AbsEditFragment<T: AbsModel>: AbsToolBarFragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         absModel = arguments?.getSerializable(ARG_ABS_MODEL) as T
-        currentArtwork = (arguments?.getParcelable(ARG_ARTORK) as? Bitmap)?.let {
+        currentArtwork = (arguments?.getParcelable(ARG_ARTWORK) as? Bitmap)?.let {
             BitmapDrawable(absActivity.resources, it)
         } ?: absActivity.drawableResToDrawable(absModel.getPlaceholderId())
     }
@@ -75,7 +70,7 @@ abstract class AbsEditFragment<T: AbsModel>: AbsToolBarFragment() {
     override fun onIdClick(id: Int) {
         super.onIdClick(id)
         when (id) {
-            R.id.fragment_edit_info -> Popup(absActivity, message = infosFromLastFM).showBottom()
+            R.id.fragment_edit_info -> Popup(absActivity, message = infoFromLastFM).showBottom()
             R.id.fragment_edit_save -> {
                 if (inputViews.all { it.checkValidity() }) {
                     if (!onSave()) {
@@ -84,7 +79,9 @@ abstract class AbsEditFragment<T: AbsModel>: AbsToolBarFragment() {
                             message = getString(R.string.popup_permission_message),
                             positiveText = getString(R.string.popup_ok),
                             positiveClick = {
-                                startActivity(Intent(Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION, Uri.parse("package:" + BuildConfig.APPLICATION_ID)))
+                                if (isR()) {
+                                    startActivity(Intent(Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION, Uri.parse("package:" + BuildConfig.APPLICATION_ID)))
+                                }
                             })
                             .show()
                     }
@@ -142,6 +139,6 @@ abstract class AbsEditFragment<T: AbsModel>: AbsToolBarFragment() {
 
     companion object {
         const val ARG_ABS_MODEL = "ARG_ABS_MODEL"
-        const val ARG_ARTORK = "ARG_ARTORK"
+        const val ARG_ARTWORK = "ARG_ARTWORK"
     }
 }

@@ -9,6 +9,7 @@ import android.view.View
 import androidx.fragment.app.activityViewModels
 import bzh.zelyon.lib.extension.dpToPx
 import bzh.zelyon.lib.extension.drawableResToDrawable
+import bzh.zelyon.lib.extension.isR
 import bzh.zelyon.lib.extension.setImage
 import bzh.zelyon.lib.ui.component.CollectionsView
 import bzh.zelyon.lib.ui.component.Popup
@@ -114,7 +115,9 @@ class MusicsFragment private constructor(): AbsToolBarBottomSheetFragment() {
                                     message = getString(R.string.popup_permission_message),
                                     positiveText = getString(R.string.popup_ok),
                                     positiveClick = {
-                                        startActivity(Intent(Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION, Uri.parse("package:" + BuildConfig.APPLICATION_ID)))
+                                        if (isR()) {
+                                            startActivity(Intent(Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION, Uri.parse("package:" + BuildConfig.APPLICATION_ID)))
+                                        }
                                     })
                                     .show()
                             }

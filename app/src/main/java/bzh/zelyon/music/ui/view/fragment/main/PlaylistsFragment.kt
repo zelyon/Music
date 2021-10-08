@@ -3,7 +3,6 @@ package bzh.zelyon.music.ui.view.fragment.main
 import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.activityViewModels
-import androidx.fragment.app.viewModels
 import bzh.zelyon.lib.extension.getStatusBarHeight
 import bzh.zelyon.lib.ui.component.CollectionsView
 import bzh.zelyon.lib.ui.component.InputView

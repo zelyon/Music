@@ -44,13 +44,13 @@ class EditMusicFragment: AbsEditFragment<Music>() {
                 albumNames.add(music.albumName)
             }
         }
-        absActivity.contentResolver.query(MediaStore.Audio.Genres.EXTERNAL_CONTENT_URI, null, null, null, null)?.use {
-            while (it.moveToNext()) {
-                it.getStringOrNull(it.getColumnIndex(MediaStore.Audio.Genres.NAME))?.let {
-                    genres.add(it)
+        absActivity.contentResolver.query(MediaStore.Audio.Genres.EXTERNAL_CONTENT_URI, null, null, null, null)?.use { cursor ->
+            while (cursor.moveToNext()) {
+                cursor.getStringOrNull(cursor.getColumnIndex(MediaStore.Audio.Genres.NAME))?.let { genre ->
+                    genres.add(genre)
                 }
             }
-            it.close()
+            cursor.close()
         }
 
         fragment_edit_music_inputview_title.text = absModel.title
@@ -64,11 +64,11 @@ class EditMusicFragment: AbsEditFragment<Music>() {
         fragment_edit_music_inputview_genre.choices = genres.map { InputView.Choice(it, it, tag?.getFirst(FieldKey.GENRE) ?: "" == it) }.toMutableList()
 
         editViewModel.getMusic(absModel.artistName, absModel.title).observe(viewLifecycleOwner, { musicResponseFr  ->
-            infosFromLastFM = musicResponseFr?.track?.wiki?.content.orEmpty()
+            infoFromLastFM = musicResponseFr?.track?.wiki?.content.orEmpty()
             imageUrlFromLastFM = musicResponseFr?.track?.album?.image?.get(3)?.text
-            if (infosFromLastFM.isNullOrBlank()) {
+            if (infoFromLastFM.isNullOrBlank()) {
                 editViewModel.getMusic(absModel.artistName, absModel.title, false).observe(viewLifecycleOwner, { musicResponseEn ->
-                    infosFromLastFM = musicResponseEn?.track?.wiki?.content.orEmpty()
+                    infoFromLastFM = musicResponseEn?.track?.wiki?.content.orEmpty()
                 })
             }
         })
@@ -122,7 +122,7 @@ class EditMusicFragment: AbsEditFragment<Music>() {
         fun getInstance(music: Music, artwork: Bitmap?) = EditMusicFragment().apply {
             arguments = Bundle().apply {
                 putSerializable(ARG_ABS_MODEL, music)
-                putParcelable(ARG_ARTORK, artwork)
+                putParcelable(ARG_ARTWORK, artwork)
             }
         }
     }

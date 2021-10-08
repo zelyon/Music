@@ -68,7 +68,7 @@ class MainActivity : AbsActivity() {
         mainViewModel.isPlaying.value = MusicPlayer.isPlaying
         mainViewModel.hasPlayingList.value = MusicPlayer.isPlaying
 
-        activity_main_bottomnavigationview.setOnNavigationItemSelectedListener {
+        activity_main_bottomnavigationview.setOnItemSelectedListener {
             fullBack()
             when (it.itemId) {
                 R.id.activity_main_library -> libraryFragment

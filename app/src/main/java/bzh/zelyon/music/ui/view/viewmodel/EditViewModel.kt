@@ -4,7 +4,6 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import bzh.zelyon.lib.util.api.CallBack
 import bzh.zelyon.music.api.API
-import bzh.zelyon.music.api.model.AlbumResponse
 import bzh.zelyon.music.api.model.ArtistResponse
 import bzh.zelyon.music.api.model.MusicResponse
 
@@ -14,16 +13,6 @@ class EditViewModel: ViewModel() {
         val mutableLiveData = MutableLiveData<ArtistResponse>()
         API.getArtist(artistName, french).enqueue(object : CallBack<ArtistResponse> {
             override fun onSuccess(response: ArtistResponse) {
-                mutableLiveData.value = response
-            }
-        })
-        return mutableLiveData
-    }
-
-    fun getAlbum(artistName: String, albumName: String, french: Boolean = true): MutableLiveData<AlbumResponse> {
-        val mutableLiveData = MutableLiveData<AlbumResponse>()
-        API.getAlbum(artistName, albumName, french).enqueue(object : CallBack<AlbumResponse> {
-            override fun onSuccess(response: AlbumResponse) {
                 mutableLiveData.value = response
             }
         })

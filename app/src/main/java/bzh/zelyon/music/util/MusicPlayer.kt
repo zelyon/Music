@@ -10,13 +10,13 @@ import kotlin.random.nextInt
 
 object MusicPlayer: MediaPlayer() {
 
+    private var lastCurrentPosition = 0
+    private var playingPositions = mutableListOf<Int>()
     var musicService: MusicService? = null
     var mainViewModel: MainViewModel? = null
-    private var lastCurrentPosition = 0
     val playingMusic get() = if (playingPosition in musics.indices && File(musics[playingPosition].path).exists()) musics[playingPosition] else null
     val hasPrevious get() = playingPositions.size > 1 && !isRepeat
     val hasNext get() = (playingPosition < musics.size - 1 || isShuffle) && !isRepeat
-    var playingPositions = mutableListOf<Int>()
     var musics = mutableListOf<Music>()
     var playingPosition = -1
     var isShuffle = false
