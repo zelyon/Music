@@ -71,7 +71,6 @@ class LibraryFragment: AbsFragment(), SearchView.OnQueryTextListener {
     private fun loadMusics() {
         absActivity.ifPermissions(
             Manifest.permission.READ_EXTERNAL_STORAGE,
-            Manifest.permission.MANAGE_EXTERNAL_STORAGE,
             Manifest.permission.WRITE_EXTERNAL_STORAGE) {
             if (it) {
                 fragment_library_collectionview_artists?.items = MusicContent.getMusicsBySearch(absActivity, currentSearch).toMutableList()
