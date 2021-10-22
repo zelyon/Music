@@ -1,16 +1,11 @@
+
 package bzh.zelyon.music.ui.view.fragment.bottom
 
-import android.content.Intent
 import android.graphics.drawable.BitmapDrawable
-import android.net.Uri
 import android.os.Bundle
-import android.provider.Settings
 import android.view.View
 import androidx.fragment.app.activityViewModels
-import bzh.zelyon.lib.extension.dpToPx
-import bzh.zelyon.lib.extension.drawableResToDrawable
-import bzh.zelyon.lib.extension.isR
-import bzh.zelyon.lib.extension.setImage
+import bzh.zelyon.lib.extension.*
 import bzh.zelyon.lib.ui.component.CollectionsView
 import bzh.zelyon.lib.ui.component.Popup
 import bzh.zelyon.lib.ui.view.fragment.AbsToolBarBottomSheetFragment
@@ -18,6 +13,7 @@ import bzh.zelyon.music.BuildConfig
 import bzh.zelyon.music.R
 import bzh.zelyon.music.db.DB
 import bzh.zelyon.music.db.model.Music
+import bzh.zelyon.music.ui.view.activity.MainActivity
 import bzh.zelyon.music.ui.view.fragment.edit.EditMusicFragment
 import bzh.zelyon.music.ui.view.viewmodel.LibraryViewModel
 import bzh.zelyon.music.util.MusicPlayer
@@ -89,7 +85,7 @@ class MusicsFragment private constructor(): AbsToolBarBottomSheetFragment() {
                     })
                 }
                 choices.add(Popup.Choice(getString(R.string.popup_edit)) {
-                    showFragment(EditMusicFragment.getInstance(music, artwork), transitionView = itemView.item_music_imageview_artwork)
+                    absActivity.actionFragment(EditMusicFragment.getInstance(music, artwork), transitionView = itemView.item_music_imageview_artwork)
                     back()
                 })
                 choices.add(Popup.Choice(getString(R.string.popup_delete)) {
@@ -98,35 +94,40 @@ class MusicsFragment private constructor(): AbsToolBarBottomSheetFragment() {
                         message = getString(R.string.popup_delete_message, music.title),
                         positiveText = getString(R.string.popup_yes),
                         positiveClick = {
-                            if (File(music.path).delete()) {
-                                back()
-                                libraryViewModel.needReload.postValue(null)
-                                DB.getPlaylistDao().getAll().forEach { playlist ->
-                                    playlist.musics.forEach {
-                                        if (it.path == music.path) {
-                                            playlist.musics.remove(it)
-                                            DB.getPlaylistDao().update(playlist)
-                                        }
-                                    }
-                                }
-                            } else {
-                                Popup(absActivity,
-                                    title = getString(R.string.popup_permission_title),
-                                    message = getString(R.string.popup_permission_message),
-                                    positiveText = getString(R.string.popup_ok),
-                                    positiveClick = {
-                                        if (isR()) {
-                                            startActivity(Intent(Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION, Uri.parse("package:" + BuildConfig.APPLICATION_ID)))
-                                        }
-                                    })
-                                    .show()
-                            }
+                            deleteMusic(music)
                         }).show()
                 })
                 choices.add(Popup.Choice(getString(R.string.popup_playlists)) {
-                    showFragment(MusicPlaylistsFragment.getInstance(music))
+                    absActivity.showFragment(MusicPlaylistsFragment.getInstance(music))
                 })
                 Popup(absActivity, choices = choices).showBottom()
+            }
+        }
+
+        private fun deleteMusic(music: Music) {
+            (absActivity as? MainActivity)?.launchFilesPermission(BuildConfig.APPLICATION_ID) {
+                if (it) {
+                    File(music.path).delete()
+                    back()
+                    libraryViewModel.needReload.postValue(null)
+                    DB.getPlaylistDao().getAll().forEach { playlist ->
+                        playlist.musics.forEach {
+                            if (it.path == music.path) {
+                                playlist.musics.remove(it)
+                                DB.getPlaylistDao().update(playlist)
+                            }
+                        }
+                    }
+                } else {
+                    Popup(absActivity,
+                        title = getString(R.string.popup_permission_title),
+                        message = getString(R.string.popup_permission_message),
+                        positiveText = getString(R.string.popup_ok),
+                        positiveClick = {
+                            deleteMusic(music)
+                        })
+                        .show()
+                }
             }
         }
     }

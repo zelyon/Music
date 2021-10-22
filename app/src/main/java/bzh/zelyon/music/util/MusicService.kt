@@ -20,7 +20,6 @@ import android.support.v4.media.session.PlaybackStateCompat
 import android.view.KeyEvent
 import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
-import bzh.zelyon.lib.extension.isNougat
 import bzh.zelyon.music.R
 import bzh.zelyon.music.db.DB
 import bzh.zelyon.music.ui.view.activity.MainActivity
@@ -64,7 +63,7 @@ class MusicService: Service() {
             override fun onMediaButtonEvent(mediaButtonEvent: Intent) = MusicReceiver.parseIntent(this@MusicService, mediaButtonEvent)
         })
         mediaSession?.setMediaButtonReceiver(mediaButtonReceiverPendingIntent)
-        if (isNougat()) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 val notificationChannel = notificationManager?.getNotificationChannel(NOTIFICATION_CHANNEL_ID) ?: NotificationChannel(NOTIFICATION_CHANNEL_ID, getString(R.string.app_name), NotificationManager.IMPORTANCE_LOW)
@@ -133,7 +132,7 @@ class MusicService: Service() {
                     .build())
 
             MusicPlayer.playingMusic?.let { music ->
-                if (isNougat()) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                     Glide.with(this)
                         .asBitmap()
                         .load(music)

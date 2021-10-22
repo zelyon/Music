@@ -8,6 +8,7 @@ import android.view.LayoutInflater
 import android.view.View
 import androidx.core.database.getStringOrNull
 import androidx.core.view.isVisible
+import bzh.zelyon.lib.extension.back
 import bzh.zelyon.lib.extension.showSnackbar
 import bzh.zelyon.lib.ui.component.InputView
 import bzh.zelyon.music.R
@@ -74,6 +75,8 @@ class EditMusicFragment: AbsEditFragment<Music>() {
         })
     }
 
+    override fun getIdFormLayout() = R.layout.fragment_edit_music
+
     override fun onClickArtwork() {
         BottomSheetDialog(absActivity).apply {
             setContentView(LayoutInflater.from(absActivity).inflate(R.layout.view_artwork, null, false).apply {
@@ -94,7 +97,7 @@ class EditMusicFragment: AbsEditFragment<Music>() {
         }.show()
     }
 
-    override fun onSave() = try {
+    override fun save() = try {
         tag?.setField(FieldKey.TITLE, fragment_edit_music_inputview_title.text)
         tag?.setField(FieldKey.ARTIST, fragment_edit_music_inputview_artist.selectedChoice?.value.toString())
         tag?.setField(FieldKey.ALBUM, fragment_edit_music_inputview_album.selectedChoice?.value.toString())
@@ -108,14 +111,10 @@ class EditMusicFragment: AbsEditFragment<Music>() {
             tag?.setField(artwork)
         }
         audioFile?.commit()
-        MediaScannerConnection.scanFile(absActivity, arrayOf(absModel.path), null) { _, _ -> back() }
-        true
+        MediaScannerConnection.scanFile(absActivity, arrayOf(absModel.path), null) { _, _ -> absActivity.back() }
     } catch (e: Exception) {
         absActivity.showSnackbar(getString(R.string.fragment_edit_snackbar_failed))
-        false
     }
-
-    override fun getIdFormLayout() = R.layout.fragment_edit_music
 
     companion object {
 

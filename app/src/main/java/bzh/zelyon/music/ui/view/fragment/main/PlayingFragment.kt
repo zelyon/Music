@@ -7,10 +7,7 @@ import android.view.View
 import android.widget.SeekBar
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
-import bzh.zelyon.lib.extension.drawableResToDrawable
-import bzh.zelyon.lib.extension.getStatusBarHeight
-import bzh.zelyon.lib.extension.millisecondsToDuration
-import bzh.zelyon.lib.extension.setImage
+import bzh.zelyon.lib.extension.*
 import bzh.zelyon.lib.ui.component.CollectionsView
 import bzh.zelyon.lib.ui.component.Popup
 import bzh.zelyon.lib.ui.view.fragment.AbsFragment
@@ -72,7 +69,7 @@ class PlayingFragment: AbsFragment() {
                             fragment_playing_collectionview_musics.smoothScrollToPosition(it)
                         }
                     }
-                } ?: back()
+                } ?: absActivity.back()
             }
         }
     }
@@ -125,10 +122,10 @@ class PlayingFragment: AbsFragment() {
                 val artwork = (itemView.item_music_imageview_artwork.drawable as? BitmapDrawable)?.bitmap
                 val choices = mutableListOf<Popup.Choice>()
                 choices.add(Popup.Choice(getString(R.string.popup_edit)) {
-                    showFragment(EditMusicFragment.getInstance(music, artwork), transitionView = itemView.item_music_imageview_artwork)
+                    absActivity.actionFragment(EditMusicFragment.getInstance(music, artwork), transitionView = itemView.item_music_imageview_artwork)
                 })
                 choices.add(Popup.Choice(getString(R.string.popup_playlists)) {
-                    showFragment(MusicPlaylistsFragment.getInstance(music))
+                    absActivity.showFragment(MusicPlaylistsFragment.getInstance(music))
                 })
                 Popup(absActivity, choices = choices).showBottom()
             }

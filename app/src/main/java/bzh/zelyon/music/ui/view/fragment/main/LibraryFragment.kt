@@ -13,6 +13,7 @@ import bzh.zelyon.lib.extension.*
 import bzh.zelyon.lib.ui.component.CollectionsView
 import bzh.zelyon.lib.ui.component.Popup
 import bzh.zelyon.lib.ui.view.fragment.AbsFragment
+import bzh.zelyon.lib.util.Launch
 import bzh.zelyon.music.R
 import bzh.zelyon.music.db.model.Artist
 import bzh.zelyon.music.ui.view.fragment.bottom.MusicsFragment
@@ -33,10 +34,13 @@ class LibraryFragment: AbsFragment(), SearchView.OnQueryTextListener {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        fragment_library_searchview.setOnQueryTextListener(this)
+
         (fragment_library_cardview_toolbar.layoutParams as CoordinatorLayout.LayoutParams).topMargin += absActivity.getStatusBarHeight()
 
         fragment_library_collectionview_artists.headerHeight = absActivity.dpToPx(80) + absActivity.getStatusBarHeight()
         fragment_library_collectionview_artists.thumbMarginTop = absActivity.dpToPx(80) + absActivity.getStatusBarHeight()
+        fragment_library_collectionview_artists.nbColumns = absActivity.resources.configuration.orientation * 2
         fragment_library_collectionview_artists.helper = ArtistHelper()
 
         loadMusics()
@@ -44,12 +48,6 @@ class LibraryFragment: AbsFragment(), SearchView.OnQueryTextListener {
         libraryViewModel.needReload.observe(absActivity) {
             loadMusics()
         }
-    }
-
-    override fun onResume() {
-        super.onResume()
-
-        fragment_library_searchview.setOnQueryTextListener(this)
     }
 
     override fun getIdLayout() = R.layout.fragment_library
@@ -69,11 +67,9 @@ class LibraryFragment: AbsFragment(), SearchView.OnQueryTextListener {
     }
 
     private fun loadMusics() {
-        absActivity.ifPermissions(
-            Manifest.permission.READ_EXTERNAL_STORAGE,
-            Manifest.permission.WRITE_EXTERNAL_STORAGE) {
+        absActivity.launchWithResult(Launch.Permission(mutableListOf(Manifest.permission.READ_EXTERNAL_STORAGE)) {
             if (it) {
-                fragment_library_collectionview_artists?.items = MusicContent.getMusicsBySearch(absActivity, currentSearch).toMutableList()
+                fragment_library_collectionview_artists.items = MusicContent.getMusicsBySearch(absActivity, currentSearch).toMutableList()
             } else {
                 absActivity.showSnackbar(
                     getString(R.string.fragment_library_snackbar_permission_needed),
@@ -82,7 +78,7 @@ class LibraryFragment: AbsFragment(), SearchView.OnQueryTextListener {
                     loadMusics()
                 }
             }
-        }
+        })
     }
 
     private enum class AnimSate { SHOW, HIDE, FOLLOW_OFFSET }
@@ -102,7 +98,7 @@ class LibraryFragment: AbsFragment(), SearchView.OnQueryTextListener {
         override fun onItemClick(itemView: View, items: MutableList<*>, position: Int) {
             val artist = items[position]
             if (artist is Artist) {
-                showFragment(MusicsFragment.getInstance(artist.name, artist.musics))
+                absActivity.showFragment(MusicsFragment.getInstance(artist.name, artist.musics))
             }
         }
         override fun onItemLongClick(itemView: View, items: MutableList<*>, position: Int) {
@@ -119,7 +115,7 @@ class LibraryFragment: AbsFragment(), SearchView.OnQueryTextListener {
                     })
                 }
                 choices.add(Popup.Choice(getString(R.string.popup_edit)) {
-                    showFragment(EditArtistFragment.getInstance(artist, artwork), transitionView = itemView.item_artist_imageview_artwork)
+                    absActivity.actionFragment(EditArtistFragment.getInstance(artist, artwork), transitionView = itemView.item_artist_imageview_artwork)
                 })
                 Popup(absActivity, choices = choices).showBottom()
             }

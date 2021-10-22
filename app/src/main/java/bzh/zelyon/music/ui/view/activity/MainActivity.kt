@@ -1,19 +1,25 @@
 package bzh.zelyon.music.ui.view.activity
 
+import android.Manifest
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.content.ServiceConnection
+import android.net.Uri
+import android.os.Build
 import android.os.Bundle
+import android.os.Environment
 import android.os.IBinder
+import android.provider.Settings
 import androidx.activity.viewModels
 import androidx.core.view.ViewCompat
 import androidx.vectordrawable.graphics.drawable.AnimatedVectorDrawableCompat
-import bzh.zelyon.lib.extension.fullBack
+import bzh.zelyon.lib.extension.ActionFragment
+import bzh.zelyon.lib.extension.actionFragment
 import bzh.zelyon.lib.extension.getCurrentFragment
-import bzh.zelyon.lib.extension.showFragment
-import bzh.zelyon.lib.ui.view.activity.AbsActivity
+import bzh.zelyon.lib.ui.view.activity.AbsBottomNavigationActivity
 import bzh.zelyon.lib.ui.view.fragment.AbsFragment
+import bzh.zelyon.lib.util.Launch
 import bzh.zelyon.music.R
 import bzh.zelyon.music.ui.view.fragment.main.LibraryFragment
 import bzh.zelyon.music.ui.view.fragment.main.PlayingFragment
@@ -22,9 +28,10 @@ import bzh.zelyon.music.ui.view.viewmodel.MainViewModel
 import bzh.zelyon.music.util.MusicContent
 import bzh.zelyon.music.util.MusicPlayer
 import bzh.zelyon.music.util.MusicService
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import kotlinx.android.synthetic.main.activity_main.*
 
-class MainActivity : AbsActivity() {
+class MainActivity : AbsBottomNavigationActivity() {
 
     private val libraryFragment = LibraryFragment()
     private val playlistsFragment = PlaylistsFragment()
@@ -68,25 +75,11 @@ class MainActivity : AbsActivity() {
         mainViewModel.isPlaying.value = MusicPlayer.isPlaying
         mainViewModel.hasPlayingList.value = MusicPlayer.isPlaying
 
-        activity_main_bottomnavigationview.setOnItemSelectedListener {
-            fullBack()
-            when (it.itemId) {
-                R.id.activity_main_library -> libraryFragment
-                R.id.activity_main_playlists -> playlistsFragment
-                else -> null
-            }?.let { fragment ->
-                showFragment(fragment, false)
-            }
-            true
-        }
-
-        activity_main_bottomnavigationview.selectedItemId = R.id.activity_main_library
-
         activity_main_fab.setOnClickListener {
             if (getCurrentFragment() == playingFragment) {
                 MusicPlayer.playOrPause()
             } else {
-                showFragment(playingFragment, replace = false, animFromBottom = true)
+                actionFragment(playingFragment, ActionFragment.Add, animFromBottom = true)
             }
         }
     }
@@ -108,6 +101,14 @@ class MainActivity : AbsActivity() {
             }
         }
     }
+
+    override fun getBottomNavigationView(): BottomNavigationView = activity_main_bottomnavigationview
+
+    override fun getSelectedNavigationItemId() = R.id.activity_main_library
+
+    override fun getNavigationMenuId() = R.menu.activity_main
+
+    override fun getNavigationItems() = listOf(NavigationItem(R.id.activity_main_library, libraryFragment), NavigationItem(R.id.activity_main_playlists, playlistsFragment))
 
     private fun updateNavigationBar(fragment: AbsFragment?) {
         activity_main_bottomnavigationview.animate()
@@ -135,6 +136,22 @@ class MainActivity : AbsActivity() {
                     anim?.start()
                 }
             }
+        }
+    }
+
+    fun launchFilesPermission(applicationId: String, result:(Boolean) -> Unit) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            if (Environment.isExternalStorageManager()) {
+                result.invoke(true)
+            } else {
+                launchWithResult(Launch.Simple(Intent(Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION, Uri.parse("package:$applicationId"))) { _, _ ->
+                    result.invoke(Environment.isExternalStorageManager())
+                })
+            }
+        } else {
+            launchWithResult(Launch.Permission(mutableListOf(Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+                result.invoke(it)
+            })
         }
     }
 }

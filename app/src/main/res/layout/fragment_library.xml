@@ -1,15 +1,15 @@
 <androidx.coordinatorlayout.widget.CoordinatorLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:fitsSystemWindows="true">
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
+    android:background="?attr/colorSurface">
 
     <bzh.zelyon.lib.ui.component.CollectionsView
         android:id="@+id/fragment_library_collectionview_artists"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:nb_colums="2"
         app:space_divider="8dp"
         app:id_layout_item="@layout/item_artist"
         app:id_layout_footer="@layout/item_artist_footer"

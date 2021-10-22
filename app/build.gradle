@@ -46,14 +46,15 @@ dependencies {
     implementation "androidx.core:core-ktx:$androidx_core_ktx_version"
     implementation "androidx.constraintlayout:constraintlayout:$androidx_constraintlayout_version"
     implementation "androidx.media:media:$androidx_media_version"
+    implementation "androidx.activity:activity-ktx:$androidx_activity_version"
     implementation "androidx.fragment:fragment-ktx:$androidx_fragment_version"
 
     //Life cycle
     implementation "androidx.lifecycle:lifecycle-common:${lifecycle_version}"
     implementation "androidx.lifecycle:lifecycle-runtime-ktx:${lifecycle_version}"
-    implementation "androidx.lifecycle:lifecycle-extensions:2.2.0"
     implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:${lifecycle_version}"
     implementation "androidx.lifecycle:lifecycle-livedata-ktx:$lifecycle_version"
+    implementation "androidx.lifecycle:lifecycle-extensions:2.2.0"
 
     //Room
     implementation "androidx.room:room-common:$room_version"
@@ -73,5 +74,5 @@ dependencies {
 
     //Other
     implementation "com.github.AdrienPoupa:jaudiotagger:$jaudiotagger_version"
-    implementation 'com.github.zelyon:LibCommon:1.0.16'
+    implementation 'com.github.zelyon:LibCommon:1.1.4'
 }

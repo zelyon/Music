@@ -1,25 +1,26 @@
 package bzh.zelyon.music.ui.view.fragment.edit
 
-import android.Manifest
-import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
-import android.net.Uri
 import android.os.Bundle
-import android.provider.Settings
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.children
 import androidx.fragment.app.activityViewModels
-import bzh.zelyon.lib.extension.*
+import bzh.zelyon.lib.extension.drawableResToDrawable
+import bzh.zelyon.lib.extension.getLocalFileFromGalleryUri
+import bzh.zelyon.lib.extension.getStatusBarHeight
+import bzh.zelyon.lib.extension.setImage
 import bzh.zelyon.lib.ui.component.InputView
 import bzh.zelyon.lib.ui.component.Popup
 import bzh.zelyon.lib.ui.view.fragment.AbsToolBarFragment
+import bzh.zelyon.lib.util.Launch
 import bzh.zelyon.music.BuildConfig
 import bzh.zelyon.music.R
 import bzh.zelyon.music.db.model.AbsModel
+import bzh.zelyon.music.ui.view.activity.MainActivity
 import bzh.zelyon.music.ui.view.viewmodel.EditViewModel
 import kotlinx.android.synthetic.main.fragment_edit.*
 import org.jaudiotagger.tag.images.Artwork
@@ -71,22 +72,7 @@ abstract class AbsEditFragment<T: AbsModel>: AbsToolBarFragment() {
         super.onIdClick(id)
         when (id) {
             R.id.fragment_edit_info -> Popup(absActivity, message = infoFromLastFM).showBottom()
-            R.id.fragment_edit_save -> {
-                if (inputViews.all { it.checkValidity() }) {
-                    if (!onSave()) {
-                        Popup(absActivity,
-                            title = getString(R.string.popup_permission_title),
-                            message = getString(R.string.popup_permission_message),
-                            positiveText = getString(R.string.popup_ok),
-                            positiveClick = {
-                                if (isR()) {
-                                    startActivity(Intent(Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION, Uri.parse("package:" + BuildConfig.APPLICATION_ID)))
-                                }
-                            })
-                            .show()
-                    }
-                }
-            }
+            R.id.fragment_edit_save -> checkAndSave()
             R.id.fragment_edit_imageview_artwork -> onClickArtwork()
         }
     }
@@ -95,25 +81,18 @@ abstract class AbsEditFragment<T: AbsModel>: AbsToolBarFragment() {
 
     abstract fun onClickArtwork()
 
-    abstract fun onSave(): Boolean
+    abstract fun save()
 
     fun getImageOnDevice() {
-        absActivity.ifPermissions(Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE) {
-            if (it) {
-                absActivity.startIntentWithResult(Intent(Intent.ACTION_GET_CONTENT).apply {
-                    type = "image/*"
-                    putExtra(Intent.EXTRA_ALLOW_MULTIPLE, false)
-                }) { _, result ->
-                    result.data?.let { uri ->
-                        absActivity.getLocalFileFromGalleryUri(uri, absModel.getDeclaration() + ".png")?.let { file ->
-                            fragment_edit_imageview_artwork.setImage(File(file.path), absActivity.drawableResToDrawable(absModel.getPlaceholderId()))
-                            newArtwork = ArtworkFactory.createArtworkFromFile(file)
-                            deleteCurrentArtwork = true
-                        }
-                    }
+        absActivity.launchWithResult(Launch.Get(false, Launch.Type.Image) { uris ->
+            uris.firstOrNull()?.let { uri ->
+                absActivity.getLocalFileFromGalleryUri(uri, absModel.getDeclaration() + ".png")?.let { file ->
+                    fragment_edit_imageview_artwork.setImage(File(file.path), absActivity.drawableResToDrawable(absModel.getPlaceholderId()))
+                    newArtwork = ArtworkFactory.createArtworkFromFile(file)
+                    deleteCurrentArtwork = true
                 }
             }
-        }
+        })
     }
 
     fun getImageFromLastFM() {
@@ -127,6 +106,23 @@ abstract class AbsEditFragment<T: AbsModel>: AbsToolBarFragment() {
     fun deleteArtwork() {
         fragment_edit_imageview_artwork.setImageResource(absModel.getPlaceholderId())
         deleteCurrentArtwork = true
+    }
+
+    private fun checkAndSave() {
+        if (inputViews.all { it.checkValidity() }) {
+            (absActivity as? MainActivity)?.launchFilesPermission(BuildConfig.APPLICATION_ID) {
+                if (it) {
+                    save()
+                } else {
+                    Popup(absActivity,
+                        title = getString(R.string.popup_permission_title),
+                        message = getString(R.string.popup_permission_message),
+                        positiveText = getString(R.string.popup_ok),
+                        positiveClick = { checkAndSave() })
+                        .show()
+                }
+            }
+        }
     }
 
     private fun getInputViews(view: View) {

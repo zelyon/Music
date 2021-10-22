@@ -8,4 +8,5 @@
     app:id_layout_item="@layout/item_playlist"
     app:id_layout_empty="@layout/item_playlist_empty"
     app:space_divider="8dp"
-    app:fast_scroll_enable="true"/>
+    app:fast_scroll_enable="true"
+    android:background="?attr/colorSurface"/>

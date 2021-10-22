@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import androidx.core.view.isVisible
+import bzh.zelyon.lib.extension.back
 import bzh.zelyon.lib.extension.showSnackbar
 import bzh.zelyon.music.R
 import bzh.zelyon.music.db.model.Artist
@@ -55,7 +56,7 @@ class EditArtistFragment: AbsEditFragment<Artist>() {
         }.show()
     }
 
-    override fun onSave() = try {
+    override fun save() = try {
         paths.forEach {
             val audioFile = AudioFileIO.read(File(it))
             val tag = audioFile?.tagOrCreateAndSetDefault
@@ -68,12 +69,11 @@ class EditArtistFragment: AbsEditFragment<Artist>() {
             }
             audioFile?.commit()
         }
-        MediaScannerConnection.scanFile(absActivity, paths.toTypedArray(), null) { _, _ -> back() }
-        true
+        MediaScannerConnection.scanFile(absActivity, paths.toTypedArray(), null) { _, _ -> absActivity.back() }
     } catch (e: Exception) {
         absActivity.showSnackbar(getString(R.string.fragment_edit_snackbar_failed))
-        false
     }
+
     companion object {
 
         fun getInstance(artist: Artist, artwork: Bitmap?) = EditArtistFragment().apply {
