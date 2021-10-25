@@ -9,10 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.children
 import androidx.fragment.app.activityViewModels
-import bzh.zelyon.lib.extension.drawableResToDrawable
-import bzh.zelyon.lib.extension.getLocalFileFromGalleryUri
-import bzh.zelyon.lib.extension.getStatusBarHeight
-import bzh.zelyon.lib.extension.setImage
+import bzh.zelyon.lib.extension.*
 import bzh.zelyon.lib.ui.component.InputView
 import bzh.zelyon.lib.ui.component.Popup
 import bzh.zelyon.lib.ui.view.fragment.AbsToolBarFragment
@@ -20,7 +17,6 @@ import bzh.zelyon.lib.util.Launch
 import bzh.zelyon.music.BuildConfig
 import bzh.zelyon.music.R
 import bzh.zelyon.music.db.model.AbsModel
-import bzh.zelyon.music.ui.view.activity.MainActivity
 import bzh.zelyon.music.ui.view.viewmodel.EditViewModel
 import kotlinx.android.synthetic.main.fragment_edit.*
 import org.jaudiotagger.tag.images.Artwork
@@ -110,7 +106,7 @@ abstract class AbsEditFragment<T: AbsModel>: AbsToolBarFragment() {
 
     private fun checkAndSave() {
         if (inputViews.all { it.checkValidity() }) {
-            (absActivity as? MainActivity)?.launchFilesPermission(BuildConfig.APPLICATION_ID) {
+            absActivity.launchPermissionFiles(BuildConfig.APPLICATION_ID) {
                 if (it) {
                     save()
                 } else {

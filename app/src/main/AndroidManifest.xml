@@ -29,6 +29,7 @@
             android:name=".ui.view.activity.MainActivity"
             android:screenOrientation="fullSensor"
             android:windowSoftInputMode="adjustNothing"
+            android:exported="true"
             android:launchMode="singleTask">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
@@ -54,13 +55,17 @@
         <activity
             android:name=".ui.view.activity.ShortcutActivity"
             android:launchMode="singleInstance"
+            android:exported="false"
             android:theme="@android:style/Theme.Translucent.NoTitleBar"/>
 
         <service
             android:name=".util.MusicService"
-            android:enabled="true"/>
+            android:enabled="true"
+            android:exported="false"/>
 
-        <receiver android:name=".util.MusicReceiver">
+        <receiver
+            android:name=".util.MusicReceiver"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MEDIA_BUTTON" />
             </intent-filter>

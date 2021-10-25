@@ -1,16 +1,11 @@
 package bzh.zelyon.music.ui.view.activity
 
-import android.Manifest
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.content.ServiceConnection
-import android.net.Uri
-import android.os.Build
 import android.os.Bundle
-import android.os.Environment
 import android.os.IBinder
-import android.provider.Settings
 import androidx.activity.viewModels
 import androidx.core.view.ViewCompat
 import androidx.vectordrawable.graphics.drawable.AnimatedVectorDrawableCompat
@@ -19,7 +14,6 @@ import bzh.zelyon.lib.extension.actionFragment
 import bzh.zelyon.lib.extension.getCurrentFragment
 import bzh.zelyon.lib.ui.view.activity.AbsBottomNavigationActivity
 import bzh.zelyon.lib.ui.view.fragment.AbsFragment
-import bzh.zelyon.lib.util.Launch
 import bzh.zelyon.music.R
 import bzh.zelyon.music.ui.view.fragment.main.LibraryFragment
 import bzh.zelyon.music.ui.view.fragment.main.PlayingFragment
@@ -136,22 +130,6 @@ class MainActivity : AbsBottomNavigationActivity() {
                     anim?.start()
                 }
             }
-        }
-    }
-
-    fun launchFilesPermission(applicationId: String, result:(Boolean) -> Unit) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-            if (Environment.isExternalStorageManager()) {
-                result.invoke(true)
-            } else {
-                launchWithResult(Launch.Simple(Intent(Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION, Uri.parse("package:$applicationId"))) { _, _ ->
-                    result.invoke(Environment.isExternalStorageManager())
-                })
-            }
-        } else {
-            launchWithResult(Launch.Permission(mutableListOf(Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
-                result.invoke(it)
-            })
         }
     }
 }

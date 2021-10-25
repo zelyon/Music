@@ -105,7 +105,7 @@ class MusicsFragment private constructor(): AbsToolBarBottomSheetFragment() {
         }
 
         private fun deleteMusic(music: Music) {
-            (absActivity as? MainActivity)?.launchFilesPermission(BuildConfig.APPLICATION_ID) {
+            absActivity.launchPermissionFiles(BuildConfig.APPLICATION_ID) {
                 if (it) {
                     File(music.path).delete()
                     back()
