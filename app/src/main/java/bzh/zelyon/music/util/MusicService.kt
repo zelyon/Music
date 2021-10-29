@@ -19,6 +19,7 @@ import android.support.v4.media.session.MediaSessionCompat
 import android.support.v4.media.session.PlaybackStateCompat
 import android.view.KeyEvent
 import androidx.core.app.NotificationCompat
+import androidx.media.app.NotificationCompat.MediaStyle
 import androidx.core.content.ContextCompat
 import bzh.zelyon.music.R
 import bzh.zelyon.music.db.DB
@@ -27,7 +28,6 @@ import bzh.zelyon.music.ui.view.activity.ShortcutActivity
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
-
 
 class MusicService: Service() {
 
@@ -167,7 +167,7 @@ class MusicService: Service() {
                                     .addAction(NotificationCompat.Action(R.drawable.ic_notif_previous, getString(R.string.notif_previous), createPendindIntent(KeyEvent.KEYCODE_MEDIA_PREVIOUS.toString())))
                                     .addAction(NotificationCompat.Action(if (MusicPlayer.isPlaying) R.drawable.ic_notif_pause else R.drawable.ic_notif_play, getString(R.string.notif_play_pause), createPendindIntent(KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE.toString())))
                                     .addAction(NotificationCompat.Action(R.drawable.ic_notif_next, getString(R.string.notif_next), createPendindIntent(KeyEvent.KEYCODE_MEDIA_NEXT.toString())))
-                                    .setStyle(androidx.media.app.NotificationCompat.MediaStyle()
+                                    .setStyle(MediaStyle()
                                         .setMediaSession(mediaSession?.sessionToken)
                                         .setShowActionsInCompactView(0, 1, 2)
                                     )
