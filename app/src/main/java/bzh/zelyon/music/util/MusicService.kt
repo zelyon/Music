@@ -39,7 +39,7 @@ class MusicService: Service() {
         super.onCreate()
         MusicPlayer.musicService = this
         val mediaButtonReceiverComponentName = ComponentName(applicationContext, MusicReceiver::class.java)
-        val mediaButtonReceiverPendingIntent = PendingIntent.getBroadcast(applicationContext, 0, Intent(Intent.ACTION_MEDIA_BUTTON).setComponent(mediaButtonReceiverComponentName), if (Build.VERSION.SDK_INT >= 31) PendingIntent.FLAG_MUTABLE else 0)
+        val mediaButtonReceiverPendingIntent = PendingIntent.getBroadcast(applicationContext, 0, Intent(Intent.ACTION_MEDIA_BUTTON).setComponent(mediaButtonReceiverComponentName), getFlagsForPendingIntent())
         mediaSession = MediaSessionCompat(this, "Music", mediaButtonReceiverComponentName, mediaButtonReceiverPendingIntent)
         mediaSession?.setCallback(object : MediaSessionCompat.Callback() {
             override fun onPlay() {
@@ -156,10 +156,10 @@ class MusicService: Service() {
                                     .setLargeIcon(bitmap)
                                     .setContentIntent(PendingIntent.getActivity(this@MusicService, 0, Intent(this@MusicService, MainActivity::class.java).apply {
                                         flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
-                                    }, 0))
+                                    }, getFlagsForPendingIntent()))
                                     .setDeleteIntent(PendingIntent.getService(this@MusicService, 0, Intent(KeyEvent.KEYCODE_MEDIA_CLOSE.toString()).apply {
                                         component = ComponentName(this@MusicService, MusicService::class.java)
-                                    }, 0))
+                                    }, getFlagsForPendingIntent()))
                                     .setContentTitle(music.title)
                                     .setContentText(music.artistName)
                                     .setOngoing(MusicPlayer.isPlaying)
@@ -204,7 +204,9 @@ class MusicService: Service() {
 
     private fun createPendindIntent(action: String) = PendingIntent.getService(this, 0, Intent(action).apply {
         component = ComponentName(this@MusicService, MusicService::class.java)
-    }, 0)
+    }, getFlagsForPendingIntent())
+
+    private fun getFlagsForPendingIntent() = if (Build.VERSION.SDK_INT >= 31) PendingIntent.FLAG_MUTABLE else 0
 
     inner class MusicBinder : Binder() {
         val service: MusicService get() = this@MusicService
