@@ -30,14 +30,15 @@ class EditArtistFragment: AbsEditFragment<Artist>() {
             paths.add(music.path)
         }
 
-        editViewModel.getArtist(absModel.name).observe(absActivity, { artistResponseFr ->
+        editViewModel.getArtist(absModel.name).observe(absActivity) { artistResponseFr ->
             infoFromLastFM = artistResponseFr?.artist?.bio?.content.orEmpty()
             if (infoFromLastFM.isNullOrBlank()) {
-                editViewModel.getArtist(absModel.name, false).observe(viewLifecycleOwner, { musicResponseEn ->
-                    infoFromLastFM = musicResponseEn?.artist?.bio?.content.orEmpty()
-                })
+                editViewModel.getArtist(absModel.name, false)
+                    .observe(viewLifecycleOwner) { musicResponseEn ->
+                        infoFromLastFM = musicResponseEn?.artist?.bio?.content.orEmpty()
+                    }
             }
-        })
+        }
     }
 
     override fun getIdFormLayout() = R.layout.fragment_edit_artist

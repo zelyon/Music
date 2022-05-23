@@ -31,7 +31,12 @@ class EditMusicFragment: AbsEditFragment<Music>() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        audioFile = AudioFileIO.read(File(absModel.path))
+        audioFile = try {
+            AudioFileIO.read(File(absModel.path))
+        } catch (e: java.lang.Exception) {
+            absActivity.showSnackbar(getString(R.string.fragment_edit_snackbar_failed))
+            null
+        }
         tag = audioFile?.tagOrCreateAndSetDefault
 
         val artistNames = mutableListOf<String>()
@@ -61,18 +66,19 @@ class EditMusicFragment: AbsEditFragment<Music>() {
         fragment_edit_music_inputview_album.choices = albumNames.map { InputView.Choice(it, it, absModel.albumName == it) }.toMutableList()
         fragment_edit_music_inputview_track.text = absModel.track.toString()
         fragment_edit_music_inputview_year.text = absModel.year.toString()
-        fragment_edit_music_inputview_genre.text = tag?.getFirst(FieldKey.GENRE) ?: ""
-        fragment_edit_music_inputview_genre.choices = genres.map { InputView.Choice(it, it, tag?.getFirst(FieldKey.GENRE) ?: "" == it) }.toMutableList()
+        fragment_edit_music_inputview_genre.text = tag?.getFirst(FieldKey.GENRE).orEmpty()
+        fragment_edit_music_inputview_genre.choices = genres.map { InputView.Choice(it, it, tag?.getFirst(FieldKey.GENRE).orEmpty() == it) }.toMutableList()
 
-        editViewModel.getMusic(absModel.artistName, absModel.title).observe(viewLifecycleOwner, { musicResponseFr  ->
+        editViewModel.getMusic(absModel.artistName, absModel.title).observe(viewLifecycleOwner) { musicResponseFr ->
             infoFromLastFM = musicResponseFr?.track?.wiki?.content.orEmpty()
             imageUrlFromLastFM = musicResponseFr?.track?.album?.image?.get(3)?.text
             if (infoFromLastFM.isNullOrBlank()) {
-                editViewModel.getMusic(absModel.artistName, absModel.title, false).observe(viewLifecycleOwner, { musicResponseEn ->
-                    infoFromLastFM = musicResponseEn?.track?.wiki?.content.orEmpty()
-                })
+                editViewModel.getMusic(absModel.artistName, absModel.title, false)
+                    .observe(viewLifecycleOwner) { musicResponseEn ->
+                        infoFromLastFM = musicResponseEn?.track?.wiki?.content.orEmpty()
+                    }
             }
-        })
+        }
     }
 
     override fun getIdFormLayout() = R.layout.fragment_edit_music

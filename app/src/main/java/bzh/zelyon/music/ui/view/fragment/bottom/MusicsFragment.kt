@@ -13,7 +13,6 @@ import bzh.zelyon.music.BuildConfig
 import bzh.zelyon.music.R
 import bzh.zelyon.music.db.DB
 import bzh.zelyon.music.db.model.Music
-import bzh.zelyon.music.ui.view.activity.MainActivity
 import bzh.zelyon.music.ui.view.fragment.edit.EditMusicFragment
 import bzh.zelyon.music.ui.view.viewmodel.LibraryViewModel
 import bzh.zelyon.music.util.MusicPlayer
