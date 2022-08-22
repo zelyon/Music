@@ -15,7 +15,6 @@ data class Playlist(
     val id: Int?,
     @ColumnInfo(name = "name")
     var name: String): Serializable {
-
     @ColumnInfo(name = "musics")
     @TypeConverters(MusicsConverter::class)
     var musics = mutableListOf<Music>()

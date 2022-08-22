@@ -4,5 +4,7 @@ import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
 class Wiki(
-    @SerializedName("content") @Expose var content: String
+    @SerializedName("content")
+    @Expose
+    var content: String
 )

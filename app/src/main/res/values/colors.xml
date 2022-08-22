@@ -1,11 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#009688</color>
-    <color name="colorPrimaryDark">#00695C</color>
-    <color name="colorPrimaryVariant">#00695C</color>
-    <color name="colorOnPrimary">#FFFFFF</color>
+    <color name="color_launcher">#00897B</color>
 
-    <color name="colorSecondary">#00BFA5</color>
-    <color name="colorSecondaryVariant">#00BFA5</color>
-    <color name="colorOnSecondary">#FFFFFF</color>
+    <color name="color_theme">#00897B</color>
+    <color name="color_on_theme">#FFFFFF</color>
+    <color name="color_theme_container">#B2DFDB</color>
+    <color name="color_on_theme_container">#004D40</color>
+    <color name="color_error">#DD4444</color>
+    <color name="color_on_error">#FFFFFF</color>
+    <color name="color_back">#FFFFFF</color>
+    <color name="color_on_back">#000000</color>
 </resources>

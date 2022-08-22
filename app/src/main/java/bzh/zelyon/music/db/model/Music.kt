@@ -36,7 +36,8 @@ data class Music(
     @ColumnInfo(name = "duration")
     val duration: Int,
     @ColumnInfo(name = "path")
-    val path: String): AbsModel() {
+    val path: String
+): AbsModel() {
 
     override fun getDeclaration() = title
 
@@ -56,7 +57,7 @@ data class Music(
         if (artist) {
             infos.add(artistName)
         }
-        if (album && albumName != File(path).parentFile.name) {
+        if (album && albumName != (File(path).parentFile?.name ?: "")) {
             infos.add(albumName)
         }
         if (duration) {
@@ -80,11 +81,10 @@ data class Music(
             val artworkUriWithId = ContentUris.withAppendedId(artworkUri, albumId.toLong())
             inputStream = context.contentResolver.openInputStream(artworkUriWithId)
         } catch (ignored: Exception) {
-        } finally {
-            if (bytes?.isNotEmpty() == true && ByteArrayInputStream(bytes).available() != 0) {
-                inputStream = ByteArrayInputStream(bytes)
-            }
-            return if (inputStream?.available() != 0) inputStream else null
         }
+        if (bytes?.isNotEmpty() == true && ByteArrayInputStream(bytes).available() != 0) {
+            inputStream = ByteArrayInputStream(bytes)
+        }
+        return if (inputStream?.available() != 0) inputStream else null
     }
 }

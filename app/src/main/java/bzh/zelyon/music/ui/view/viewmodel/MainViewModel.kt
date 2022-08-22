@@ -17,23 +17,25 @@ class MainViewModel: ViewModel() {
 
     init {
         fabState.addSource(currentFragment) {
-            fabState.value = combineLiveDatas()
+            updateFabState()
         }
         fabState.addSource(hasPlayingList) {
-            fabState.value = combineLiveDatas()
+            updateFabState()
         }
         fabState.addSource(isPlaying) {
-            fabState.value = combineLiveDatas()
+            updateFabState()
         }
     }
 
-    private fun combineLiveDatas(): FABState = if (hasPlayingList.value == true) {
-        if (currentFragment.value is PlayingFragment) {
-            if (isPlaying.value == true) FABState.ICON_PLAY else FABState.ICON_PAUSE
+    private fun updateFabState() {
+        fabState.value = if (hasPlayingList.value == true) {
+            if (currentFragment.value is PlayingFragment) {
+                if (isPlaying.value == true) FABState.ICON_PLAY else FABState.ICON_PAUSE
+            } else {
+                if (isPlaying.value == true) FABState.ANIM_PLAY else FABState.ANIM_PAUSE
+            }
         } else {
-            if (isPlaying.value == true) FABState.ANIM_PLAY else FABState.ANIM_PAUSE
+            FABState.HIDE
         }
-    } else {
-        FABState.HIDE
     }
 }

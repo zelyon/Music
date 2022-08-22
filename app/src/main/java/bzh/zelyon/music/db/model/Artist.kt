@@ -5,7 +5,8 @@ import bzh.zelyon.music.R
 data class Artist(
     val id: Int,
     val name: String,
-    val musics: MutableList<Music>): AbsModel() {
+    val musics: MutableList<Music>
+): AbsModel() {
 
     override fun getDeclaration() = name
 

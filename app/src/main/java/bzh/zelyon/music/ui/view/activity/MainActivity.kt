@@ -37,9 +37,7 @@ class MainActivity : AbsBottomNavigationActivity() {
 
     private val serviceConnection = object : ServiceConnection {
         override fun onServiceConnected(name: ComponentName?, service: IBinder?) {
-            if (service is MusicService.MusicBinder) {
-                service.service.updateBroadcastMetadatasNotifs()
-            }
+            (service as? MusicService.MusicBinder)?.service?.updateBroadcastMetadatasNotifs()
         }
         override fun onServiceDisconnected(name: ComponentName?) {}
     }
@@ -102,7 +100,10 @@ class MainActivity : AbsBottomNavigationActivity() {
 
     override fun getNavigationMenuId() = R.menu.activity_main
 
-    override fun getNavigationItems() = listOf(NavigationItem(R.id.activity_main_library, libraryFragment), NavigationItem(R.id.activity_main_playlists, playlistsFragment))
+    override fun getNavigationItems() = listOf(
+        NavigationItem(R.id.activity_main_library, libraryFragment),
+        NavigationItem(R.id.activity_main_playlists, playlistsFragment)
+    )
 
     private fun updateNavigationBar(fragment: AbsFragment?) {
         activity_main_bottomnavigationview.animate()
