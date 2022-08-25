@@ -67,7 +67,7 @@ class LibraryFragment: AbsFragment(), SearchView.OnQueryTextListener {
     }
 
     private fun loadMusics() {
-        absActivity.launchWithResult(Launch.Permission(mutableListOf(Manifest.permission.READ_EXTERNAL_STORAGE)) {
+        absActivity.launchWithResult(Launch.Permission(mutableListOf(Manifest.permission.READ_MEDIA_AUDIO)) {
             if (it) {
                 fragment_library_collectionview_artists.items = MusicContent.getMusicsBySearch(absActivity, currentSearch).toMutableList()
             } else {
