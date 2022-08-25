@@ -24,7 +24,7 @@ buildscript {
 
     //Retrofit
     ext.okio_version = '3.2.0'
-    ext.okhttp3_version = '4.9.3'
+    ext.okhttp3_version = '4.10.0'
     ext.retrofit2_version = '2.9.0'
 
     // Other
